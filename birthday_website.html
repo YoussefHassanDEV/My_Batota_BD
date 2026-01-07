@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +34,7 @@
         h1 {
             font-size: 3em;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             animation: pulse 2s infinite;
         }
 
@@ -43,18 +44,39 @@
         }
 
         @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1);
+            }
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .countdown-section {
@@ -64,7 +86,7 @@
             padding: 40px;
             margin: 30px 0;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .countdown-section h2 {
@@ -72,7 +94,7 @@
             margin-bottom: 10px;
         }
 
-        .countdown-section > p {
+        .countdown-section>p {
             font-size: 1.2em;
             opacity: 0.9;
             margin-bottom: 30px;
@@ -115,9 +137,12 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -149,9 +174,11 @@
             0% {
                 background-position: 0% 50%;
             }
+
             50% {
                 background-position: 100% 50%;
             }
+
             100% {
                 background-position: 0% 50%;
             }
@@ -174,9 +201,12 @@
         }
 
         @keyframes numberPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
@@ -203,9 +233,12 @@
         }
 
         @keyframes blink {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.3;
             }
@@ -237,12 +270,12 @@
             cursor: pointer;
             font-size: 1em;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
         button:active {
@@ -265,7 +298,8 @@
             transition: all 0.3s;
         }
 
-        .song-item:hover, .song-item.active {
+        .song-item:hover,
+        .song-item.active {
             background: rgba(255, 255, 255, 0.3);
             transform: translateX(10px);
         }
@@ -289,7 +323,7 @@
             position: relative;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s;
             background: rgba(255, 255, 255, 0.2);
             padding: 20px;
@@ -307,7 +341,7 @@
         .photo-placeholder {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, rgba(255,107,157,0.3) 0%, rgba(255,143,171,0.3) 100%);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3) 0%, rgba(255, 143, 171, 0.3) 100%);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -334,8 +368,15 @@
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .message-box p {
@@ -393,17 +434,18 @@
             h1 {
                 font-size: 2em;
             }
-            
+
             .countdown-number {
                 font-size: 2em;
             }
-            
+
             .gallery-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -456,51 +498,51 @@
             </div>
             <div class="song-list">
                 <div class="song-item active" onclick="playSong(0)">
-                    🎵 Song 1 - Add your song title here
+                    🎵 Song 1
                 </div>
                 <div class="song-item" onclick="playSong(1)">
-                    🎵 Song 2 - Add your song title here
+                    🎵 Song 2
                 </div>
                 <div class="song-item" onclick="playSong(2)">
-                    🎵 Song 3 - Add your song title here
+                    🎵 Song 3
                 </div>
                 <div class="song-item" onclick="playSong(3)">
-                    🎵 Song 4 - Add your song title here
+                    🎵 Song 4
                 </div>
                 <div class="song-item" onclick="playSong(4)">
-                    🎵 Song 5 - Add your song title here
+                    🎵 Song 5
                 </div>
             </div>
             <p id="nowPlaying" style="margin-top: 20px; font-style: italic;">Click play to start the music</p>
         </div>
 
         <div class="photo-gallery">
-            <h2>📸 Beautiful Memories 📸</h2>
-            <p style="text-align: center; margin: 20px 0;">Your journey through the years...</p>
+            <h2>📸 Beautiful Batota Pics 📸</h2>
+            <p style="text-align: center; margin: 20px 0;">I Love Ur everything...</p>
             <div class="gallery-grid">
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 1<br><small>Add your photo description</small></p>
+                    <img src="Pics/1.jpeg" class="photo-img" alt="My love">
+                    <p>I love u</p>
                 </div>
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 2<br><small>Add your photo description</small></p>
+                    <img src="Pics/2.jpeg" class="photo-img" alt="My love">
+                    <p>I love ur eyes</p>
                 </div>
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 3<br><small>Add your photo description</small></p>
+                    <img src="Pics/3.jpeg" class="photo-img" alt="My love">
+                    <p>I love ur Cheeks</p>
                 </div>
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 4<br><small>Add your photo description</small></p>
+                    <img src="Pics/4.jpeg" class="photo-img" alt="My love">
+                    <p>I love ur lips</p>
                 </div>
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 5<br><small>Add your photo description</small></p>
+                    <img src="Pics/5.jpeg" class="photo-img" alt="My love">
+                    <p>I love ur Hair</p>
                 </div>
                 <div class="photo-frame">
-                    <div class="photo-placeholder">📷</div>
-                    <p>Childhood Memory 6<br><small>Add your photo description</small></p>
+                    <img src="Pics/6.jpeg" class="photo-img" alt="My love">
+                    <p>I love ur Chin</p>
                 </div>
             </div>
         </div>
@@ -508,19 +550,24 @@
         <div class="love-messages">
             <h2>💝 Why I Love You 💝</h2>
             <div class="message-box">
-                <p>Your smile lights up my entire world. Every day with you is a gift, and I'm grateful for every moment we share together.</p>
+                <p>Your smile lights up my entire world. Every day with you is a gift, and I'm grateful for every moment
+                    we share together.</p>
             </div>
             <div class="message-box">
-                <p>You make me laugh like no one else can. Your sense of humor, your kindness, and your beautiful heart make you the most incredible person I know.</p>
+                <p>You make me laugh like no one else can. Your sense of humor, your kindness, and your beautiful heart
+                    make you the most incredible person I know.</p>
             </div>
             <div class="message-box">
-                <p>You inspire me to be a better person. Your strength, your compassion, and your unwavering support mean everything to me.</p>
+                <p>You inspire me to be a better person. Your strength, your compassion, and your unwavering support
+                    mean everything to me.</p>
             </div>
             <div class="message-box">
-                <p>Every moment with you is an adventure. Whether we're doing something exciting or just spending quiet time together, you make everything special.</p>
+                <p>Every moment with you is an adventure. Whether we're doing something exciting or just spending quiet
+                    time together, you make everything special.</p>
             </div>
             <div class="message-box">
-                <p>I love you more than words can express. You are my best friend, my partner, and the love of my life. Here's to many more years of love and happiness together!</p>
+                <p>I love you more than words can express. You are my best friend, my partner, and the love of my life.
+                    Here's to many more years of love and happiness together!</p>
             </div>
         </div>
 
@@ -560,11 +607,11 @@
 
         // Music Player
         const songs = [
-            'song1.mp3', // Replace with actual song URLs
-            'song2.mp3',
-            'song3.mp3',
-            'song4.mp3',
-            'song5.mp3'
+            'Songs/WineMeDineMe..mp3',
+            'Songs/ForgetYou.mp3',
+            'Songs/MyuuElfenLiedLiliumPianoVersion.mp3',
+            'Songs/SuriyeMarşSuriyeMilliMarş.mp3',
+            'Songs/AFIAOIL.mp3',
         ];
 
         let currentSong = 0;
@@ -638,4 +685,5 @@
         }
     </script>
 </body>
+
 </html>
