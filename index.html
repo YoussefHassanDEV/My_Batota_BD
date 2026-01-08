@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,16 +40,21 @@
         }
 
         @keyframes float-particle {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translate(0, 0);
                 opacity: 0;
             }
+
             10% {
                 opacity: 1;
             }
+
             90% {
                 opacity: 1;
             }
+
             100% {
                 transform: translate(100px, -1000px);
                 opacity: 0;
@@ -77,12 +83,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 0.8;
             }
+
             90% {
                 opacity: 0.8;
             }
+
             100% {
                 transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
@@ -128,6 +137,7 @@
             0% {
                 transform: rotateY(0deg);
             }
+
             100% {
                 transform: rotateY(360deg);
             }
@@ -144,9 +154,12 @@
         }
 
         @keyframes pulse-line {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0.3;
             }
+
             50% {
                 opacity: 1;
             }
@@ -169,9 +182,12 @@
         }
 
         @keyframes pin-bounce {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -209,9 +225,12 @@
         }
 
         @keyframes ring-rotate {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: rotate(0deg);
             }
+
             50% {
                 transform: rotate(180deg);
             }
@@ -229,18 +248,24 @@
         }
 
         @keyframes gradient-text {
-            0%, 100% {
+
+            0%,
+            100% {
                 background-position: 0% center;
             }
+
             50% {
                 background-position: 100% center;
             }
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -298,9 +323,12 @@
         }
 
         @keyframes heartbeat {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             25% {
                 transform: scale(1.2);
             }
@@ -311,6 +339,7 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -378,9 +407,12 @@
         }
 
         @keyframes float-item {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0px) rotateX(0deg);
             }
+
             50% {
                 transform: translateY(-10px) rotateX(5deg);
             }
@@ -412,9 +444,11 @@
             0% {
                 background-position: 0% 50%;
             }
+
             50% {
                 background-position: 100% 50%;
             }
+
             100% {
                 background-position: 0% 50%;
             }
@@ -437,9 +471,12 @@
         }
 
         @keyframes numberPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
@@ -466,9 +503,12 @@
         }
 
         @keyframes blink {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.3;
             }
@@ -502,20 +542,49 @@
             transform-origin: bottom;
         }
 
-        .bar:nth-child(1) { animation-delay: 0s; }
-        .bar:nth-child(2) { animation-delay: 0.1s; }
-        .bar:nth-child(3) { animation-delay: 0.2s; }
-        .bar:nth-child(4) { animation-delay: 0.3s; }
-        .bar:nth-child(5) { animation-delay: 0.4s; }
-        .bar:nth-child(6) { animation-delay: 0.3s; }
-        .bar:nth-child(7) { animation-delay: 0.2s; }
-        .bar:nth-child(8) { animation-delay: 0.1s; }
-        .bar:nth-child(9) { animation-delay: 0s; }
+        .bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        .bar:nth-child(6) {
+            animation-delay: 0.3s;
+        }
+
+        .bar:nth-child(7) {
+            animation-delay: 0.2s;
+        }
+
+        .bar:nth-child(8) {
+            animation-delay: 0.1s;
+        }
+
+        .bar:nth-child(9) {
+            animation-delay: 0s;
+        }
 
         @keyframes visualize {
-            0%, 100% {
+
+            0%,
+            100% {
                 height: 20px;
             }
+
             50% {
                 height: 80px;
             }
@@ -597,13 +666,18 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             animation: shimmer 2s infinite;
         }
 
         @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         .song-list {
@@ -724,6 +798,7 @@
             from {
                 transform: scale(0);
             }
+
             to {
                 transform: scale(1);
             }
@@ -786,6 +861,7 @@
                 opacity: 0;
                 transform: translateX(-50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -874,18 +950,24 @@
         }
 
         @keyframes glowText {
-            0%, 100% {
+
+            0%,
+            100% {
                 text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             }
+
             50% {
                 text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 107, 157, 0.7);
             }
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
@@ -986,10 +1068,13 @@
         }
 
         @keyframes subtle-pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
                 box-shadow: 0 4px 15px rgba(255, 107, 157, 0.5);
             }
+
             50% {
                 transform: scale(1.05);
                 box-shadow: 0 6px 20px rgba(255, 107, 157, 0.7);
@@ -1130,9 +1215,12 @@
         }
 
         @keyframes glow {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
             }
+
             50% {
                 box-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
             }
@@ -1177,9 +1265,12 @@
         }
 
         @keyframes matchedPulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.2);
             }
@@ -1303,6 +1394,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="particles" id="particles"></div>
     <div class="floating-hearts" id="floatingHearts"></div>
@@ -1316,7 +1408,7 @@
     <div class="easter-egg-modal" id="easterEggModal">
         <div class="easter-egg-content">
             <span class="close-easter-egg" onclick="closeEasterEgg()">&times;</span>
-            
+
             <div id="initialEasterEgg">
                 <h2>🎉 You Found My Secret! 🎉</h2>
                 <div class="easter-egg-hearts">
@@ -1326,7 +1418,8 @@
                     Congratulations my love! You discovered something special! 🎊
                 </p>
                 <p>
-                    But wait... this is just the beginning! To unlock my ULTIMATE surprise, you need to prove you know me well. Are you ready for the challenge? 😏
+                    But wait... this is just the beginning! To unlock my ULTIMATE surprise, you need to prove you know
+                    me well. Are you ready for the challenge? 😏
                 </p>
                 <button class="unlock-button" onclick="startChallenge()">Start The Challenge! 🚀</button>
             </div>
@@ -1337,9 +1430,11 @@
                 <div class="secret-code-section">
                     <p>Enter the secret code to unlock the treasure!</p>
                     <p class="hint-text">Hint: The day we're getting married (format: MMDD) 💍</p>
-                    <input type="text" class="secret-code-input" id="secretCodeInput" placeholder="Enter code..." maxlength="4">
+                    <input type="text" class="secret-code-input" id="secretCodeInput" placeholder="Enter code..."
+                        maxlength="4">
                     <button class="unlock-button" onclick="checkSecretCode()">Unlock 🔓</button>
-                    <p id="codeError" style="color: #ff6b9d; margin-top: 10px; display: none;">Try again! Think about our special day 💕</p>
+                    <p id="codeError" style="color: #ff6b9d; margin-top: 10px; display: none;">Try again! Think about
+                        our special day 💕</p>
                 </div>
             </div>
 
@@ -1353,7 +1448,8 @@
                     <div class="stat-item">Time: <span id="timer">0</span>s</div>
                 </div>
                 <div class="memory-game" id="memoryGame"></div>
-                <button class="unlock-button" onclick="resetMemoryGame()" style="margin-top: 20px;">Reset Game 🔄</button>
+                <button class="unlock-button" onclick="resetMemoryGame()" style="margin-top: 20px;">Reset Game
+                    🔄</button>
             </div>
 
             <!-- Love Quiz -->
@@ -1384,9 +1480,12 @@
                         Every challenge you just completed represents a reason I love you:
                     </p>
                     <div style="text-align: left; margin: 30px auto; max-width: 600px;">
-                        <p style="margin: 15px 0;">🔐 <strong>The Code:</strong> Because you remember our special moments</p>
-                        <p style="margin: 15px 0;">🧩 <strong>The Memory Game:</strong> Because you never forget the important things</p>
-                        <p style="margin: 15px 0;">❤️ <strong>The Quiz:</strong> Because you truly know and understand me</p>
+                        <p style="margin: 15px 0;">🔐 <strong>The Code:</strong> Because you remember our special
+                            moments</p>
+                        <p style="margin: 15px 0;">🧩 <strong>The Memory Game:</strong> Because you never forget the
+                            important things</p>
+                        <p style="margin: 15px 0;">❤️ <strong>The Quiz:</strong> Because you truly know and understand
+                            me</p>
                     </div>
                     <p style="font-size: 2em; margin-top: 40px;">
                         You're my puzzle solver, my memory keeper, my quiz master, and most importantly...
@@ -1403,7 +1502,8 @@
                         🎁 💝 🎊 🎉 🎈 🎀 💐 🌹
                     </div>
                     <p style="font-size: 1.3em; margin-top: 30px; font-style: italic;">
-                        P.S. You're the only person in the world who could find this and unlock it. That's how special you are to me! 😘
+                        P.S. You're the only person in the world who could find this and unlock it. That's how special
+                        you are to me! 😘
                     </p>
                 </div>
             </div>
@@ -1464,7 +1564,7 @@
             <div class="music-player">
                 <h2>🎵 Our Soundtrack 🎵</h2>
                 <p>Music that reminds me of you...</p>
-                
+
                 <div class="visualizer" id="visualizer">
                     <div class="bar"></div>
                     <div class="bar"></div>
@@ -1483,17 +1583,18 @@
                     <button onclick="nextSong()">⏭️ Next</button>
                     <button onclick="toggleShuffle()" id="shuffleBtn">🔀 Shuffle</button>
                 </div>
-                
+
                 <div class="progress-bar" onclick="seekSong(event)">
                     <div class="progress" id="progress"></div>
                 </div>
-                
+
                 <div class="volume-control">
                     <label>Volume: </label>
-                    <input type="range" min="0" max="100" value="50" onchange="changeVolume(this.value)" id="volumeSlider">
+                    <input type="range" min="0" max="100" value="50" onchange="changeVolume(this.value)"
+                        id="volumeSlider">
                     <span id="volumePercent">50%</span>
                 </div>
-                
+
                 <div class="song-list">
                     <div class="song-item active" onclick="playSong(0)">🎵 Song 1</div>
                     <div class="song-item" onclick="playSong(1)">🎵 Song 2</div>
@@ -1534,6 +1635,50 @@
                     </div>
                 </div>
             </div>
+            <div class="section"
+                style="background: linear-gradient(135deg, rgba(255,192,203,0.3), rgba(255,182,193,0.3));">
+                <h2 style="text-align: center;">👶 My Beautiful Baby 👶</h2>
+                <p style="text-align: center; margin: 20px 0; font-size: 1.2em;">You were adorable then, stunning now...
+                    ✨</p>
+                <div class="gallery-grid">
+                    <div class="photo-frame" onclick="openModal(7)">
+                        <img src="Pics/7.jpeg" class="photo-img" alt="My love">
+                        <p>The cutest baby ever 💕</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(8)">
+                        <img src="Pics/8.jpeg" class="photo-img" alt="My love">
+                        <p>That sweet smile 😊</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(9)">
+                        <img src="Pics/9.jpeg" class="photo-img" alt="My love">
+                        <p>Little princess 👑</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(10)">
+                        <img src="Pics/10.jpeg" class="photo-img" alt="My love">
+                        <p>Adorable from day one 🌸</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(11)">
+                        <img src="Pics/11.jpeg" class="photo-img" alt="My love">
+                        <p>Beautiful at every age 💖</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(12)">
+                        <img src="Pics/12.jpeg" class="photo-img" alt="My love">
+                        <p>My love, then and now 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(13)">
+                        <img src="Pics/13.jpeg" class="photo-img" alt="My love">
+                        <p>My love, then and Forever 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(14)">
+                        <img src="Pics/14.jpeg" class="photo-img" alt="My love">
+                        <p>My love In Every universe 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(15)">
+                        <img src="Pics/15.jpeg" class="photo-img" alt="My love">
+                        <p>Love u 🌹</p>
+                    </div>
+                </div>
+            </div>
 
             <div id="photoModal" class="modal" onclick="closeModal()">
                 <span class="close-modal">&times;</span>
@@ -1545,22 +1690,28 @@
             <div class="love-messages">
                 <h2>💝 Million Reasons Why I Love You 💝</h2>
                 <div class="message-box">
-                    <p id="loveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share Joy and pain together, across any distance.</p>
+                    <p id="loveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share Joy and
+                        pain together, across any distance.</p>
                 </div>
                 <div class="message-box">
-                    <p id="loveMessage2">Your smile lights up my screen and my world. Every video call feels like a gift, every message a treasure.</p>
+                    <p id="loveMessage2">Your smile lights up my screen and my world. Every video call feels like a
+                        gift, every message a treasure.</p>
                 </div>
                 <div class="message-box">
-                    <p id="loveMessage3">You make me laugh through tears, you give me strength when I'm weak, you believe in me when I doubt myself.</p>
+                    <p id="loveMessage3">You make me laugh through tears, you give me strength when I'm weak, you
+                        believe in me when I doubt myself.</p>
                 </div>
                 <div class="message-box">
-                    <p id="loveMessage4">You inspire me to be better every day. Your courage to love across borders amazes me constantly.</p>
+                    <p id="loveMessage4">You inspire me to be better every day. Your courage to love across borders
+                        amazes me constantly.</p>
                 </div>
                 <div class="message-box">
-                    <p id="loveMessage5">Every moment waiting for you is worth it because I know our forever is coming. April 10th, 2026 - the best day of our lives.</p>
+                    <p id="loveMessage5">Every moment waiting for you is worth it because I know our forever is coming.
+                        April 10th, 2026 - the best day of our lives.</p>
                 </div>
                 <div class="message-box">
-                    <p id="loveMessage6">I love you more than words can express. You are my best friend, my soulmate, my future wife, and the love of my life. Forever and always.</p>
+                    <p id="loveMessage6">I love you more than words can express. You are my best friend, my soulmate, my
+                        future wife, and the love of my life. Forever and always.</p>
                 </div>
             </div>
 
@@ -1578,7 +1729,7 @@
         <div class="final-message" id="finalMessage">
             <div class="final-content">
                 <h1>💖 YOU ARE MY EVERYTHING 💖</h1>
-                
+
                 <div class="hearts-container">
                     ❤️ 💕 💖 💗 💓 💞 💘 💝 💟 ❣️
                 </div>
@@ -1590,10 +1741,10 @@
                 </div>
 
                 <div class="love-paragraph">
-                    💫 My dearest love, you are the light that guides me through the darkest nights, 
-                    the warmth that fills my coldest days, and the joy that makes every moment worth living. 
-                    Your smile is my sunrise, your laughter is my favorite melody, and your love is my 
-                    greatest treasure. Every heartbeat whispers your name, every breath I take is a prayer 
+                    💫 My dearest love, you are the light that guides me through the darkest nights,
+                    the warmth that fills my coldest days, and the joy that makes every moment worth living.
+                    Your smile is my sunrise, your laughter is my favorite melody, and your love is my
+                    greatest treasure. Every heartbeat whispers your name, every breath I take is a prayer
                     of gratitude for having you in my life. 💫
                 </div>
 
@@ -1602,9 +1753,9 @@
                 </div>
 
                 <div class="love-paragraph">
-                    💕 You are not just my love, you are my soulmate, my best friend, my safe haven, 
-                    and my greatest adventure. In your eyes, I see my future. In your arms, I find my home. 
-                    In your heart, I've found my forever. Every moment with you is a beautiful memory, 
+                    💕 You are not just my love, you are my soulmate, my best friend, my safe haven,
+                    and my greatest adventure. In your eyes, I see my future. In your arms, I find my home.
+                    In your heart, I've found my forever. Every moment with you is a beautiful memory,
                     and every tomorrow with you is a dream come true. 💕
                 </div>
 
@@ -1613,10 +1764,10 @@
                 </div>
 
                 <div class="love-paragraph">
-                    🌟 Through every season, every year, every lifetime - I choose you. 
-                    I will love you when the sun rises and when it sets. I will love you in the good times 
-                    and in the challenging ones. I will love you with every fiber of my being, 
-                    with a love that grows stronger with each passing day. You are my always and forever, 
+                    🌟 Through every season, every year, every lifetime - I choose you.
+                    I will love you when the sun rises and when it sets. I will love you in the good times
+                    and in the challenging ones. I will love you with every fiber of my being,
+                    with a love that grows stronger with each passing day. You are my always and forever,
                     my one and only, my everything. 🌟
                 </div>
 
@@ -1661,22 +1812,28 @@
                 </div>
 
                 <div class="love-letter">
-                    <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">💌 A Love Letter To My Future Wife 💌</h2>
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">💌 A Love Letter To My Future Wife
+                        💌</h2>
                     <div class="letter-content">
                         <p style="text-align: center; font-size: 1.5em; margin-bottom: 20px;">My Dearest Love,</p>
                         <p>
-                            Every day I wake up grateful that the universe brought you into my life. Despite the miles between us, 
-                            you're always in my heart, in my thoughts, in my dreams. The distance has only made our love stronger, 
+                            Every day I wake up grateful that the universe brought you into my life. Despite the miles
+                            between us,
+                            you're always in my heart, in my thoughts, in my dreams. The distance has only made our love
+                            stronger,
                             more precious, more real.
                         </p>
                         <p style="margin-top: 20px;">
-                            When I think about April 10th, 2026, my heart overflows with joy. That's the day I get to call you my wife, 
-                            the day we start our forever together. No more screens between us, no more time zones to calculate, 
+                            When I think about April 10th, 2026, my heart overflows with joy. That's the day I get to
+                            call you my wife,
+                            the day we start our forever together. No more screens between us, no more time zones to
+                            calculate,
                             no more goodnight messages across oceans. Just you and me, hand in hand, heart to heart.
                         </p>
                         <p style="margin-top: 20px;">
-                            You are my sunrise and my sunset, my first thought in the morning and my last wish at night. 
-                            You make me believe in soulmates, in destiny, in love that conquers all. Happy 25th birthday, my love. 
+                            You are my sunrise and my sunset, my first thought in the morning and my last wish at night.
+                            You make me believe in soulmates, in destiny, in love that conquers all. Happy 25th
+                            birthday, my love.
                             This is just the beginning of our beautiful story.
                         </p>
                         <p style="text-align: right; margin-top: 30px; font-size: 1.3em;">
@@ -1696,24 +1853,31 @@
 
                 <div class="love-messages" style="margin-top: 50px;">
                     <h2>💝 My Love For You Grows Every Moment 💝</h2>
-                    <p style="text-align: center; margin-bottom: 30px; opacity: 0.9; font-size: 1.1em;">These messages change throughout the day, reflecting my endless love for you</p>
+                    <p style="text-align: center; margin-bottom: 30px; opacity: 0.9; font-size: 1.1em;">These messages
+                        change throughout the day, reflecting my endless love for you</p>
                     <div class="message-box">
-                        <p id="finalLoveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share Joy and pain together, across any distance.</p>
+                        <p id="finalLoveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share
+                            Joy and pain together, across any distance.</p>
                     </div>
                     <div class="message-box">
-                        <p id="finalLoveMessage2">Your smile lights up my screen and my world. Every video call feels like a gift, every message a treasure.</p>
+                        <p id="finalLoveMessage2">Your smile lights up my screen and my world. Every video call feels
+                            like a gift, every message a treasure.</p>
                     </div>
                     <div class="message-box">
-                        <p id="finalLoveMessage3">You make me laugh through tears, you give me strength when I'm weak, you believe in me when I doubt myself.</p>
+                        <p id="finalLoveMessage3">You make me laugh through tears, you give me strength when I'm weak,
+                            you believe in me when I doubt myself.</p>
                     </div>
                     <div class="message-box">
-                        <p id="finalLoveMessage4">You inspire me to be better every day. Your courage to love across borders amazes me constantly.</p>
+                        <p id="finalLoveMessage4">You inspire me to be better every day. Your courage to love across
+                            borders amazes me constantly.</p>
                     </div>
                     <div class="message-box">
-                        <p id="finalLoveMessage5">Every moment waiting for you is worth it because I know our forever is coming. April 10th, 2026 - the best day of our lives.</p>
+                        <p id="finalLoveMessage5">Every moment waiting for you is worth it because I know our forever is
+                            coming. April 10th, 2026 - the best day of our lives.</p>
                     </div>
                     <div class="message-box">
-                        <p id="finalLoveMessage6">I love you more than words can express. You are my best friend, my soulmate, my future wife, and the love of my life. Forever and always.</p>
+                        <p id="finalLoveMessage6">I love you more than words can express. You are my best friend, my
+                            soulmate, my future wife, and the love of my life. Forever and always.</p>
                     </div>
                 </div>
 
@@ -1759,12 +1923,12 @@
                 "Our hearts: 0 miles apart 💕"
             ];
             let index = 0;
-            
+
             function cycleDistance() {
                 document.getElementById('distanceDisplay').textContent = distances[index];
                 index = (index + 1) % distances.length;
             }
-            
+
             cycleDistance();
             setInterval(cycleDistance, 4000);
         }
@@ -1806,19 +1970,19 @@
 
             if (distance < 0) {
                 document.getElementById('mainContent').classList.add('fade-out');
-                
+
                 setTimeout(() => {
                     document.getElementById('mainContent').style.display = 'none';
                     document.getElementById('birthdayMessage').style.display = 'block';
                 }, 1000);
-                
+
                 setTimeout(() => {
                     document.getElementById('birthdayMessage').style.display = 'none';
                     document.getElementById('finalMessage').style.display = 'block';
                     setInterval(updateWeddingCountdown, 1000);
                     updateWeddingCountdown();
                 }, 6000);
-                
+
                 createConfetti();
             }
         }
@@ -1971,7 +2135,7 @@
         function checkSecretCode() {
             const input = document.getElementById('secretCodeInput').value;
             const correctCode = '0410'; // April 10
-            
+
             if (input === correctCode) {
                 document.getElementById('secretCodeChallenge').style.display = 'none';
                 document.getElementById('memoryGameSection').style.display = 'block';
@@ -1991,7 +2155,7 @@
             const gameContainer = document.getElementById('memoryGame');
             gameContainer.innerHTML = '';
             gameContainer.style.display = 'grid';
-            
+
             cards.forEach((emoji, index) => {
                 const card = document.createElement('div');
                 card.className = 'memory-card';
@@ -2007,7 +2171,7 @@
             memoryGameMatches = 0;
             flippedCards = [];
             matchedPairs = [];
-            
+
             if (memoryGameTimer) clearInterval(memoryGameTimer);
             memoryGameTimer = setInterval(updateTimer, 1000);
         }
@@ -2035,14 +2199,14 @@
 
         function checkMatch() {
             const [card1, card2] = flippedCards;
-            
+
             setTimeout(() => {
                 if (card1.dataset.emoji === card2.dataset.emoji) {
                     card1.classList.add('matched');
                     card2.classList.add('matched');
                     memoryGameMatches++;
                     document.getElementById('matches').textContent = memoryGameMatches;
-                    
+
                     if (memoryGameMatches === 8) {
                         clearInterval(memoryGameTimer);
                         setTimeout(() => {
@@ -2100,7 +2264,7 @@
             function showQuestion() {
                 const container = document.getElementById('quizContainer');
                 const q = questions[currentQuestion];
-                
+
                 container.innerHTML = `
                     <div class="quiz-question">
                         <h3 style="font-size: 1.5em; margin-bottom: 20px;">Question ${currentQuestion + 1}/5</h3>
@@ -2116,10 +2280,10 @@
                 document.getElementById('quizProgress').style.width = ((currentQuestion / questions.length) * 100) + '%';
             }
 
-            window.selectAnswer = function(selectedIndex) {
+            window.selectAnswer = function (selectedIndex) {
                 const q = questions[currentQuestion];
                 const options = document.querySelectorAll('.quiz-option');
-                
+
                 options.forEach((opt, idx) => {
                     opt.style.pointerEvents = 'none';
                     if (idx === q.correct) {
@@ -2397,37 +2561,37 @@
             const now = new Date();
             const hour = now.getHours();
             const minute = now.getMinutes();
-            
+
             // Calculate total minutes since midnight
             let totalMinutes = hour * 60 + minute;
-            
+
             // Calculate which set of messages to show (0-24)
             // We have 25 sets, so we cycle through them every 57.6 minutes (1440 minutes / 25 sets)
             let messageSetIndex = Math.floor(totalMinutes / 57.6);
-            
+
             // Make sure we don't exceed array bounds
             if (messageSetIndex >= loveMessagesCollection.length) {
                 messageSetIndex = loveMessagesCollection.length - 1;
             }
-            
+
             const messages = loveMessagesCollection[messageSetIndex];
-            
+
             // Update each message on BOTH pages (main page and final page)
             for (let i = 1; i <= 6; i++) {
                 // Update main page messages
                 const element = document.getElementById(`loveMessage${i}`);
-                if (element && messages[i-1]) {
-                    element.textContent = messages[i-1];
+                if (element && messages[i - 1]) {
+                    element.textContent = messages[i - 1];
                     element.style.animation = 'none';
                     setTimeout(() => {
                         element.style.animation = 'slideIn 1s ease-out';
                     }, 10);
                 }
-                
+
                 // Update final page messages
                 const finalElement = document.getElementById(`finalLoveMessage${i}`);
-                if (finalElement && messages[i-1]) {
-                    finalElement.textContent = messages[i-1];
+                if (finalElement && messages[i - 1]) {
+                    finalElement.textContent = messages[i - 1];
                     finalElement.style.animation = 'none';
                     setTimeout(() => {
                         finalElement.style.animation = 'slideIn 1s ease-out';
@@ -2443,4 +2607,5 @@
         setInterval(updateLoveMessages, 60000); // Check every minute
     </script>
 </body>
+
 </html>
