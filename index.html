@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy 25th Birthday My Love! ❤️</title>
-    <!-- Website Icon (Favicon) -->
-    <link rel="icon" type="image/jpeg" href="Pics/5.jpeg">
     <style>
         * {
             margin: 0;
@@ -46,24 +44,18 @@
         }
 
         @keyframes heartbeat {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             25% {
                 transform: scale(1.1);
             }
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.8;
             }
@@ -74,7 +66,6 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -139,12 +130,9 @@
         }
 
         @keyframes float {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0px);
             }
-
             50% {
                 transform: translateY(-10px);
             }
@@ -176,11 +164,9 @@
             0% {
                 background-position: 0% 50%;
             }
-
             50% {
                 background-position: 100% 50%;
             }
-
             100% {
                 background-position: 0% 50%;
             }
@@ -203,12 +189,9 @@
         }
 
         @keyframes numberPulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.05);
             }
@@ -235,12 +218,9 @@
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
-
             50% {
                 opacity: 0.3;
             }
@@ -352,6 +332,14 @@
             margin-bottom: 10px;
         }
 
+        .photo-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
         .love-messages {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -374,7 +362,6 @@
                 opacity: 0;
                 transform: translateX(-50px);
             }
-
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -400,6 +387,75 @@
         .birthday-message h2 {
             font-size: 2.5em;
             margin-bottom: 20px;
+        }
+
+        .final-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff6b9d 0%, #764ba2 50%, #667eea 100%);
+            z-index: 9999;
+            overflow-y: auto;
+            animation: fadeIn 3s;
+        }
+
+        .final-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .final-content h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .romantic-text {
+            font-size: 1.8em;
+            line-height: 2;
+            margin: 30px 0;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideIn 2s;
+        }
+
+        .hearts-container {
+            font-size: 3em;
+            margin: 40px 0;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        .love-paragraph {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            font-size: 1.3em;
+            line-height: 1.8;
+            animation: slideIn 2.5s;
+        }
+
+        .eternal-love {
+            font-size: 2.5em;
+            margin: 40px 0;
+            font-weight: bold;
+            animation: glowText 2s ease-in-out infinite;
+        }
+
+        @keyframes glowText {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 107, 157, 0.7);
+            }
         }
 
         .confetti {
@@ -444,6 +500,18 @@
             .gallery-grid {
                 grid-template-columns: 1fr;
             }
+
+            .final-content h1 {
+                font-size: 2.5em;
+            }
+
+            .romantic-text {
+                font-size: 1.3em;
+            }
+
+            .eternal-love {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
@@ -484,6 +552,71 @@
         <div class="birthday-message" id="birthdayMessage">
             <h2>🎉🎈❤️ IT'S YOUR BIRTHDAY! 🎈❤️🎉</h2>
             <p style="font-size: 1.5em;">Happy 25th Birthday, My Love! Today is all about celebrating YOU!</p>
+        </div>
+
+        <div class="final-message" id="finalMessage">
+            <div class="final-content">
+                <h1>💖 YOU ARE MY EVERYTHING 💖</h1>
+                
+                <div class="hearts-container">
+                    ❤️ 💕 💖 💗 💓 💞 💘 💝 💟 ❣️
+                </div>
+
+                <div class="romantic-text">
+                    Until my last breath, until the stars fall from the sky,<br>
+                    until the oceans run dry and time itself stands still...<br>
+                    You will ALWAYS be my everything ❤️
+                </div>
+
+                <div class="love-paragraph">
+                    💫 My dearest love, you are the light that guides me through the darkest nights, 
+                    the warmth that fills my coldest days, and the joy that makes every moment worth living. 
+                    Your smile is my sunrise, your laughter is my favorite melody, and your love is my 
+                    greatest treasure. Every heartbeat whispers your name, every breath I take is a prayer 
+                    of gratitude for having you in my life. 💫
+                </div>
+
+                <div class="hearts-container">
+                    💝 🌹 💐 🌺 🌸 🌷 🌻 🌼 🏵️ 💝
+                </div>
+
+                <div class="love-paragraph">
+                    💕 You are not just my love, you are my soulmate, my best friend, my safe haven, 
+                    and my greatest adventure. In your eyes, I see my future. In your arms, I find my home. 
+                    In your heart, I've found my forever. Every moment with you is a beautiful memory, 
+                    and every tomorrow with you is a dream come true. 💕
+                </div>
+
+                <div class="eternal-love">
+                    ♾️ MY LOVE FOR YOU IS ETERNAL ♾️
+                </div>
+
+                <div class="love-paragraph">
+                    🌟 Through every season, every year, every lifetime - I choose you. 
+                    I will love you when the sun rises and when it sets. I will love you in the good times 
+                    and in the challenging ones. I will love you with every fiber of my being, 
+                    with a love that grows stronger with each passing day. You are my always and forever, 
+                    my one and only, my everything. 🌟
+                </div>
+
+                <div class="hearts-container">
+                    💗 💓 💞 💘 💖 💕 ❤️ 💝 💟 ❣️
+                </div>
+
+                <div class="romantic-text">
+                    Until I die and beyond,<br>
+                    in this life and the next,<br>
+                    You will ALWAYS be mine,<br>
+                    and I will ALWAYS be yours ❤️<br>
+                    <br>
+                    HAPPY 25th BIRTHDAY, MY ETERNAL LOVE! 🎂🎉🎈
+                </div>
+
+                <div class="love-paragraph">
+                    Forever and Always,<br>
+                    Your Love 💕💕💕
+                </div>
+            </div>
         </div>
 
         <div class="music-player">
@@ -551,8 +684,8 @@
 
         <div class="love-messages">
             <h2>💝Some of the million Reasons Why I Love You 💝</h2>
-           <div class="message-box">
-                <p>Your Happiness Is my Happiness and Ur sadness is my sadness We share Joy and pain together .</p>
+            <div class="message-box">
+                <p>Your Happiness Is my Happiness and Ur sadness is my sadness We share Joy and pain together.</p>
             </div>
             <div class="message-box">
                 <p>Your smile lights up my entire world. Every day with you is a gift, and I'm grateful for every moment
@@ -578,7 +711,7 @@
 
         <footer>
             <p>Made with <span class="heart">❤️</span> just for you</p>
-            <p>Happy 25th Birthday, My Love!Love u Hyatiiiii❤️❤️❤️❤️❤️</p>
+            <p>Happy 25th Birthday, My Love! Love u Hyatiiiii❤️❤️❤️❤️❤️</p>
         </footer>
     </div>
 
@@ -603,6 +736,12 @@
             if (distance < 0) {
                 document.querySelector('.countdown-section').style.display = 'none';
                 document.getElementById('birthdayMessage').style.display = 'block';
+                
+                // Show final romantic message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('finalMessage').style.display = 'block';
+                }, 5000);
+                
                 createConfetti();
             }
         }
