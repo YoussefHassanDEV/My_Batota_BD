@@ -3,19 +3,30 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html {
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern sans-serif fallback */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
     color: #fff;
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
-    font-size: 16px; /* Base font size */
-    line-height: 1.5;
-}
+    font-size: 16px;
+    line-height: 1.6;
+    width: 100%;
+    touch-action: pan-y;
+} 
 
 /* Effects */
 .particles {
