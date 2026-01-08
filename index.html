@@ -1909,7 +1909,8 @@
         <div id="game-info" style="margin-top: 20px;">
             <p>Score: <span id="score">0</span> | Distance to Youssef: <span id="distance">1000</span>m</p>
             <p id="level-display">Level 1: Forest Adventure</p>
-            <p id="lives-display">Lives: 3</p>
+            <p id="lives-display">Lives: 5</p>
+            <p id="health-display">Health: 100%</p>
         </div>
         <button id="restart-button" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; display: none;">Restart Game</button>
     </div>
@@ -2663,7 +2664,7 @@
         const restartBtn = document.getElementById('restart-button');
 
         // Game variables
-        let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 3, invincible: false, invincibleTime: 0 };
+        let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 5, invincible: false, invincibleTime: 0, health: 100 };
         let obstacles = [];
         let powerUps = [];
         let collectibles = [];
@@ -2675,9 +2676,9 @@
         let score = 0;
         let distance = 1000;
         let gameRunning = false;
-        let gameSpeed = 2;
-        let gravity = 0.5;
-        let jumpPower = -12;
+        let gameSpeed = 1.5;
+        let gravity = 0.4;
+        let jumpPower = -11;
         let scrollX = 0;
         let gameTime = 0;
         let currentLevel = 1;
@@ -2685,47 +2686,63 @@
         let dialogueActive = false;
         let currentDialogue = null;
         let achievements = [];
+        let checkpointReached = false;
 
-        // Level data
+        // Level data - 5 levels with easier difficulty
         const levels = [
             {
-                name: "Forest Adventure",
+                name: "Gentle Forest",
                 background: { sky: ['#FF7F50', '#87CEEB', '#98FB98'], mountains: '#8B7355', ground: '#8B4513', grass: '#228B22' },
-                goalDistance: 1000,
-                enemySpawnRate: 0.005,
-                powerUpSpawnRate: 0.005,
-                collectibleSpawnRate: 0.01,
-                speedIncrease: 0.5,
+                goalDistance: 800,
+                enemySpawnRate: 0.003,
+                powerUpSpawnRate: 0.008,
+                collectibleSpawnRate: 0.015,
+                healthSpawnRate: 0.005,
+                speedIncrease: 0.3,
                 theme: "forest"
             },
             {
-                name: "Mountain Challenge",
+                name: "Peaceful Meadows",
+                background: { sky: ['#FFE4B5', '#87CEEB', '#90EE90'], mountains: '#228B22', ground: '#8B4513', grass: '#32CD32' },
+                goalDistance: 1000,
+                enemySpawnRate: 0.004,
+                powerUpSpawnRate: 0.007,
+                collectibleSpawnRate: 0.012,
+                healthSpawnRate: 0.006,
+                speedIncrease: 0.4,
+                theme: "meadow"
+            },
+            {
+                name: "Mountain Path",
                 background: { sky: ['#FF4500', '#4169E1', '#F0F8FF'], mountains: '#696969', ground: '#A0522D', grass: '#9ACD32' },
-                goalDistance: 1500,
-                enemySpawnRate: 0.008,
-                powerUpSpawnRate: 0.004,
-                collectibleSpawnRate: 0.008,
-                speedIncrease: 0.7,
+                goalDistance: 1200,
+                enemySpawnRate: 0.005,
+                powerUpSpawnRate: 0.006,
+                collectibleSpawnRate: 0.01,
+                healthSpawnRate: 0.007,
+                speedIncrease: 0.5,
                 theme: "mountain"
             },
             {
-                name: "Desert Quest",
+                name: "Desert Oasis",
                 background: { sky: ['#FFD700', '#FFA500', '#F4A460'], mountains: '#DAA520', ground: '#DEB887', grass: '#8FBC8F' },
-                goalDistance: 2000,
-                enemySpawnRate: 0.01,
-                powerUpSpawnRate: 0.003,
-                collectibleSpawnRate: 0.006,
-                speedIncrease: 0.9,
+                goalDistance: 1400,
+                enemySpawnRate: 0.006,
+                powerUpSpawnRate: 0.005,
+                collectibleSpawnRate: 0.008,
+                healthSpawnRate: 0.008,
+                speedIncrease: 0.6,
                 theme: "desert"
             },
             {
-                name: "Final Love",
+                name: "Love's Journey",
                 background: { sky: ['#FF1493', '#FF69B4', '#FFB6C1'], mountains: '#DC143C', ground: '#FF69B4', grass: '#FFC0CB' },
-                goalDistance: 2500,
-                enemySpawnRate: 0.015,
-                powerUpSpawnRate: 0.002,
-                collectibleSpawnRate: 0.004,
-                speedIncrease: 1.0,
+                goalDistance: 1600,
+                enemySpawnRate: 0.007,
+                powerUpSpawnRate: 0.004,
+                collectibleSpawnRate: 0.006,
+                healthSpawnRate: 0.009,
+                speedIncrease: 0.7,
                 theme: "love"
             }
         ];
@@ -2742,12 +2759,30 @@
             checkpoint: [
                 { speaker: "Vladislava", text: "Phew! I made it this far. Youssef, I'm coming for you!", emotion: "determined" }
             ],
-            levelComplete: [
-                { speaker: "Vladislava", text: "Level complete! I'm getting closer to you, my love!", emotion: "joyful" }
+            levelComplete1: [
+                { speaker: "Vladislava", text: "That gentle forest was beautiful! I feel so alive jumping through it!", emotion: "joyful" },
+                { speaker: "Narrator", text: "Level 1 Complete! Vladislava is ready for more adventures.", emotion: "info" }
+            ],
+            levelComplete2: [
+                { speaker: "Vladislava", text: "The peaceful meadows were so calming. I can feel our love growing stronger!", emotion: "happy" },
+                { speaker: "Narrator", text: "Level 2 Complete! The journey continues through new landscapes.", emotion: "info" }
+            ],
+            levelComplete3: [
+                { speaker: "Vladislava", text: "Climbing these mountains was challenging, but our love gives me strength!", emotion: "determined" },
+                { speaker: "Narrator", text: "Level 3 Complete! Vladislava shows incredible determination.", emotion: "info" }
+            ],
+            levelComplete4: [
+                { speaker: "Vladislava", text: "The desert oasis was hot, but thinking of you kept me cool, my love!", emotion: "love" },
+                { speaker: "Narrator", text: "Level 4 Complete! Only one more level to reach Youssef!", emotion: "info" }
+            ],
+            levelComplete5: [
+                { speaker: "Vladislava", text: "This final journey through love's path... I can feel you getting closer!", emotion: "excited" },
+                { speaker: "Narrator", text: "Level 5 Complete! Vladislava has completed her journey!", emotion: "info" }
             ],
             gameComplete: [
                 { speaker: "Vladislava", text: "Youssef! I finally reached you! Our love conquered everything!", emotion: "love" },
-                { speaker: "Youssef", text: "My darling Vladislava! You made it! I love you forever!", emotion: "love" }
+                { speaker: "Youssef", text: "My darling Vladislava! You made it! I love you forever!", emotion: "love" },
+                { speaker: "Vladislava", text: "Happy Birthday, my love! This journey was just the beginning of our adventures together!", emotion: "joyful" }
             ],
             gameOver: [
                 { speaker: "Vladislava", text: "Oh no! I need to try again. Our love will prevail!", emotion: "sad" }
@@ -2758,7 +2793,7 @@
         let goal = { x: 950, y: 300, width: 30, height: 30 };
 
         function initGame() {
-            player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 3, invincible: false, invincibleTime: 0 };
+            player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 5, invincible: false, invincibleTime: 0, health: 100 };
             obstacles = [];
             powerUps = [];
             collectibles = [];
@@ -2770,10 +2805,11 @@
             score = 0;
             distance = levels[currentLevel - 1].goalDistance;
             gameRunning = true;
-            gameSpeed = 2;
+            gameSpeed = 1.5;
             scrollX = 0;
             gameTime = 0;
             levelProgress = 0;
+            checkpointReached = false;
             goal.x = levels[currentLevel - 1].goalDistance + 50;
             initClouds();
             updateDisplay();
@@ -2787,16 +2823,17 @@
         }
 
         function nextLevel() {
-            currentLevel++;
-            if (currentLevel > levels.length) {
-                // Game complete
-                showDialogue('gameComplete');
-                return;
-            }
-            showDialogue('levelComplete');
+            const dialogueType = `levelComplete${currentLevel}`;
+            showDialogue(dialogueType);
             setTimeout(() => {
+                currentLevel++;
+                if (currentLevel > levels.length) {
+                    // Game complete
+                    showDialogue('gameComplete');
+                    return;
+                }
                 initGame();
-            }, 3000);
+            }, 4000);
         }
 
         function loadLevel(levelNum) {
@@ -2822,6 +2859,7 @@
             distanceEl.textContent = distance;
             document.getElementById('level-display').textContent = `Level ${currentLevel}: ${levels[currentLevel - 1].name}`;
             document.getElementById('lives-display').textContent = `Lives: ${player.lives}`;
+            document.getElementById('health-display').textContent = `Health: ${player.health}%`;
         }
 
         function createObstacle() {
@@ -2863,6 +2901,44 @@
                     width: 15,
                     height: 15,
                     collected: false
+                });
+            }
+        }
+
+        function createHealthPickup() {
+            const level = levels[currentLevel - 1];
+            if (Math.random() < level.healthSpawnRate) {
+                powerUps.push({
+                    x: canvas.width + scrollX,
+                    y: Math.random() * 150 + 200,
+                    width: 20,
+                    height: 20,
+                    type: 'health',
+                    collected: false
+                });
+            }
+        }
+
+        function createCheckpoint() {
+            const level = levels[currentLevel - 1];
+            const checkpointInterval = level.goalDistance / 3; // 3 checkpoints per level
+            const currentProgress = (scrollX + canvas.width / 2) / level.goalDistance;
+
+            if (currentProgress > 0.3 && !checkpointReached && checkpoints.length === 0) {
+                checkpoints.push({
+                    x: scrollX + canvas.width + 200,
+                    y: 330,
+                    width: 30,
+                    height: 30,
+                    reached: false
+                });
+            } else if (currentProgress > 0.6 && checkpoints.length === 1 && !checkpoints[0].reached) {
+                checkpoints.push({
+                    x: scrollX + canvas.width + 200,
+                    y: 330,
+                    width: 30,
+                    height: 30,
+                    reached: false
                 });
             }
         }
@@ -3015,10 +3091,16 @@
                     player.y < pu.y + pu.height &&
                     player.y + player.height > pu.y) {
                     powerUps.splice(index, 1);
-                    player.jumpBoost = true;
-                    player.color = '#FFD700';
-                    score += 50;
-                    showDialogue('powerUp');
+                    if (pu.type === 'health') {
+                        player.health = Math.min(100, player.health + 25);
+                        score += 30;
+                        createCollectParticles(pu.x + pu.width / 2, pu.y + pu.height / 2);
+                    } else {
+                        player.jumpBoost = true;
+                        player.color = '#FFD700';
+                        score += 50;
+                        showDialogue('powerUp');
+                    }
                     updateDisplay();
                 }
             });
@@ -3032,6 +3114,21 @@
                     col.collected = true;
                     score += 25;
                     createCollectParticles(col.x + col.width / 2, col.y + col.height / 2);
+                    updateDisplay();
+                }
+            });
+
+            // Checkpoint collision
+            checkpoints.forEach((cp, index) => {
+                if (!cp.reached && player.x < cp.x + cp.width &&
+                    player.x + player.width > cp.x &&
+                    player.y < cp.y + cp.height &&
+                    player.y + player.height > cp.y) {
+                    cp.reached = true;
+                    checkpointReached = true;
+                    score += 100;
+                    player.lives = Math.min(5, player.lives + 1); // Bonus life at checkpoint
+                    showDialogue('checkpoint');
                     updateDisplay();
                 }
             });
@@ -3183,47 +3280,78 @@
                 ctx.stroke();
             }
 
-            // Draw player (Vladislava) with gradient and shadow
+            // Draw player (Vladislava) with enhanced graphics and animation
             const playerX = player.x - scrollX;
             const playerY = player.y;
 
-            // Player shadow
+            // Player shadow with animation
+            const shadowOffset = player.onGround ? 0 : Math.sin(gameTime * 0.3) * 2;
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-            ctx.fillRect(playerX + 2, playerY + player.height, player.width, 3);
+            ctx.fillRect(playerX + 2, playerY + player.height + shadowOffset, player.width, 3);
 
-            // Invincibility effect
-            if (player.invincible && Math.floor(gameTime / 10) % 2 === 0) {
-                ctx.globalAlpha = 0.5;
+            // Invincibility effect with particles
+            if (player.invincible) {
+                if (Math.floor(gameTime / 5) % 2 === 0) {
+                    ctx.globalAlpha = 0.7;
+                }
+                // Add sparkle particles around player when invincible
+                for (let i = 0; i < 3; i++) {
+                    const sparkleX = playerX + Math.random() * player.width;
+                    const sparkleY = playerY + Math.random() * player.height;
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    ctx.arc(sparkleX, sparkleY, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             }
 
-            // Player body with gradient
+            // Player body with enhanced gradient
             const playerGradient = ctx.createLinearGradient(playerX, playerY, playerX, playerY + player.height);
             if (player.jumpBoost) {
                 playerGradient.addColorStop(0, '#FFD700');
-                playerGradient.addColorStop(1, '#FFA500');
+                playerGradient.addColorStop(0.5, '#FFA500');
+                playerGradient.addColorStop(1, '#FF8C00');
             } else {
                 playerGradient.addColorStop(0, '#FF69B4');
+                playerGradient.addColorStop(0.5, '#FF1493');
                 playerGradient.addColorStop(1, '#DC143C');
             }
             ctx.fillStyle = playerGradient;
             ctx.fillRect(playerX, playerY, player.width, player.height);
 
-            // Player border
+            // Player border with glow effect
+            ctx.shadowColor = player.jumpBoost ? '#FFD700' : '#FF69B4';
+            ctx.shadowBlur = player.invincible ? 8 : 2;
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.strokeRect(playerX, playerY, player.width, player.height);
+            ctx.shadowBlur = 0;
 
-            // Player face
+            // Enhanced player face with expressions
             ctx.fillStyle = '#FFE4E1';
             ctx.fillRect(playerX + 8, playerY + 5, 14, 10);
-            ctx.fillStyle = '#000';
-            ctx.fillRect(playerX + 10, playerY + 8, 2, 2); // left eye
-            ctx.fillRect(playerX + 18, playerY + 8, 2, 2); // right eye
-            ctx.fillRect(playerX + 14, playerY + 12, 2, 1); // mouth
 
-            // Player hair
+            // Animated eyes based on state
+            ctx.fillStyle = '#000';
+            const eyeOffset = player.invincible ? Math.sin(gameTime * 0.5) * 0.5 : 0;
+            ctx.fillRect(playerX + 10 + eyeOffset, playerY + 8, 2, 2); // left eye
+            ctx.fillRect(playerX + 18 + eyeOffset, playerY + 8, 2, 2); // right eye
+
+            // Animated mouth based on jumping
+            if (!player.onGround) {
+                ctx.fillRect(playerX + 14, playerY + 11, 2, 2); // open mouth when jumping
+            } else {
+                ctx.fillRect(playerX + 14, playerY + 12, 2, 1); // normal mouth
+            }
+
+            // Enhanced hair with bounce animation
+            const hairBounce = player.onGround ? 0 : Math.sin(gameTime * 0.4) * 1;
             ctx.fillStyle = '#8B4513';
-            ctx.fillRect(playerX + 6, playerY + 2, 18, 6);
+            ctx.fillRect(playerX + 6, playerY + 2 + hairBounce, 18, 6);
+
+            // Add hair details
+            ctx.fillStyle = '#654321';
+            ctx.fillRect(playerX + 8, playerY + 3 + hairBounce, 14, 2);
 
             ctx.globalAlpha = 1;
 
@@ -3268,22 +3396,46 @@
                 const puX = pu.x - scrollX;
                 const puY = pu.y;
 
-                // Glow effect
-                ctx.shadowColor = '#FFD700';
-                ctx.shadowBlur = 10;
-                ctx.fillStyle = '#FFD700';
-                ctx.fillRect(puX, puY, pu.width, pu.height);
-                ctx.shadowBlur = 0;
+                if (pu.type === 'health') {
+                    // Health pickup - red cross
+                    ctx.shadowColor = '#FF0000';
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(puX, puY, pu.width, pu.height);
+                    ctx.shadowBlur = 0;
 
-                // Power-up border
-                ctx.strokeStyle = '#FFA500';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(puX, puY, pu.width, pu.height);
+                    // Health border
+                    ctx.strokeStyle = '#8B0000';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(puX, puY, pu.width, pu.height);
 
-                // Arrow symbol
-                ctx.fillStyle = '#000';
-                ctx.font = 'bold 12px Arial';
-                ctx.fillText('↑', puX + 4, puY + 13);
+                    // Cross symbol
+                    ctx.strokeStyle = '#FFF';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(puX + 4, puY + 10);
+                    ctx.lineTo(puX + 16, puY + 10);
+                    ctx.moveTo(puX + 10, puY + 4);
+                    ctx.lineTo(puX + 10, puY + 16);
+                    ctx.stroke();
+                } else {
+                    // Jump boost - golden arrow
+                    ctx.shadowColor = '#FFD700';
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = '#FFD700';
+                    ctx.fillRect(puX, puY, pu.width, pu.height);
+                    ctx.shadowBlur = 0;
+
+                    // Power-up border
+                    ctx.strokeStyle = '#FFA500';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(puX, puY, pu.width, pu.height);
+
+                    // Arrow symbol
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.fillText('↑', puX + 4, puY + 13);
+                }
             });
 
             // Draw collectibles with sparkle effect
@@ -3308,6 +3460,31 @@
                 }
             });
 
+            // Draw checkpoints
+            checkpoints.forEach(cp => {
+                if (!cp.reached) {
+                    const cpX = cp.x - scrollX;
+                    const cpY = cp.y;
+
+                    // Checkpoint flag effect
+                    ctx.shadowColor = '#00FF00';
+                    ctx.shadowBlur = 15;
+                    ctx.fillStyle = '#00FF00';
+                    ctx.fillRect(cpX, cpY, cp.width, cp.height);
+                    ctx.shadowBlur = 0;
+
+                    // Flag border
+                    ctx.strokeStyle = '#008000';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(cpX, cpY, cp.width, cp.height);
+
+                    // Flag symbol
+                    ctx.fillStyle = '#FFF';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.fillText('🏁', cpX + 2, cpY + 20);
+                }
+            });
+
             // Draw particles
             particles.forEach(p => {
                 ctx.fillStyle = p.color;
@@ -3326,34 +3503,59 @@
             });
             ctx.globalAlpha = 1;
 
-            // Draw enemies
+            // Draw enemies with enhanced graphics
             enemies.forEach(enemy => {
                 const enemyX = enemy.x - scrollX;
                 const enemyY = enemy.y;
 
-                // Enemy shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                // Enemy shadow with animation
+                const shadowPulse = Math.sin(gameTime * 0.2) * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(0, 0, 0, ${0.4 + shadowPulse * 0.2})`;
                 ctx.fillRect(enemyX + 2, enemyY + enemy.height, enemy.width, 3);
 
-                // Enemy body
+                // Enemy body with animated gradient
                 const enemyGradient = ctx.createLinearGradient(enemyX, enemyY, enemyX, enemyY + enemy.height);
-                enemyGradient.addColorStop(0, '#8B0000');
-                enemyGradient.addColorStop(1, '#4B0000');
+                const redIntensity = 0.7 + Math.sin(gameTime * 0.3) * 0.3;
+                enemyGradient.addColorStop(0, `hsl(${redIntensity * 360}, 70%, 30%)`);
+                enemyGradient.addColorStop(1, `hsl(${redIntensity * 360}, 70%, 15%)`);
                 ctx.fillStyle = enemyGradient;
                 ctx.fillRect(enemyX, enemyY, enemy.width, enemy.height);
 
-                // Enemy border
+                // Enemy border with glow
+                ctx.shadowColor = '#FF0000';
+                ctx.shadowBlur = 3;
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(enemyX, enemyY, enemy.width, enemy.height);
+                ctx.shadowBlur = 0;
+
+                // Enhanced angry eyes with animation
+                const eyeBlink = Math.floor(gameTime / 20) % 3 === 0;
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(enemyX + 6, enemyY + 5, 3, eyeBlink ? 1 : 3);
+                ctx.fillRect(enemyX + 16, enemyY + 5, 3, eyeBlink ? 1 : 3);
+
+                // Eye highlights
+                if (!eyeBlink) {
+                    ctx.fillStyle = '#FFF';
+                    ctx.fillRect(enemyX + 7, enemyY + 6, 1, 1);
+                    ctx.fillRect(enemyX + 17, enemyY + 6, 1, 1);
+                }
+
+                // Angry eyebrows
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 1;
-                ctx.strokeRect(enemyX, enemyY, enemy.width, enemy.height);
+                ctx.beginPath();
+                ctx.moveTo(enemyX + 5, enemyY + 3);
+                ctx.lineTo(enemyX + 10, enemyY + 1);
+                ctx.moveTo(enemyX + 15, enemyY + 1);
+                ctx.lineTo(enemyX + 20, enemyY + 3);
+                ctx.stroke();
 
-                // Enemy eyes (angry)
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(enemyX + 6, enemyY + 5, 3, 3);
-                ctx.fillRect(enemyX + 16, enemyY + 5, 3, 3);
+                // Fangs
                 ctx.fillStyle = '#FFF';
-                ctx.fillRect(enemyX + 7, enemyY + 6, 1, 1);
-                ctx.fillRect(enemyX + 17, enemyY + 6, 1, 1);
+                ctx.fillRect(enemyX + 12, enemyY + 12, 2, 3);
+                ctx.fillRect(enemyX + 16, enemyY + 12, 2, 3);
             });
 
             // Draw goal (Youssef) with enhanced graphics
@@ -3397,6 +3599,8 @@
                 createObstacle();
                 createPowerUp();
                 createCollectible();
+                createHealthPickup();
+                createCheckpoint();
                 createEnemy();
                 updateObstacles();
                 updatePowerUps();
