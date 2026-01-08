@@ -363,19 +363,38 @@ function openModal(el) {
     const modalImg = document.getElementById('modalImg');
     const img = el.querySelector('img');
     if (modal && modalImg && img) {
+        modal.classList.add('active');
         modal.style.display = 'flex';
         modalImg.src = img.src;
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('photoModal');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 }
 
 function openEasterEgg() {
     const modal = document.getElementById('easterEggModal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeEasterEgg() {
     const modal = document.getElementById('easterEggModal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
 
     // Reset all sections
     document.getElementById('initialEasterEgg').style.display = 'block';
