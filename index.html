@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,30 +16,285 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float-particle 15s infinite;
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100px, -1000px);
+                opacity: 0;
+            }
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 2em;
+            animation: float-up 8s infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .distance-calculator {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .distance-display {
+            font-size: 2em;
+            margin: 20px 0;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .globe-animation {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .globe {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(102, 126, 234, 0.5);
+            position: relative;
+            animation: rotate-globe 10s linear infinite;
+        }
+
+        @keyframes rotate-globe {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b9d, transparent, #ff6b9d);
+            animation: pulse-line 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-line {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .location-pin {
+            position: absolute;
+            font-size: 2em;
+            animation: pin-bounce 2s ease-in-out infinite;
+        }
+
+        .pin-start {
+            top: 30%;
+            left: 15%;
+        }
+
+        .pin-end {
+            top: 60%;
+            right: 15%;
+        }
+
+        @keyframes pin-bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .wedding-countdown {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(102, 126, 234, 0.3));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wedding-countdown::before {
+            content: '💍';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 3em;
+            animation: ring-rotate 4s linear infinite;
+        }
+
+        .wedding-countdown::after {
+            content: '💐';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 3em;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes ring-rotate {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+        }
+
+        .wedding-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #fff, #ffd700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-text 3s ease infinite;
+        }
+
+        @keyframes gradient-text {
+            0%, 100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 100% center;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 2;
+            transition: all 1s ease;
+        }
+
+        .main-content.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 2;
         }
 
         header {
             text-align: center;
             padding: 40px 20px;
             animation: fadeIn 2s ease-in;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
         h1 {
             font-size: 3em;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: pulse 2s infinite;
+            background: linear-gradient(45deg, #fff, #ff6b9d, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-text 3s ease infinite;
         }
 
         .heart {
             color: #ff6b9d;
             animation: heartbeat 1.5s infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.8));
         }
 
         @keyframes heartbeat {
@@ -48,16 +302,7 @@
                 transform: scale(1);
             }
             25% {
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.8;
+                transform: scale(1.2);
             }
         }
 
@@ -80,6 +325,8 @@
             margin: 30px 0;
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            perspective: 1000px;
         }
 
         .countdown-section h2 {
@@ -103,14 +350,15 @@
 
         .countdown-item {
             position: relative;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3) 0%, rgba(255, 143, 171, 0.3) 100%);
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.4) 0%, rgba(255, 143, 171, 0.4) 100%);
             padding: 30px;
             border-radius: 20px;
             min-width: 120px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            animation: float 3s ease-in-out infinite;
+            animation: float-item 3s ease-in-out infinite;
+            transform-style: preserve-3d;
         }
 
         .countdown-item:nth-child(1) {
@@ -129,19 +377,19 @@
             animation-delay: 0.9s;
         }
 
-        @keyframes float {
+        @keyframes float-item {
             0%, 100% {
-                transform: translateY(0px);
+                transform: translateY(0px) rotateX(0deg);
             }
             50% {
-                transform: translateY(-10px);
+                transform: translateY(-10px) rotateX(5deg);
             }
         }
 
         .countdown-item:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
-            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.1) translateY(-10px) rotateY(10deg);
+            box-shadow: 0 20px 50px rgba(255, 107, 157, 0.5);
+            border-color: rgba(255, 255, 255, 0.8);
         }
 
         .countdown-item::before {
@@ -184,7 +432,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
             animation: numberPulse 1s ease-in-out infinite;
         }
 
@@ -233,6 +481,44 @@
             padding: 30px;
             margin: 30px 0;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100px;
+            gap: 5px;
+            margin: 30px 0;
+        }
+
+        .bar {
+            width: 8px;
+            background: linear-gradient(to top, #ff6b9d, #667eea);
+            border-radius: 10px;
+            animation: visualize 0.8s ease-in-out infinite;
+            transform-origin: bottom;
+        }
+
+        .bar:nth-child(1) { animation-delay: 0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        .bar:nth-child(6) { animation-delay: 0.3s; }
+        .bar:nth-child(7) { animation-delay: 0.2s; }
+        .bar:nth-child(8) { animation-delay: 0.1s; }
+        .bar:nth-child(9) { animation-delay: 0s; }
+
+        @keyframes visualize {
+            0%, 100% {
+                height: 20px;
+            }
+            50% {
+                height: 80px;
+            }
         }
 
         .music-controls {
@@ -251,17 +537,73 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 1em;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
         }
 
         button:active {
             transform: translateY(0);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d, #667eea);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.1s;
+            position: relative;
+        }
+
+        .progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .song-list {
@@ -278,12 +620,19 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
+            border-left: 4px solid transparent;
         }
 
-        .song-item:hover,
-        .song-item.active {
-            background: rgba(255, 255, 255, 0.3);
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateX(10px);
+            border-left-color: #ff6b9d;
+        }
+
+        .song-item.active {
+            background: rgba(255, 107, 157, 0.3);
+            border-left-color: #ff6b9d;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
         }
 
         .photo-gallery {
@@ -292,6 +641,7 @@
             border-radius: 20px;
             padding: 40px;
             margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .gallery-grid {
@@ -306,7 +656,7 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s;
+            transition: all 0.4s;
             background: rgba(255, 255, 255, 0.2);
             padding: 20px;
             text-align: center;
@@ -314,22 +664,27 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            cursor: pointer;
         }
 
         .photo-frame:hover {
-            transform: scale(1.05);
+            transform: scale(1.05) rotateZ(2deg);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
         }
 
-        .photo-placeholder {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3) 0%, rgba(255, 143, 171, 0.3) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            margin-bottom: 10px;
+        .photo-frame::before {
+            content: '💖';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2em;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .photo-frame:hover::before {
+            opacity: 1;
+            animation: heartbeat 1s infinite;
         }
 
         .photo-img {
@@ -338,6 +693,63 @@
             object-fit: cover;
             border-radius: 10px;
             margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .photo-frame:hover .photo-img {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 80%;
+            max-height: 80%;
+            animation: zoomIn 0.3s;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #ff6b9d;
+            transform: rotate(90deg);
         }
 
         .love-messages {
@@ -346,6 +758,7 @@
             border-radius: 20px;
             padding: 40px;
             margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .message-box {
@@ -355,6 +768,17 @@
             margin: 20px 0;
             border-left: 4px solid #ff6b9d;
             animation: slideIn 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-box::before {
+            content: '💕';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2em;
+            opacity: 0.3;
         }
 
         @keyframes slideIn {
@@ -458,12 +882,20 @@
             }
         }
 
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
         .confetti {
             position: fixed;
             width: 10px;
             height: 10px;
             background: #ff6b9d;
-            position: absolute;
             animation: confetti-fall 3s linear infinite;
         }
 
@@ -474,10 +906,44 @@
             }
         }
 
+        .love-letter {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Brush Script MT', cursive;
+        }
+
+        .letter-content {
+            background: rgba(255, 248, 220, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            color: #333;
+            font-size: 1.2em;
+            line-height: 2;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .letter-content::before {
+            content: '💌';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 4em;
+            animation: float 3s ease-in-out infinite;
+        }
+
         footer {
             text-align: center;
             padding: 40px;
             font-size: 1.2em;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-top: 30px;
         }
 
         .volume-control {
@@ -486,6 +952,10 @@
 
         .volume-control input {
             width: 200px;
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
         }
 
         @media (max-width: 768px) {
@@ -512,41 +982,175 @@
             .eternal-love {
                 font-size: 1.8em;
             }
+
+            .wedding-title {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <h1>Happy 25th Birthday <span class="heart">❤️</span></h1>
-            <h2>To the Love of My Life</h2>
-        </header>
+    <div class="particles" id="particles"></div>
+    <div class="floating-hearts" id="floatingHearts"></div>
 
-        <div class="countdown-section">
-            <h2>⏰ Countdown to Your Special Day ⏰</h2>
-            <p>Time until you turn 25...❤️💋</p>
-            <div class="countdown" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-number" id="days">0</span>
-                    <span class="countdown-label">Days</span>
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <header>
+                <h1>Happy 25th Birthday <span class="heart">❤️</span></h1>
+                <h2>To the Love of My Life</h2>
+                <p style="font-size: 1.2em; margin-top: 20px;">My Future Wife 💍✨</p>
+            </header>
+
+            <div class="distance-calculator">
+                <h2>🌍 Miles Apart, Hearts Together 💕</h2>
+                <div class="globe-animation">
+                    <div class="globe">
+                        <div class="location-pin pin-start">📍</div>
+                        <div class="connection-line"></div>
+                        <div class="location-pin pin-end">📍</div>
+                    </div>
                 </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="hours">0</span>
-                    <span class="countdown-label">Hours</span>
+                <div class="distance-display" id="distanceDisplay">
+                    Calculating the distance between our hearts...
                 </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="minutes">0</span>
-                    <span class="countdown-label">Minutes</span>
-                </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="seconds">0</span>
-                    <span class="countdown-label">Seconds</span>
+                <p style="font-size: 1.2em; margin-top: 20px;">
+                    No distance is too far when love is this strong 💪❤️
+                </p>
+            </div>
+
+            <div class="countdown-section">
+                <h2>⏰ Birthday Countdown ⏰</h2>
+                <p>Time until you turn 25...❤️💋</p>
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="days">0</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="hours">0</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="minutes">0</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="seconds">0</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
                 </div>
             </div>
+
+            <div class="music-player">
+                <h2>🎵 Our Soundtrack 🎵</h2>
+                <p>Music that reminds me of you...</p>
+                
+                <div class="visualizer" id="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+
+                <div class="music-controls">
+                    <button onclick="playPause()" id="playBtn">▶️ Play</button>
+                    <button onclick="previousSong()">⏮️ Previous</button>
+                    <button onclick="nextSong()">⏭️ Next</button>
+                    <button onclick="toggleShuffle()" id="shuffleBtn">🔀 Shuffle</button>
+                </div>
+                
+                <div class="progress-bar" onclick="seekSong(event)">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <div class="volume-control">
+                    <label>Volume: </label>
+                    <input type="range" min="0" max="100" value="50" onchange="changeVolume(this.value)" id="volumeSlider">
+                    <span id="volumePercent">50%</span>
+                </div>
+                
+                <div class="song-list">
+                    <div class="song-item active" onclick="playSong(0)">🎵 Song 1</div>
+                    <div class="song-item" onclick="playSong(1)">🎵 Song 2</div>
+                    <div class="song-item" onclick="playSong(2)">🎵 Song 3</div>
+                    <div class="song-item" onclick="playSong(3)">🎵 Song 4</div>
+                    <div class="song-item" onclick="playSong(4)">🎵 Song 5</div>
+                </div>
+                <p id="nowPlaying" style="margin-top: 20px; font-style: italic;">Click play to start the music</p>
+            </div>
+
+            <div class="photo-gallery">
+                <h2>📸 My Beautiful Batota 📸</h2>
+                <p style="text-align: center; margin: 20px 0;">Every part of you is perfect to me...</p>
+                <div class="gallery-grid">
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/1.jpeg" class="photo-img" alt="My love">
+                        <p>I love u</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/2.jpeg" class="photo-img" alt="My love">
+                        <p>I love ur eyes</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/3.jpeg" class="photo-img" alt="My love">
+                        <p>I love ur Cheeks</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/4.jpeg" class="photo-img" alt="My love">
+                        <p>I love ur lips</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/5.jpeg" class="photo-img" alt="My love">
+                        <p>I love ur Hair</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)">
+                        <img src="Pics/6.jpeg" class="photo-img" alt="My love">
+                        <p>I love ur Chin</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="photoModal" class="modal" onclick="closeModal()">
+                <span class="close-modal">&times;</span>
+                <div class="modal-content">
+                    <img id="modalImg">
+                </div>
+            </div>
+
+            <div class="love-messages">
+                <h2>💝 Million Reasons Why I Love You 💝</h2>
+                <div class="message-box">
+                    <p id="loveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share Joy and pain together, across any distance.</p>
+                </div>
+                <div class="message-box">
+                    <p id="loveMessage2">Your smile lights up my screen and my world. Every video call feels like a gift, every message a treasure.</p>
+                </div>
+                <div class="message-box">
+                    <p id="loveMessage3">You make me laugh through tears, you give me strength when I'm weak, you believe in me when I doubt myself.</p>
+                </div>
+                <div class="message-box">
+                    <p id="loveMessage4">You inspire me to be better every day. Your courage to love across borders amazes me constantly.</p>
+                </div>
+                <div class="message-box">
+                    <p id="loveMessage5">Every moment waiting for you is worth it because I know our forever is coming. April 10th, 2026 - the best day of our lives.</p>
+                </div>
+                <div class="message-box">
+                    <p id="loveMessage6">I love you more than words can express. You are my best friend, my soulmate, my future wife, and the love of my life. Forever and always.</p>
+                </div>
+            </div>
+
+            <footer>
+                <p>Made with <span class="heart">❤️</span> for my future wife</p>
+                <p>Happy 25th Birthday, My Love! Love u Hyatiiiii❤️❤️❤️❤️❤️</p>
+            </footer>
         </div>
 
         <div class="birthday-message" id="birthdayMessage">
@@ -612,111 +1216,161 @@
                     HAPPY 25th BIRTHDAY, MY ETERNAL LOVE! 🎂🎉🎈
                 </div>
 
+                <div class="wedding-countdown" id="finalWeddingCountdown">
+                    <div class="wedding-title">💐 Our Wedding Day 💍</div>
+                    <p style="font-size: 1.3em; margin: 20px 0;">Until we become husband and wife...</p>
+                    <div class="countdown" id="finalWeddingCountdownTimer">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="finalWeddingDays">0</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <span class="countdown-separator">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="finalWeddingHours">0</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <span class="countdown-separator">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="finalWeddingMinutes">0</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                        <span class="countdown-separator">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="finalWeddingSeconds">0</span>
+                            <span class="countdown-label">Seconds</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 1.1em; margin-top: 30px; opacity: 0.9;">April 10th, 2026 🌹</p>
+                </div>
+
+                <div class="love-letter">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: #fff;">💌 A Love Letter To My Future Wife 💌</h2>
+                    <div class="letter-content">
+                        <p style="text-align: center; font-size: 1.5em; margin-bottom: 20px;">My Dearest Love,</p>
+                        <p>
+                            Every day I wake up grateful that the universe brought you into my life. Despite the miles between us, 
+                            you're always in my heart, in my thoughts, in my dreams. The distance has only made our love stronger, 
+                            more precious, more real.
+                        </p>
+                        <p style="margin-top: 20px;">
+                            When I think about April 10th, 2026, my heart overflows with joy. That's the day I get to call you my wife, 
+                            the day we start our forever together. No more screens between us, no more time zones to calculate, 
+                            no more goodnight messages across oceans. Just you and me, hand in hand, heart to heart.
+                        </p>
+                        <p style="margin-top: 20px;">
+                            You are my sunrise and my sunset, my first thought in the morning and my last wish at night. 
+                            You make me believe in soulmates, in destiny, in love that conquers all. Happy 25th birthday, my love. 
+                            This is just the beginning of our beautiful story.
+                        </p>
+                        <p style="text-align: right; margin-top: 30px; font-size: 1.3em;">
+                            Forever yours,<br>
+                            Your Future Husband 💕
+                        </p>
+                    </div>
+                </div>
+
                 <div class="love-paragraph">
+                    From this birthday to our wedding day on April 10, 2026,<br>
+                    and for all the birthdays that follow for the rest of our lives...<br>
+                    <br>
                     Forever and Always,<br>
-                    Your Love 💕💕💕
+                    Your Future Husband 💕💕💕
+                </div>
+
+                <div class="love-messages" style="margin-top: 50px;">
+                    <h2>💝 My Love For You Grows Every Moment 💝</h2>
+                    <p style="text-align: center; margin-bottom: 30px; opacity: 0.9; font-size: 1.1em;">These messages change throughout the day, reflecting my endless love for you</p>
+                    <div class="message-box">
+                        <p id="finalLoveMessage1">Your Happiness Is my Happiness and Ur sadness is my sadness. We share Joy and pain together, across any distance.</p>
+                    </div>
+                    <div class="message-box">
+                        <p id="finalLoveMessage2">Your smile lights up my screen and my world. Every video call feels like a gift, every message a treasure.</p>
+                    </div>
+                    <div class="message-box">
+                        <p id="finalLoveMessage3">You make me laugh through tears, you give me strength when I'm weak, you believe in me when I doubt myself.</p>
+                    </div>
+                    <div class="message-box">
+                        <p id="finalLoveMessage4">You inspire me to be better every day. Your courage to love across borders amazes me constantly.</p>
+                    </div>
+                    <div class="message-box">
+                        <p id="finalLoveMessage5">Every moment waiting for you is worth it because I know our forever is coming. April 10th, 2026 - the best day of our lives.</p>
+                    </div>
+                    <div class="message-box">
+                        <p id="finalLoveMessage6">I love you more than words can express. You are my best friend, my soulmate, my future wife, and the love of my life. Forever and always.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px; font-size: 1.5em;">
+                    💍 Can't wait to marry you 💍
                 </div>
             </div>
         </div>
-
-        <div class="music-player">
-            <h2>🎵 Your Favorite Songs 🎵</h2>
-            <p>Music that reminds me of you...</p>
-            <div class="music-controls">
-                <button onclick="playPause()" id="playBtn">▶️ Play</button>
-                <button onclick="previousSong()">⏮️ Previous</button>
-                <button onclick="nextSong()">⏭️ Next</button>
-            </div>
-            <div class="volume-control">
-                <label>Volume: </label>
-                <input type="range" min="0" max="100" value="50" onchange="changeVolume(this.value)">
-            </div>
-            <div class="song-list">
-                <div class="song-item active" onclick="playSong(0)">
-                    🎵 Song 1
-                </div>
-                <div class="song-item" onclick="playSong(1)">
-                    🎵 Song 2
-                </div>
-                <div class="song-item" onclick="playSong(2)">
-                    🎵 Song 3
-                </div>
-                <div class="song-item" onclick="playSong(3)">
-                    🎵 Song 4
-                </div>
-                <div class="song-item" onclick="playSong(4)">
-                    🎵 Song 5
-                </div>
-            </div>
-            <p id="nowPlaying" style="margin-top: 20px; font-style: italic;">Click play to start the music</p>
-        </div>
-
-        <div class="photo-gallery">
-            <h2>📸 My Beautiful Batota Pics 📸</h2>
-            <p style="text-align: center; margin: 20px 0;">I Love Ur everything...</p>
-            <div class="gallery-grid">
-                <div class="photo-frame">
-                    <img src="Pics/1.jpeg" class="photo-img" alt="My love">
-                    <p>I love u</p>
-                </div>
-                <div class="photo-frame">
-                    <img src="Pics/2.jpeg" class="photo-img" alt="My love">
-                    <p>I love ur eyes</p>
-                </div>
-                <div class="photo-frame">
-                    <img src="Pics/3.jpeg" class="photo-img" alt="My love">
-                    <p>I love ur Cheeks</p>
-                </div>
-                <div class="photo-frame">
-                    <img src="Pics/4.jpeg" class="photo-img" alt="My love">
-                    <p>I love ur lips</p>
-                </div>
-                <div class="photo-frame">
-                    <img src="Pics/5.jpeg" class="photo-img" alt="My love">
-                    <p>I love ur Hair</p>
-                </div>
-                <div class="photo-frame">
-                    <img src="Pics/6.jpeg" class="photo-img" alt="My love">
-                    <p>I love ur Chin</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="love-messages">
-            <h2>💝Some of the million Reasons Why I Love You 💝</h2>
-            <div class="message-box">
-                <p>Your Happiness Is my Happiness and Ur sadness is my sadness We share Joy and pain together.</p>
-            </div>
-            <div class="message-box">
-                <p>Your smile lights up my entire world. Every day with you is a gift, and I'm grateful for every moment
-                    we share together.</p>
-            </div>
-            <div class="message-box">
-                <p>You make me laugh like no one else can. Your sense of humor, your kindness, and your beautiful heart
-                    make you the most incredible person I know.</p>
-            </div>
-            <div class="message-box">
-                <p>You inspire me to be a better person. Your strength, your compassion, and your unwavering support
-                    mean everything to me.</p>
-            </div>
-            <div class="message-box">
-                <p>Every moment with you is an adventure. Whether we're doing something exciting or just spending quiet
-                    time together, you make everything special.</p>
-            </div>
-            <div class="message-box">
-                <p>I love you more than words can express. You are my best friend, my partner, and the love of my life.
-                    Here's to many more years of love and happiness together!</p>
-            </div>
-        </div>
-
-        <footer>
-            <p>Made with <span class="heart">❤️</span> just for you</p>
-            <p>Happy 25th Birthday, My Love! Love u Hyatiiiii❤️❤️❤️❤️❤️</p>
-        </footer>
     </div>
 
     <script>
-        // Countdown Timer - Set to January 10, 2026
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('floatingHearts');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = ['❤️', '💕', '💖', '💗', '💍', '🌹'][Math.floor(Math.random() * 6)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 2 + 1) + 'em';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                heartsContainer.appendChild(heart);
+                setTimeout(() => heart.remove(), 8000);
+            }, 2000);
+        }
+
+        function calculateDistance() {
+            const distances = [
+                "7,846 miles of love connecting us",
+                "12,623 kilometers but feeling closer every day",
+                "Our hearts: 0 miles apart 💕"
+            ];
+            let index = 0;
+            
+            function cycleDistance() {
+                document.getElementById('distanceDisplay').textContent = distances[index];
+                index = (index + 1) % distances.length;
+            }
+            
+            cycleDistance();
+            setInterval(cycleDistance, 4000);
+        }
+
+        const weddingDate = new Date('2026-04-10T00:00:00').getTime();
+
+        function updateWeddingCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (document.getElementById('finalWeddingDays')) {
+                document.getElementById('finalWeddingDays').innerText = days;
+                document.getElementById('finalWeddingHours').innerText = hours;
+                document.getElementById('finalWeddingMinutes').innerText = minutes;
+                document.getElementById('finalWeddingSeconds').innerText = seconds;
+            }
+        }
+
         const birthdayDate = new Date('2026-01-10T00:00:00').getTime();
 
         function updateCountdown() {
@@ -734,13 +1388,19 @@
             document.getElementById('seconds').innerText = seconds;
 
             if (distance < 0) {
-                document.querySelector('.countdown-section').style.display = 'none';
-                document.getElementById('birthdayMessage').style.display = 'block';
+                document.getElementById('mainContent').classList.add('fade-out');
                 
-                // Show final romantic message after 5 seconds
                 setTimeout(() => {
+                    document.getElementById('mainContent').style.display = 'none';
+                    document.getElementById('birthdayMessage').style.display = 'block';
+                }, 1000);
+                
+                setTimeout(() => {
+                    document.getElementById('birthdayMessage').style.display = 'none';
                     document.getElementById('finalMessage').style.display = 'block';
-                }, 5000);
+                    setInterval(updateWeddingCountdown, 1000);
+                    updateWeddingCountdown();
+                }, 6000);
                 
                 createConfetti();
             }
@@ -749,7 +1409,6 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Music Player
         const songs = [
             'Songs/WineMeDineMe..mp3',
             'Songs/ForgetYou.mp3',
@@ -760,6 +1419,7 @@
 
         let currentSong = 0;
         let isPlaying = false;
+        let isShuffle = false;
         const audio = new Audio();
         audio.volume = 0.5;
 
@@ -790,7 +1450,11 @@
         }
 
         function nextSong() {
-            currentSong = (currentSong + 1) % songs.length;
+            if (isShuffle) {
+                currentSong = Math.floor(Math.random() * songs.length);
+            } else {
+                currentSong = (currentSong + 1) % songs.length;
+            }
             playSong(currentSong);
         }
 
@@ -799,8 +1463,23 @@
             playSong(currentSong);
         }
 
+        function toggleShuffle() {
+            isShuffle = !isShuffle;
+            const btn = document.getElementById('shuffleBtn');
+            btn.style.background = isShuffle ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 'linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%)';
+        }
+
         function changeVolume(value) {
             audio.volume = value / 100;
+            document.getElementById('volumePercent').innerText = value + '%';
+        }
+
+        function seekSong(event) {
+            const progressBar = event.currentTarget;
+            const clickX = event.offsetX;
+            const width = progressBar.offsetWidth;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
         }
 
         function updateSongList() {
@@ -814,20 +1493,317 @@
             });
         }
 
+        audio.addEventListener('timeupdate', () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        });
+
         audio.addEventListener('ended', nextSong);
 
-        // Confetti Effect
+        function openModal(element) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            const img = element.querySelector('img');
+            modal.style.display = 'block';
+            modalImg.src = img.src;
+        }
+
+        function closeModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+
         function createConfetti() {
             setInterval(() => {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.background = ['#ff6b9d', '#667eea', '#764ba2', '#ffd700'][Math.floor(Math.random() * 4)];
+                confetti.style.background = ['#ff6b9d', '#667eea', '#764ba2', '#ffd700', '#fff'][Math.floor(Math.random() * 5)];
                 document.body.appendChild(confetti);
                 setTimeout(() => confetti.remove(), 3000);
             }, 100);
         }
+
+        createParticles();
+        createFloatingHearts();
+        calculateDistance();
+
+        // Love Messages that change every hour from 6 AM to 10 PM - 150 unique messages (25 sets of 6)
+        const loveMessagesCollection = [
+            // Set 1 (6:00 AM)
+            [
+                "Good morning my love! Waking up thinking of you makes every day special. You're my first thought and my biggest smile.",
+                "The sun rises, but you are the true light of my life. Your love brightens even my darkest days.",
+                "Every morning I'm grateful for you. Distance means nothing when someone means everything.",
+                "You're the reason I look forward to each new day. Your love gives me strength and purpose.",
+                "Morning coffee is sweet, but not as sweet as thinking about you. You're my favorite way to start the day.",
+                "I may be miles away, but my heart is always right next to yours. Good morning, my beautiful future wife."
+            ],
+            // Set 2 (6:24 AM)
+            [
+                "Your love is like the morning dew - refreshing, pure, and absolutely beautiful. I cherish every moment with you.",
+                "I count the hours until we can be together. Until then, my love for you grows stronger with each passing moment.",
+                "You make long distance feel short because you make my heart feel so full. I love you endlessly.",
+                "Every sunrise reminds me that we're one day closer to forever. April 10th can't come soon enough.",
+                "Your voice is my favorite sound, your name is my favorite word, and you are my favorite person.",
+                "I love how we can be apart but still feel so connected. Our souls are intertwined across the miles."
+            ],
+            // Set 3 (6:48 AM)
+            [
+                "You're not just my girlfriend, you're my best friend, my confidant, my everything. I treasure you completely.",
+                "I love your laugh, your smile, your kindness, and your beautiful soul. You're perfect in every way.",
+                "Distance has taught me that love isn't about proximity, it's about commitment. And I'm committed to you forever.",
+                "Every text from you makes my heart skip a beat. Every call with you is my favorite part of the day.",
+                "You make me believe in fairy tales and happy endings. You're my once upon a time and my happily ever after.",
+                "I admire your strength, your courage, and your unwavering love. You inspire me to be better every day."
+            ],
+            // Set 4 (7:12 AM)
+            [
+                "Missing you is my hobby, caring for you is my job, making you happy is my duty, and loving you is my life.",
+                "The hardest part of my day is not being able to hug you. But knowing I will one day makes it all worth it.",
+                "You're the reason I believe in love. You've shown me what true partnership and devotion really mean.",
+                "Every moment without you feels incomplete, but every moment thinking of you feels like home.",
+                "I love how you support my dreams, listen to my worries, and celebrate my victories. You're my perfect partner.",
+                "You're beautiful, intelligent, funny, and kind. How did I get so lucky to find someone so perfect?"
+            ],
+            // Set 5 (7:36 AM)
+            [
+                "Your love is my anchor in stormy seas and my compass when I'm lost. You guide me and ground me.",
+                "I love the way you understand me without words, love me without conditions, and support me without hesitation.",
+                "You make the wait worth it. Every second apart is worth the lifetime we'll spend together.",
+                "I never knew I could love someone this much. You've expanded my heart in ways I never thought possible.",
+                "You're my safe place, my happy place, my favorite place. Anywhere with you is where I belong.",
+                "I love planning our future together. Every dream I have includes you by my side."
+            ],
+            // Set 6 (8:00 AM)
+            [
+                "Your love has transformed my life. You've made me happier, stronger, and more complete than I ever was before.",
+                "I love how we can talk for hours and it feels like minutes, or sit in silence and feel completely comfortable.",
+                "You're the first person I want to share good news with and the only person I want comfort from in bad times.",
+                "Distance is just a test of how far love can travel. Ours has proven it can go anywhere.",
+                "I love your quirks, your habits, your little imperfections. They all make you uniquely and perfectly you.",
+                "You've taught me that patience is a form of love. Waiting for you has made my love grow deeper."
+            ],
+            // Set 7 (8:24 AM)
+            [
+                "Good morning my love! Hope your day is as amazing as you are. You deserve all the happiness in the world.",
+                "Thinking of you and smiling like an idiot. You have that effect on me.",
+                "You're the reason behind my smile, the beat of my heart, and the love of my life.",
+                "I love how you make ordinary moments extraordinary just by being part of them.",
+                "Every day with you in my life is a blessing. I thank the universe for bringing us together.",
+                "You're not just my future wife, you're my present happiness and my forever love."
+            ],
+            // Set 8 (8:48 AM)
+            [
+                "I love how passionate you are about the things you care about. Your dedication inspires me.",
+                "You're the piece I didn't know was missing from my life. Now I feel complete.",
+                "I love building memories with you, even if they're through a screen right now. Each one is precious.",
+                "Your love gives me courage to face any challenge. With you by my side, I can do anything.",
+                "I love how we've grown together, learned together, and dreamed together. We're the perfect team.",
+                "You make me want to be the best version of myself. You bring out the best in me."
+            ],
+            // Set 9 (9:12 AM)
+            [
+                "I love your ambitions and dreams. I'll always support you and cheer you on.",
+                "You've turned my world upside down in the best way possible. Life is brighter with you.",
+                "I love the little things about you - the way you laugh, how you think, the way you see the world.",
+                "Every day I discover something new to love about you. You're an endless source of joy.",
+                "You're my motivation, my inspiration, and my aspiration. You make me want to achieve greatness.",
+                "I love how we can disagree but still respect each other. Our love is built on trust and understanding."
+            ],
+            // Set 10 (9:36 AM)
+            [
+                "Morning thoughts of you make my heart warm. Can't wait until I can hold you in my arms.",
+                "You're the answer to prayers I didn't even know I was praying. You're everything I needed and more.",
+                "I love how you care for others, how kind you are, how generous with your love you can be.",
+                "You make me believe in destiny. We were meant to find each other across all these miles.",
+                "I love your strength and vulnerability, your confidence and humility. You're perfectly balanced.",
+                "With you, I've found my home. Not a place, but a feeling of belonging and love."
+            ],
+            // Set 11 (10:00 AM)
+            [
+                "You're my favorite notification, my favorite call, my favorite message. You're my favorite everything.",
+                "I love how we can be goofy together, serious together, and everything in between.",
+                "You've shown me what unconditional love really means. You love me on my best and worst days.",
+                "I love planning surprises for you, making you smile, and seeing you happy. Your joy is my joy.",
+                "You're the calm in my chaos, the peace in my storm. You center me and complete me.",
+                "I love how we push each other to grow, support each other's goals, and celebrate each other's wins."
+            ],
+            // Set 12 (10:24 AM)
+            [
+                "Mid-morning and I'm thinking about you. Can't wait to hear your voice later.",
+                "You're the most beautiful person I know, inside and out. Your beauty radiates from your soul.",
+                "I love your wisdom, your advice, and your perspective on life. You make me see things differently.",
+                "Every love song reminds me of you. Every romantic movie makes me think of us.",
+                "I love how loyal you are, how committed you are, how dedicated you are to us.",
+                "You're my forever person. The one I want to grow old with, laugh with, and love with all my heart."
+            ],
+            // Set 13 (10:48 AM)
+            [
+                "You brighten my day just by existing. Your presence in my life is a constant blessing.",
+                "You're the highlight of my day, every single day. Talking to you never gets old.",
+                "I love how patient you are with the distance, how understanding you are about the challenges.",
+                "You make me feel loved even from thousands of miles away. That's the power of your love.",
+                "I love your dreams for our future, your plans for our life together. I want it all with you.",
+                "You're my soulmate, my twin flame, my other half. We're two pieces of the same puzzle."
+            ],
+            // Set 14 (11:12 AM)
+            [
+                "Late morning thoughts of you fill my heart with warmth. You're my favorite part of every day.",
+                "I love how we've created our own little world together, despite the physical distance between us.",
+                "You're my happy place, my comfort zone, my safe haven. You're where I belong.",
+                "I love the life we're building together, one day at a time, one conversation at a time.",
+                "You've made me a believer in love that conquers all. Our love has conquered distance.",
+                "I love your optimism, your positivity, and your faith in us. You keep me hopeful."
+            ],
+            // Set 15 (11:36 AM)
+            [
+                "Almost noon and you're on my mind. You never leave my thoughts, not even for a moment.",
+                "You're my greatest adventure, my biggest blessing, and my deepest love.",
+                "I love how we make time for each other no matter how busy life gets. You're my priority.",
+                "You make me believe in happy endings because you are mine. You're my happily ever after.",
+                "I love imagining our wedding day, our honeymoon, our life together. It's going to be perfect.",
+                "You're the best thing that ever happened to me. My life is better because you're in it."
+            ],
+            // Set 16 (12:00 PM - Noon)
+            [
+                "Good afternoon my love! Hope your day is going wonderfully. You deserve all the best things in life.",
+                "Lunch time and I'm wishing I could share a meal with you. Soon we'll have that every day.",
+                "I love how we can be vulnerable with each other, share our fears, and support each other through everything.",
+                "You're the best decision I ever made. Choosing you was choosing a lifetime of happiness.",
+                "I love your family, your friends, everything that made you who you are today. They helped create perfection.",
+                "You're my favorite person to talk to, laugh with, dream with, and plan our future with."
+            ],
+            // Set 17 (12:24 PM)
+            [
+                "Afternoon vibes and thinking of you. Every hour of every day, you're in my heart.",
+                "I love how we respect each other, trust each other, and believe in each other completely.",
+                "You make every challenge easier and every victory sweeter. Life is better with you as my partner.",
+                "I love your gentle heart, your fierce spirit, and your loving nature. You're everything I could want.",
+                "You've shown me what it means to be truly loved and accepted. You love all of me, flaws included.",
+                "I love how we grow together, change together, and adapt together. We're evolving into our best selves."
+            ],
+            // Set 18 (12:48 PM)
+            [
+                "Early afternoon and my heart is full of love for you. You fill every corner of my soul.",
+                "I love your determination, your work ethic, and your drive to succeed. You inspire me daily.",
+                "You're not just my love, you're my teammate in life. Together we can accomplish anything.",
+                "I love how you challenge me to think differently, to see new perspectives, to grow beyond my limits.",
+                "You make me laugh when I want to cry, smile when I'm sad, and feel loved even when we're apart.",
+                "I love building our future brick by brick, dream by dream, day by day. It's going to be amazing."
+            ],
+            // Set 19 (1:12 PM)
+            [
+                "Afternoon thoughts drift to you, as they always do. You're my constant, my anchor, my everything.",
+                "I love how honest we are with each other. Our communication is the foundation of our strong relationship.",
+                "You make me feel safe to be myself completely. With you, I don't have to pretend or hide anything.",
+                "I love your intelligence, your curiosity, and your thirst for knowledge. Your mind is beautiful.",
+                "You've taught me so much about love, life, and what truly matters. You're my greatest teacher.",
+                "I love how we balance each other perfectly. Where I'm weak, you're strong, and vice versa."
+            ],
+            // Set 20 (1:36 PM)
+            [
+                "Mid-afternoon and thinking about our future home, our future life, our future family. Can't wait!",
+                "I love how romantic you are, how you make me feel cherished and valued every single day.",
+                "You're my favorite topic to talk about, my favorite person to think about, my favorite everything.",
+                "I love your creativity, your unique perspective, and the way you see beauty in everything.",
+                "You make distance bearable because you make love feel so present. You're with me always.",
+                "I love how we support each other's independence while building our interdependence. Perfect balance."
+            ],
+            // Set 21 (2:00 PM)
+            [
+                "Good afternoon my beautiful! Hope you're having a productive day. Can't wait to hear all about it.",
+                "I love your passion for life, your enthusiasm, and your positive energy. It's contagious and inspiring.",
+                "You're my peace in a chaotic world. When everything feels overwhelming, thoughts of you calm me.",
+                "I love how we celebrate small victories together. Every milestone matters when we share it.",
+                "You make me feel like the luckiest person alive. Having your love is the greatest gift I could receive.",
+                "I love planning date nights with you, even virtual ones. Every moment together is special."
+            ],
+            // Set 22 (2:24 PM)
+            [
+                "Afternoon love radiating your way! Distance can't diminish what we have. Our love is too strong.",
+                "I love your thoughtfulness, how you remember little details, how you show love in countless ways.",
+                "You're my inspiration for every good thing I do. I want to make you proud every single day.",
+                "I love how we can work through problems together, never giving up on each other or our relationship.",
+                "You make me believe in the power of love to overcome any obstacle. We're proof that love wins.",
+                "I love your spontaneity, your sense of adventure, and your willingness to try new things with me."
+            ],
+            // Set 23 (2:48 PM)
+            [
+                "Late afternoon thoughts of you make me smile. You're my daily dose of happiness and joy.",
+                "I love how protective you are of our relationship, how you guard our love and nurture it daily.",
+                "You're my favorite distraction, my best procrastination, and my most productive inspiration.",
+                "I love your sensitivity, your empathy, and your ability to understand others. You have a gift.",
+                "You make me want to be worthy of your love. You inspire me to grow, improve, and evolve.",
+                "I love how we dream big together. Nothing feels impossible when we're dreaming as a team."
+            ],
+            // Set 24 (3:12 PM)
+            [
+                "Mid-afternoon check-in with my heart: still completely in love with you! Status: forever.",
+                "I love your resilience, your ability to bounce back, and your never-give-up attitude. You're strong.",
+                "You're my safe space to be vulnerable, to show weakness, to ask for help. You accept me fully.",
+                "I love how we make each other better people. Our love elevates us both to new heights.",
+                "You make ordinary days extraordinary just by being mine. Even mundane moments feel special.",
+                "I love your sense of humor, your wit, and how you can make me laugh in any situation."
+            ],
+            // Set 25 (3:36 PM)
+            [
+                "Afternoon love note: You're amazing, beautiful, smart, and mine. I'm the luckiest person ever!",
+                "I love how you encourage me, believe in me, and push me to reach my full potential. You see my best self.",
+                "You're my partner in crime, my co-conspirator in dreams, and my accomplice in happiness.",
+                "I love your values, your morals, and your integrity. You're not just beautiful outside, but inside too.",
+                "You make me feel understood in a way no one else ever has. You truly know me and love me anyway.",
+                "I love how we're building traditions together, creating our own special rituals and memories."
+            ]
+        ];
+
+        function updateLoveMessages() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            
+            // Calculate total minutes since midnight
+            let totalMinutes = hour * 60 + minute;
+            
+            // Calculate which set of messages to show (0-24)
+            // We have 25 sets, so we cycle through them every 57.6 minutes (1440 minutes / 25 sets)
+            let messageSetIndex = Math.floor(totalMinutes / 57.6);
+            
+            // Make sure we don't exceed array bounds
+            if (messageSetIndex >= loveMessagesCollection.length) {
+                messageSetIndex = loveMessagesCollection.length - 1;
+            }
+            
+            const messages = loveMessagesCollection[messageSetIndex];
+            
+            // Update each message on BOTH pages (main page and final page)
+            for (let i = 1; i <= 6; i++) {
+                // Update main page messages
+                const element = document.getElementById(`loveMessage${i}`);
+                if (element && messages[i-1]) {
+                    element.textContent = messages[i-1];
+                    element.style.animation = 'none';
+                    setTimeout(() => {
+                        element.style.animation = 'slideIn 1s ease-out';
+                    }, 10);
+                }
+                
+                // Update final page messages
+                const finalElement = document.getElementById(`finalLoveMessage${i}`);
+                if (finalElement && messages[i-1]) {
+                    finalElement.textContent = messages[i-1];
+                    finalElement.style.animation = 'none';
+                    setTimeout(() => {
+                        finalElement.style.animation = 'slideIn 1s ease-out';
+                    }, 10);
+                }
+            }
+        }
+
+        // Update messages immediately on page load
+        updateLoveMessages();
+
+        // Update messages every minute to check if we need new ones
+        setInterval(updateLoveMessages, 60000); // Check every minute
     </script>
 </body>
-
 </html>
