@@ -2663,6 +2663,10 @@
         const distanceEl = document.getElementById('distance');
         const restartBtn = document.getElementById('restart-button');
 
+        console.log('Canvas:', canvas);
+        console.log('Context:', ctx);
+        console.log('Canvas dimensions:', canvas.width, 'x', canvas.height);
+
         // Game variables
         let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 5, invincible: false, invincibleTime: 0, health: 100 };
         let obstacles = [];
@@ -2693,56 +2697,56 @@
             {
                 name: "Gentle Forest",
                 background: { sky: ['#FF7F50', '#87CEEB', '#98FB98'], mountains: '#8B7355', ground: '#8B4513', grass: '#228B22' },
-                goalDistance: 800,
-                enemySpawnRate: 0.003,
-                powerUpSpawnRate: 0.008,
-                collectibleSpawnRate: 0.015,
-                healthSpawnRate: 0.005,
-                speedIncrease: 0.3,
+                goalDistance: 1000,
+                enemySpawnRate: 0.002,
+                powerUpSpawnRate: 0.01,
+                collectibleSpawnRate: 0.02,
+                healthSpawnRate: 0.008,
+                speedIncrease: 0.2,
                 theme: "forest"
             },
             {
                 name: "Peaceful Meadows",
                 background: { sky: ['#FFE4B5', '#87CEEB', '#90EE90'], mountains: '#228B22', ground: '#8B4513', grass: '#32CD32' },
-                goalDistance: 1000,
-                enemySpawnRate: 0.004,
-                powerUpSpawnRate: 0.007,
-                collectibleSpawnRate: 0.012,
-                healthSpawnRate: 0.006,
-                speedIncrease: 0.4,
+                goalDistance: 1200,
+                enemySpawnRate: 0.003,
+                powerUpSpawnRate: 0.009,
+                collectibleSpawnRate: 0.018,
+                healthSpawnRate: 0.009,
+                speedIncrease: 0.25,
                 theme: "meadow"
             },
             {
                 name: "Mountain Path",
                 background: { sky: ['#FF4500', '#4169E1', '#F0F8FF'], mountains: '#696969', ground: '#A0522D', grass: '#9ACD32' },
-                goalDistance: 1200,
-                enemySpawnRate: 0.005,
-                powerUpSpawnRate: 0.006,
-                collectibleSpawnRate: 0.01,
-                healthSpawnRate: 0.007,
-                speedIncrease: 0.5,
+                goalDistance: 1400,
+                enemySpawnRate: 0.004,
+                powerUpSpawnRate: 0.008,
+                collectibleSpawnRate: 0.016,
+                healthSpawnRate: 0.01,
+                speedIncrease: 0.3,
                 theme: "mountain"
             },
             {
                 name: "Desert Oasis",
                 background: { sky: ['#FFD700', '#FFA500', '#F4A460'], mountains: '#DAA520', ground: '#DEB887', grass: '#8FBC8F' },
-                goalDistance: 1400,
-                enemySpawnRate: 0.006,
-                powerUpSpawnRate: 0.005,
-                collectibleSpawnRate: 0.008,
-                healthSpawnRate: 0.008,
-                speedIncrease: 0.6,
+                goalDistance: 1600,
+                enemySpawnRate: 0.005,
+                powerUpSpawnRate: 0.007,
+                collectibleSpawnRate: 0.014,
+                healthSpawnRate: 0.011,
+                speedIncrease: 0.35,
                 theme: "desert"
             },
             {
                 name: "Love's Journey",
                 background: { sky: ['#FF1493', '#FF69B4', '#FFB6C1'], mountains: '#DC143C', ground: '#FF69B4', grass: '#FFC0CB' },
-                goalDistance: 1600,
-                enemySpawnRate: 0.007,
-                powerUpSpawnRate: 0.004,
-                collectibleSpawnRate: 0.006,
-                healthSpawnRate: 0.009,
-                speedIncrease: 0.7,
+                goalDistance: 1800,
+                enemySpawnRate: 0.006,
+                powerUpSpawnRate: 0.006,
+                collectibleSpawnRate: 0.012,
+                healthSpawnRate: 0.012,
+                speedIncrease: 0.4,
                 theme: "love"
             }
         ];
@@ -2793,6 +2797,7 @@
         let goal = { x: 950, y: 300, width: 30, height: 30 };
 
         function initGame() {
+            console.log('Initializing game for level', currentLevel);
             player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 5, invincible: false, invincibleTime: 0, health: 100 };
             obstacles = [];
             powerUps = [];
@@ -2813,12 +2818,17 @@
             goal.x = levels[currentLevel - 1].goalDistance + 50;
             initClouds();
             updateDisplay();
+            restartBtn.style.display = 'none'; // Hide restart button when starting game
+            console.log('Showing intro dialogue');
             showDialogue('intro');
         }
+
+        let currentDialogueType = null;
 
         function showDialogue(type) {
             dialogueActive = true;
             currentDialogue = dialogues[type];
+            currentDialogueType = type;
             gameRunning = false;
         }
 
@@ -2921,20 +2931,20 @@
 
         function createCheckpoint() {
             const level = levels[currentLevel - 1];
-            const checkpointInterval = level.goalDistance / 3; // 3 checkpoints per level
             const currentProgress = (scrollX + canvas.width / 2) / level.goalDistance;
 
-            if (currentProgress > 0.3 && !checkpointReached && checkpoints.length === 0) {
+            // Create checkpoints at 40% and 70% progress
+            if (currentProgress > 0.4 && checkpoints.length === 0) {
                 checkpoints.push({
-                    x: scrollX + canvas.width + 200,
+                    x: scrollX + canvas.width + 300,
                     y: 330,
                     width: 30,
                     height: 30,
                     reached: false
                 });
-            } else if (currentProgress > 0.6 && checkpoints.length === 1 && !checkpoints[0].reached) {
+            } else if (currentProgress > 0.7 && checkpoints.length === 1 && checkpoints[0].reached) {
                 checkpoints.push({
-                    x: scrollX + canvas.width + 200,
+                    x: scrollX + canvas.width + 300,
                     y: 330,
                     width: 30,
                     height: 30,
@@ -3055,7 +3065,11 @@
                         player.x + player.width > obs.x &&
                         player.y < obs.y + obs.height &&
                         player.y + player.height > obs.y) {
-                        player.lives--;
+                        player.health -= 25;
+                        if (player.health <= 0) {
+                            player.lives--;
+                            player.health = 100; // Reset health for next life
+                        }
                         player.invincible = true;
                         player.invincibleTime = 120; // 2 seconds at 60fps
                         if (player.lives <= 0) {
@@ -3072,7 +3086,11 @@
                         player.x + player.width > enemy.x &&
                         player.y < enemy.y + enemy.height &&
                         player.y + player.height > enemy.y) {
-                        player.lives--;
+                        player.health -= 20;
+                        if (player.health <= 0) {
+                            player.lives--;
+                            player.health = 100; // Reset health for next life
+                        }
                         player.invincible = true;
                         player.invincibleTime = 120;
                         if (player.lives <= 0) {
@@ -3592,7 +3610,10 @@
         }
 
         function gameLoop() {
-            if (!gameRunning && !dialogueActive) return;
+            if (!gameRunning && !dialogueActive) {
+                console.log('Game loop stopped - game not running and no dialogue active');
+                return;
+            }
 
             if (gameRunning) {
                 updatePlayer();
@@ -3617,7 +3638,9 @@
 
         // Controls
         document.addEventListener('keydown', (e) => {
+            console.log('Key pressed:', e.code);
             if (e.code === 'Space' && (player.onGround || player.jumpBoost)) {
+                console.log('Jumping!');
                 player.velocityY = jumpPower;
                 if (!player.onGround) player.jumpBoost = false;
                 player.onGround = false;
@@ -3627,7 +3650,9 @@
         });
 
         canvas.addEventListener('click', () => {
+            console.log('Canvas clicked');
             if (player.onGround || player.jumpBoost) {
+                console.log('Jumping from click!');
                 player.velocityY = jumpPower;
                 if (!player.onGround) player.jumpBoost = false;
                 player.onGround = false;
@@ -3661,15 +3686,24 @@
             currentDialogue.shift();
             if (currentDialogue.length === 0) {
                 dialogueActive = false;
+                const finishedDialogueType = currentDialogueType;
                 currentDialogue = null;
+                currentDialogueType = null;
                 document.getElementById('dialogue-box').style.display = 'none';
                 if (gameRunning === false && currentLevel <= levels.length) {
                     gameRunning = true;
+                }
+                // Show restart button if this was game over or game complete dialogue
+                if (finishedDialogueType === 'gameOver' || finishedDialogueType === 'gameComplete') {
+                    restartBtn.style.display = 'block';
                 }
             } else {
                 drawDialogue();
             }
         }
+
+        console.log('Starting game...');
+        initGame();
     </script>
 </body>
 
