@@ -1898,11 +1898,18 @@
 
     <!-- Flash Game Section -->
     <div id="flash-game" style="margin-top: 100px; text-align: center; padding: 50px; background: rgba(255, 255, 255, 0.1); border-radius: 20px;">
-        <h2>🎮 Vladislava's Adventure! 🎮</h2>
-        <p>Help Vladislava jump over obstacles to reach Youssef! Use SPACE or click to jump.</p>
+        <h2>🎮 Vladislava's Rich Adventure! 🎮</h2>
+        <p>Help Vladislava jump over varied obstacles, collect hearts, and grab power-ups to reach Youssef! Features include moving obstacles, jump boosts, collectibles, and increasing difficulty.</p>
         <canvas id="game-canvas" width="800" height="400" style="border: 2px solid white; border-radius: 10px; background: linear-gradient(to bottom, #87CEEB, #98FB98);"></canvas>
+        <div id="dialogue-box" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.9); color: white; padding: 20px; border-radius: 10px; max-width: 400px; text-align: center; z-index: 1000;">
+            <div id="dialogue-speaker" style="font-weight: bold; margin-bottom: 10px;"></div>
+            <div id="dialogue-text"></div>
+            <button id="dialogue-next" style="margin-top: 15px; padding: 8px 16px; background: #FF69B4; color: white; border: none; border-radius: 5px; cursor: pointer;">Next</button>
+        </div>
         <div id="game-info" style="margin-top: 20px;">
             <p>Score: <span id="score">0</span> | Distance to Youssef: <span id="distance">1000</span>m</p>
+            <p id="level-display">Level 1: Forest Adventure</p>
+            <p id="lives-display">Lives: 3</p>
         </div>
         <button id="restart-button" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; display: none;">Restart Game</button>
     </div>
@@ -2656,43 +2663,220 @@
         const restartBtn = document.getElementById('restart-button');
 
         // Game variables
-        let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true };
+        let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 3, invincible: false, invincibleTime: 0 };
         let obstacles = [];
+        let powerUps = [];
+        let collectibles = [];
+        let clouds = [];
+        let particles = [];
+        let jumpParticles = [];
+        let enemies = [];
+        let checkpoints = [];
         let score = 0;
         let distance = 1000;
-        let gameRunning = true;
+        let gameRunning = false;
         let gameSpeed = 2;
         let gravity = 0.5;
         let jumpPower = -12;
         let scrollX = 0;
+        let gameTime = 0;
+        let currentLevel = 1;
+        let levelProgress = 0;
+        let dialogueActive = false;
+        let currentDialogue = null;
+        let achievements = [];
+
+        // Level data
+        const levels = [
+            {
+                name: "Forest Adventure",
+                background: { sky: ['#FF7F50', '#87CEEB', '#98FB98'], mountains: '#8B7355', ground: '#8B4513', grass: '#228B22' },
+                goalDistance: 1000,
+                enemySpawnRate: 0.005,
+                powerUpSpawnRate: 0.005,
+                collectibleSpawnRate: 0.01,
+                speedIncrease: 0.5,
+                theme: "forest"
+            },
+            {
+                name: "Mountain Challenge",
+                background: { sky: ['#FF4500', '#4169E1', '#F0F8FF'], mountains: '#696969', ground: '#A0522D', grass: '#9ACD32' },
+                goalDistance: 1500,
+                enemySpawnRate: 0.008,
+                powerUpSpawnRate: 0.004,
+                collectibleSpawnRate: 0.008,
+                speedIncrease: 0.7,
+                theme: "mountain"
+            },
+            {
+                name: "Desert Quest",
+                background: { sky: ['#FFD700', '#FFA500', '#F4A460'], mountains: '#DAA520', ground: '#DEB887', grass: '#8FBC8F' },
+                goalDistance: 2000,
+                enemySpawnRate: 0.01,
+                powerUpSpawnRate: 0.003,
+                collectibleSpawnRate: 0.006,
+                speedIncrease: 0.9,
+                theme: "desert"
+            },
+            {
+                name: "Final Love",
+                background: { sky: ['#FF1493', '#FF69B4', '#FFB6C1'], mountains: '#DC143C', ground: '#FF69B4', grass: '#FFC0CB' },
+                goalDistance: 2500,
+                enemySpawnRate: 0.015,
+                powerUpSpawnRate: 0.002,
+                collectibleSpawnRate: 0.004,
+                speedIncrease: 1.0,
+                theme: "love"
+            }
+        ];
+
+        // Dialogue system
+        const dialogues = {
+            intro: [
+                { speaker: "Vladislava", text: "Youssef! I need to reach you! Help me jump over these obstacles!", emotion: "excited" },
+                { speaker: "Narrator", text: "Use SPACE or click to jump. Collect hearts and power-ups to help Vladislava!", emotion: "info" }
+            ],
+            powerUp: [
+                { speaker: "Vladislava", text: "Wow! I can jump higher now! Thank you, mysterious power!", emotion: "happy" }
+            ],
+            checkpoint: [
+                { speaker: "Vladislava", text: "Phew! I made it this far. Youssef, I'm coming for you!", emotion: "determined" }
+            ],
+            levelComplete: [
+                { speaker: "Vladislava", text: "Level complete! I'm getting closer to you, my love!", emotion: "joyful" }
+            ],
+            gameComplete: [
+                { speaker: "Vladislava", text: "Youssef! I finally reached you! Our love conquered everything!", emotion: "love" },
+                { speaker: "Youssef", text: "My darling Vladislava! You made it! I love you forever!", emotion: "love" }
+            ],
+            gameOver: [
+                { speaker: "Vladislava", text: "Oh no! I need to try again. Our love will prevail!", emotion: "sad" }
+            ]
+        };
 
         // Goal
         let goal = { x: 950, y: 300, width: 30, height: 30 };
 
         function initGame() {
-            player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true };
+            player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true, jumpBoost: false, color: '#FF69B4', lives: 3, invincible: false, invincibleTime: 0 };
             obstacles = [];
+            powerUps = [];
+            collectibles = [];
+            clouds = [];
+            particles = [];
+            jumpParticles = [];
+            enemies = [];
+            checkpoints = [];
             score = 0;
-            distance = 1000;
+            distance = levels[currentLevel - 1].goalDistance;
             gameRunning = true;
             gameSpeed = 2;
             scrollX = 0;
+            gameTime = 0;
+            levelProgress = 0;
+            goal.x = levels[currentLevel - 1].goalDistance + 50;
+            initClouds();
             updateDisplay();
-            gameLoop();
+            showDialogue('intro');
+        }
+
+        function showDialogue(type) {
+            dialogueActive = true;
+            currentDialogue = dialogues[type];
+            gameRunning = false;
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            if (currentLevel > levels.length) {
+                // Game complete
+                showDialogue('gameComplete');
+                return;
+            }
+            showDialogue('levelComplete');
+            setTimeout(() => {
+                initGame();
+            }, 3000);
+        }
+
+        function loadLevel(levelNum) {
+            const level = levels[levelNum - 1];
+            distance = level.goalDistance;
+            goal.x = level.goalDistance + 50;
+            updateDisplay();
+        }
+
+        function initClouds() {
+            for (let i = 0; i < 5; i++) {
+                clouds.push({
+                    x: Math.random() * 1000,
+                    y: Math.random() * 100 + 50,
+                    width: Math.random() * 100 + 50,
+                    height: 30
+                });
+            }
         }
 
         function updateDisplay() {
             scoreEl.textContent = score;
             distanceEl.textContent = distance;
+            document.getElementById('level-display').textContent = `Level ${currentLevel}: ${levels[currentLevel - 1].name}`;
+            document.getElementById('lives-display').textContent = `Lives: ${player.lives}`;
         }
 
         function createObstacle() {
-            if (Math.random() < 0.015) {
-                obstacles.push({
+            const level = levels[currentLevel - 1];
+            if (Math.random() < level.enemySpawnRate) {
+                const types = ['small', 'large', 'moving'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                let obstacle = {
+                    x: canvas.width + scrollX,
+                    y: type === 'small' ? 340 : 330,
+                    width: type === 'small' ? 20 : 40,
+                    height: type === 'small' ? 20 : 30,
+                    type: type,
+                    speed: type === 'moving' ? (Math.random() - 0.5) * 2 : 0
+                };
+                obstacles.push(obstacle);
+            }
+        }
+
+        function createPowerUp() {
+            const level = levels[currentLevel - 1];
+            if (Math.random() < level.powerUpSpawnRate) {
+                powerUps.push({
+                    x: canvas.width + scrollX,
+                    y: Math.random() * 200 + 150,
+                    width: 20,
+                    height: 20,
+                    type: 'jumpBoost'
+                });
+            }
+        }
+
+        function createCollectible() {
+            const level = levels[currentLevel - 1];
+            if (Math.random() < level.collectibleSpawnRate) {
+                collectibles.push({
+                    x: canvas.width + scrollX,
+                    y: Math.random() * 150 + 200,
+                    width: 15,
+                    height: 15,
+                    collected: false
+                });
+            }
+        }
+
+        function createEnemy() {
+            const level = levels[currentLevel - 1];
+            if (Math.random() < level.enemySpawnRate) {
+                enemies.push({
                     x: canvas.width + scrollX,
                     y: 330,
-                    width: 30,
-                    height: 30
+                    width: 25,
+                    height: 25,
+                    speed: 1,
+                    direction: -1
                 });
             }
         }
@@ -2700,9 +2884,81 @@
         function updateObstacles() {
             obstacles.forEach((obs, index) => {
                 obs.x -= gameSpeed;
+                if (obs.type === 'moving') {
+                    obs.y += obs.speed;
+                    if (obs.y < 300 || obs.y > 350) obs.speed *= -1;
+                }
                 if (obs.x + obs.width < scrollX) {
                     obstacles.splice(index, 1);
-                    score += 10;
+                    score += obs.type === 'small' ? 5 : obs.type === 'large' ? 15 : 10;
+                }
+            });
+        }
+
+        function updatePowerUps() {
+            powerUps.forEach((pu, index) => {
+                pu.x -= gameSpeed;
+                if (pu.x + pu.width < scrollX) {
+                    powerUps.splice(index, 1);
+                }
+            });
+        }
+
+        function updateCollectibles() {
+            collectibles.forEach((col, index) => {
+                col.x -= gameSpeed;
+                if (col.x + col.width < scrollX) {
+                    collectibles.splice(index, 1);
+                }
+            });
+        }
+
+        function createJumpParticles(x, y) {
+            for (let i = 0; i < 5; i++) {
+                jumpParticles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: Math.random() * -3 - 1,
+                    life: 30,
+                    color: player.jumpBoost ? '#FFD700' : '#FF69B4'
+                });
+            }
+        }
+
+        function createCollectParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: Math.random() * -4 - 2,
+                    life: 40,
+                    color: '#FF69B4'
+                });
+            }
+        }
+
+        function updateParticles() {
+            // Update jump particles
+            jumpParticles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // gravity
+                p.life--;
+                if (p.life <= 0) {
+                    jumpParticles.splice(index, 1);
+                }
+            });
+
+            // Update collect particles
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15; // gravity
+                p.life--;
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
                 }
             });
         }
@@ -2713,16 +2969,70 @@
                 player.y = 360 - player.height;
                 player.velocityY = 0;
                 player.onGround = true;
+                player.color = player.jumpBoost ? '#FFD700' : '#FF69B4';
             }
 
             // Obstacle collision
-            obstacles.forEach(obs => {
-                if (player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height &&
-                    player.y + player.height > obs.y) {
-                    gameRunning = false;
-                    restartBtn.style.display = 'inline-block';
+            if (!player.invincible) {
+                obstacles.forEach(obs => {
+                    if (player.x < obs.x + obs.width &&
+                        player.x + player.width > obs.x &&
+                        player.y < obs.y + obs.height &&
+                        player.y + player.height > obs.y) {
+                        player.lives--;
+                        player.invincible = true;
+                        player.invincibleTime = 120; // 2 seconds at 60fps
+                        if (player.lives <= 0) {
+                            gameRunning = false;
+                            showDialogue('gameOver');
+                        }
+                        updateDisplay();
+                    }
+                });
+
+                // Enemy collision
+                enemies.forEach(enemy => {
+                    if (player.x < enemy.x + enemy.width &&
+                        player.x + player.width > enemy.x &&
+                        player.y < enemy.y + enemy.height &&
+                        player.y + player.height > enemy.y) {
+                        player.lives--;
+                        player.invincible = true;
+                        player.invincibleTime = 120;
+                        if (player.lives <= 0) {
+                            gameRunning = false;
+                            showDialogue('gameOver');
+                        }
+                        updateDisplay();
+                    }
+                });
+            }
+
+            // Power-up collision
+            powerUps.forEach((pu, index) => {
+                if (player.x < pu.x + pu.width &&
+                    player.x + player.width > pu.x &&
+                    player.y < pu.y + pu.height &&
+                    player.y + player.height > pu.y) {
+                    powerUps.splice(index, 1);
+                    player.jumpBoost = true;
+                    player.color = '#FFD700';
+                    score += 50;
+                    showDialogue('powerUp');
+                    updateDisplay();
+                }
+            });
+
+            // Collectible collision
+            collectibles.forEach((col, index) => {
+                if (!col.collected && player.x < col.x + col.width &&
+                    player.x + player.width > col.x &&
+                    player.y < col.y + col.height &&
+                    player.y + player.height > col.y) {
+                    col.collected = true;
+                    score += 25;
+                    createCollectParticles(col.x + col.width / 2, col.y + col.height / 2);
+                    updateDisplay();
                 }
             });
 
@@ -2732,9 +3042,19 @@
                 player.y < goal.y + goal.height &&
                 player.y + player.height > goal.y) {
                 gameRunning = false;
-                alert('Congratulations! Vladislava reached Youssef! ❤️');
-                restartBtn.style.display = 'inline-block';
+                nextLevel();
             }
+        }
+
+        function updateEnemies() {
+            enemies.forEach((enemy, index) => {
+                enemy.x -= gameSpeed;
+                enemy.y += enemy.speed;
+                if (enemy.y < 300 || enemy.y > 350) enemy.speed *= -1;
+                if (enemy.x + enemy.width < scrollX) {
+                    enemies.splice(index, 1);
+                }
+            });
         }
 
         function updatePlayer() {
@@ -2750,6 +3070,21 @@
                 scrollX = player.x - canvas.width / 2;
             }
 
+            // Handle invincibility
+            if (player.invincible) {
+                player.invincibleTime--;
+                if (player.invincibleTime <= 0) {
+                    player.invincible = false;
+                }
+            }
+
+            // Increase game speed over time based on level
+            gameTime++;
+            const level = levels[currentLevel - 1];
+            if (gameTime % 600 === 0) {
+                gameSpeed = Math.min(gameSpeed + level.speedIncrease, 5);
+            }
+
             if (!player.onGround) {
                 player.velocityY += gravity;
             }
@@ -2758,6 +3093,10 @@
             if (player.y + player.height >= 360) {
                 player.onGround = true;
                 player.velocityY = 0;
+                if (player.jumpBoost) {
+                    player.jumpBoost = false;
+                    player.color = '#FF69B4';
+                }
             }
         }
 
@@ -2765,65 +3104,368 @@
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw ground
-            ctx.fillStyle = '#8B4513';
-            ctx.fillRect(0, 360, canvas.width, 40);
+            // Draw sky gradient with sunset effect
+            const level = levels[currentLevel - 1];
+            const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGradient.addColorStop(0, level.background.sky[0]);
+            skyGradient.addColorStop(0.3, level.background.sky[1]);
+            skyGradient.addColorStop(1, level.background.sky[2]);
+            ctx.fillStyle = skyGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw player (Vladislava)
-            ctx.fillStyle = '#FF69B4';
-            ctx.fillRect(player.x - scrollX, player.y, player.width, player.height);
-            ctx.fillStyle = '#000';
-            ctx.font = '12px Arial';
-            ctx.fillText('V', player.x - scrollX + 12, player.y + 20);
+            // Draw mountains in background
+            ctx.fillStyle = level.background.mountains;
+            ctx.beginPath();
+            ctx.moveTo(0, 300);
+            ctx.lineTo(100, 200);
+            ctx.lineTo(200, 250);
+            ctx.lineTo(300, 180);
+            ctx.lineTo(400, 220);
+            ctx.lineTo(500, 160);
+            ctx.lineTo(600, 200);
+            ctx.lineTo(700, 140);
+            ctx.lineTo(800, 180);
+            ctx.lineTo(canvas.width, 300);
+            ctx.closePath();
+            ctx.fill();
 
-            // Draw obstacles
-            ctx.fillStyle = '#654321';
-            obstacles.forEach(obs => {
-                ctx.fillRect(obs.x - scrollX, obs.y, obs.width, obs.height);
+            // Draw mountain shadows
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.beginPath();
+            ctx.moveTo(100, 200);
+            ctx.lineTo(150, 220);
+            ctx.lineTo(200, 250);
+            ctx.lineTo(250, 200);
+            ctx.lineTo(300, 180);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw clouds with better detail
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            clouds.forEach(cloud => {
+                const cloudX = cloud.x - scrollX * 0.3;
+                ctx.beginPath();
+                ctx.arc(cloudX, cloud.y, cloud.width / 4, 0, Math.PI * 2);
+                ctx.arc(cloudX + cloud.width / 3, cloud.y - 5, cloud.width / 3, 0, Math.PI * 2);
+                ctx.arc(cloudX + cloud.width * 2 / 3, cloud.y + 3, cloud.width / 4, 0, Math.PI * 2);
+                ctx.arc(cloudX + cloud.width, cloud.y - 2, cloud.width / 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cloud shadows
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.beginPath();
+                ctx.arc(cloudX + 5, cloud.y + 8, cloud.width / 4, 0, Math.PI * 2);
+                ctx.arc(cloudX + cloud.width / 3 + 5, cloud.y + 3, cloud.width / 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
             });
 
-            // Draw goal (Youssef)
-            ctx.fillStyle = '#4169E1';
-            ctx.fillRect(goal.x - scrollX, goal.y, goal.width, goal.height);
+            // Draw ground with grass
+            // Dirt layer
+            ctx.fillStyle = level.background.ground;
+            ctx.fillRect(0, 360, canvas.width, 40);
+
+            // Grass layer
+            ctx.fillStyle = level.background.grass;
+            ctx.fillRect(0, 355, canvas.width, 10);
+
+            // Grass blades
+            ctx.strokeStyle = '#32CD32';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 8) {
+                ctx.beginPath();
+                ctx.moveTo(i, 355);
+                ctx.lineTo(i - 2, 345);
+                ctx.moveTo(i + 2, 355);
+                ctx.lineTo(i + 4, 348);
+                ctx.moveTo(i + 6, 355);
+                ctx.lineTo(i + 8, 350);
+                ctx.stroke();
+            }
+
+            // Draw player (Vladislava) with gradient and shadow
+            const playerX = player.x - scrollX;
+            const playerY = player.y;
+
+            // Player shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(playerX + 2, playerY + player.height, player.width, 3);
+
+            // Invincibility effect
+            if (player.invincible && Math.floor(gameTime / 10) % 2 === 0) {
+                ctx.globalAlpha = 0.5;
+            }
+
+            // Player body with gradient
+            const playerGradient = ctx.createLinearGradient(playerX, playerY, playerX, playerY + player.height);
+            if (player.jumpBoost) {
+                playerGradient.addColorStop(0, '#FFD700');
+                playerGradient.addColorStop(1, '#FFA500');
+            } else {
+                playerGradient.addColorStop(0, '#FF69B4');
+                playerGradient.addColorStop(1, '#DC143C');
+            }
+            ctx.fillStyle = playerGradient;
+            ctx.fillRect(playerX, playerY, player.width, player.height);
+
+            // Player border
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(playerX, playerY, player.width, player.height);
+
+            // Player face
+            ctx.fillStyle = '#FFE4E1';
+            ctx.fillRect(playerX + 8, playerY + 5, 14, 10);
             ctx.fillStyle = '#000';
-            ctx.fillText('Y', goal.x - scrollX + 12, goal.y + 20);
+            ctx.fillRect(playerX + 10, playerY + 8, 2, 2); // left eye
+            ctx.fillRect(playerX + 18, playerY + 8, 2, 2); // right eye
+            ctx.fillRect(playerX + 14, playerY + 12, 2, 1); // mouth
+
+            // Player hair
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(playerX + 6, playerY + 2, 18, 6);
+
+            ctx.globalAlpha = 1;
+
+            // Draw obstacles with 3D effect
+            obstacles.forEach(obs => {
+                const obsX = obs.x - scrollX;
+                const obsY = obs.y;
+
+                // Obstacle shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                ctx.fillRect(obsX + 2, obsY + obs.height, obs.width, 3);
+
+                // Obstacle body
+                let obsColor;
+                if (obs.type === 'small') {
+                    obsColor = '#8B4513';
+                } else if (obs.type === 'large') {
+                    obsColor = '#654321';
+                } else {
+                    obsColor = '#A0522D';
+                }
+
+                const obsGradient = ctx.createLinearGradient(obsX, obsY, obsX, obsY + obs.height);
+                obsGradient.addColorStop(0, obsColor);
+                obsGradient.addColorStop(1, '#3D2914');
+                ctx.fillStyle = obsGradient;
+                ctx.fillRect(obsX, obsY, obs.width, obs.height);
+
+                // Obstacle border
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(obsX, obsY, obs.width, obs.height);
+
+                // Obstacle texture
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fillRect(obsX + 2, obsY + 2, obs.width - 4, 2);
+                ctx.fillRect(obsX + 2, obsY + 6, obs.width - 4, 1);
+            });
+
+            // Draw power-ups with glow effect
+            powerUps.forEach(pu => {
+                const puX = pu.x - scrollX;
+                const puY = pu.y;
+
+                // Glow effect
+                ctx.shadowColor = '#FFD700';
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = '#FFD700';
+                ctx.fillRect(puX, puY, pu.width, pu.height);
+                ctx.shadowBlur = 0;
+
+                // Power-up border
+                ctx.strokeStyle = '#FFA500';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(puX, puY, pu.width, pu.height);
+
+                // Arrow symbol
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText('↑', puX + 4, puY + 13);
+            });
+
+            // Draw collectibles with sparkle effect
+            collectibles.forEach(col => {
+                if (!col.collected) {
+                    const colX = col.x - scrollX;
+                    const colY = col.y;
+
+                    // Sparkle effect
+                    ctx.shadowColor = '#FF69B4';
+                    ctx.shadowBlur = 8;
+                    ctx.fillStyle = '#FF69B4';
+                    ctx.beginPath();
+                    ctx.arc(colX + col.width / 2, colY + col.height / 2, col.width / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Heart symbol
+                    ctx.fillStyle = '#FFF';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.fillText('♥', colX + 2, colY + 12);
+                }
+            });
+
+            // Draw particles
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / 40;
+                ctx.beginPath();
+                ctx.arc(p.x - scrollX, p.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+
+            // Draw jump particles
+            jumpParticles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / 30;
+                ctx.fillRect(p.x - scrollX - 1, p.y - 1, 3, 3);
+            });
+            ctx.globalAlpha = 1;
+
+            // Draw enemies
+            enemies.forEach(enemy => {
+                const enemyX = enemy.x - scrollX;
+                const enemyY = enemy.y;
+
+                // Enemy shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                ctx.fillRect(enemyX + 2, enemyY + enemy.height, enemy.width, 3);
+
+                // Enemy body
+                const enemyGradient = ctx.createLinearGradient(enemyX, enemyY, enemyX, enemyY + enemy.height);
+                enemyGradient.addColorStop(0, '#8B0000');
+                enemyGradient.addColorStop(1, '#4B0000');
+                ctx.fillStyle = enemyGradient;
+                ctx.fillRect(enemyX, enemyY, enemy.width, enemy.height);
+
+                // Enemy border
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(enemyX, enemyY, enemy.width, enemy.height);
+
+                // Enemy eyes (angry)
+                ctx.fillStyle = '#FF0000';
+                ctx.fillRect(enemyX + 6, enemyY + 5, 3, 3);
+                ctx.fillRect(enemyX + 16, enemyY + 5, 3, 3);
+                ctx.fillStyle = '#FFF';
+                ctx.fillRect(enemyX + 7, enemyY + 6, 1, 1);
+                ctx.fillRect(enemyX + 17, enemyY + 6, 1, 1);
+            });
+
+            // Draw goal (Youssef) with enhanced graphics
+            const goalX = goal.x - scrollX;
+            const goalY = goal.y;
+
+            // Goal shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(goalX + 2, goalY + goal.height, goal.width, 3);
+
+            // Goal body with gradient
+            const goalGradient = ctx.createLinearGradient(goalX, goalY, goalX, goalY + goal.height);
+            goalGradient.addColorStop(0, '#4169E1');
+            goalGradient.addColorStop(1, '#000080');
+            ctx.fillStyle = goalGradient;
+            ctx.fillRect(goalX, goalY, goal.width, goal.height);
+
+            // Goal border
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(goalX, goalY, goal.width, goal.height);
+
+            // Goal face
+            ctx.fillStyle = '#FFE4E1';
+            ctx.fillRect(goalX + 8, goalY + 5, 14, 10);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(goalX + 10, goalY + 8, 2, 2); // left eye
+            ctx.fillRect(goalX + 18, goalY + 8, 2, 2); // right eye
+            ctx.fillRect(goalX + 14, goalY + 12, 2, 1); // mouth
+
+            // Goal hair
+            ctx.fillStyle = '#000';
+            ctx.fillRect(goalX + 6, goalY + 2, 18, 6);
         }
 
         function gameLoop() {
-            if (!gameRunning) return;
+            if (!gameRunning && !dialogueActive) return;
 
-            updatePlayer();
-            createObstacle();
-            updateObstacles();
-            checkCollisions();
+            if (gameRunning) {
+                updatePlayer();
+                createObstacle();
+                createPowerUp();
+                createCollectible();
+                createEnemy();
+                updateObstacles();
+                updatePowerUps();
+                updateCollectibles();
+                updateEnemies();
+                updateParticles();
+                checkCollisions();
+            }
             draw();
+            drawDialogue();
 
             requestAnimationFrame(gameLoop);
         }
 
         // Controls
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' && player.onGround) {
+            if (e.code === 'Space' && (player.onGround || player.jumpBoost)) {
                 player.velocityY = jumpPower;
+                if (!player.onGround) player.jumpBoost = false;
                 player.onGround = false;
+                createJumpParticles(player.x + player.width / 2, player.y + player.height);
                 e.preventDefault();
             }
         });
 
         canvas.addEventListener('click', () => {
-            if (player.onGround) {
+            if (player.onGround || player.jumpBoost) {
                 player.velocityY = jumpPower;
+                if (!player.onGround) player.jumpBoost = false;
                 player.onGround = false;
+                createJumpParticles(player.x + player.width / 2, player.y + player.height);
             }
         });
 
         restartBtn.addEventListener('click', () => {
             restartBtn.style.display = 'none';
+            currentLevel = 1;
             initGame();
         });
 
-        // Start game
-        initGame();
+        document.getElementById('dialogue-next').addEventListener('click', advanceDialogue);
+
+        function drawDialogue() {
+            if (!dialogueActive || !currentDialogue) return;
+
+            const dialogueBox = document.getElementById('dialogue-box');
+            const speakerEl = document.getElementById('dialogue-speaker');
+            const textEl = document.getElementById('dialogue-text');
+
+            dialogueBox.style.display = 'block';
+            speakerEl.textContent = currentDialogue[0].speaker;
+            textEl.textContent = currentDialogue[0].text;
+        }
+
+        function advanceDialogue() {
+            if (!currentDialogue) return;
+
+            currentDialogue.shift();
+            if (currentDialogue.length === 0) {
+                dialogueActive = false;
+                currentDialogue = null;
+                document.getElementById('dialogue-box').style.display = 'none';
+                if (gameRunning === false && currentLevel <= levels.length) {
+                    gameRunning = true;
+                }
+            } else {
+                drawDialogue();
+            }
+        }
     </script>
 </body>
 
