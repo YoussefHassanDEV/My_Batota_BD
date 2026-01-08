@@ -958,6 +958,307 @@
             outline: none;
         }
 
+        /* Easter Egg Styles */
+        .easter-egg-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b9d, #667eea);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 2em;
+            z-index: 1000;
+            animation: subtle-pulse 3s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.5);
+            transition: all 0.3s;
+            opacity: 0.7;
+        }
+
+        .easter-egg-trigger:hover {
+            transform: scale(1.2) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.8);
+            opacity: 1;
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(255, 107, 157, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 20px rgba(255, 107, 157, 0.7);
+            }
+        }
+
+        .easter-egg-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s;
+            overflow-y: auto;
+        }
+
+        .easter-egg-content {
+            background: linear-gradient(135deg, #ff6b9d, #764ba2, #667eea);
+            padding: 60px 40px;
+            border-radius: 30px;
+            max-width: 900px;
+            text-align: center;
+            animation: zoomIn 0.5s;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.6);
+            position: relative;
+            margin: 20px;
+        }
+
+        .easter-egg-content h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        .easter-egg-content p {
+            font-size: 1.5em;
+            line-height: 2;
+            margin: 20px 0;
+        }
+
+        .easter-egg-hearts {
+            font-size: 4em;
+            margin: 30px 0;
+            animation: heartbeat 1s infinite;
+        }
+
+        .close-easter-egg {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-easter-egg:hover {
+            transform: rotate(90deg);
+            color: #ffd700;
+        }
+
+        /* Secret Code Input */
+        .secret-code-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        .secret-code-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            text-align: center;
+            margin: 20px auto;
+            display: block;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .secret-code-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .secret-code-input:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .unlock-button {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .unlock-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .hint-text {
+            font-size: 1em;
+            opacity: 0.8;
+            font-style: italic;
+            margin: 10px 0;
+        }
+
+        .secret-revealed {
+            display: none;
+            animation: fadeIn 1s;
+        }
+
+        .treasure-box {
+            background: rgba(255, 215, 0, 0.2);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.9);
+            }
+        }
+
+        /* Memory Game */
+        .memory-game {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 30px auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(102, 126, 234, 0.3));
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 107, 157, 0.5);
+        }
+
+        .memory-card.flipped {
+            background: linear-gradient(135deg, #ff6b9d, #667eea);
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            animation: matchedPulse 0.5s;
+        }
+
+        @keyframes matchedPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .game-stats {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            margin: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Love Quiz */
+        .love-quiz {
+            display: none;
+        }
+
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(10px);
+            border-color: #ff6b9d;
+        }
+
+        .quiz-option.correct {
+            background: rgba(0, 255, 0, 0.3);
+            border-color: #00ff00;
+        }
+
+        .quiz-option.wrong {
+            background: rgba(255, 0, 0, 0.3);
+            border-color: #ff0000;
+        }
+
+        .progress-bar-quiz {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2em;
@@ -986,12 +1287,128 @@
             .wedding-title {
                 font-size: 1.8em;
             }
+
+            .easter-egg-content {
+                padding: 40px 20px;
+                max-width: 90%;
+            }
+
+            .easter-egg-content h2 {
+                font-size: 2em;
+            }
+
+            .easter-egg-content p {
+                font-size: 1.2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Easter Egg Trigger -->
+    <div class="easter-egg-trigger" onclick="openEasterEgg()" title="Click me! 💕">
+        💖
+    </div>
+
+    <!-- Easter Egg Modal -->
+    <div class="easter-egg-modal" id="easterEggModal">
+        <div class="easter-egg-content">
+            <span class="close-easter-egg" onclick="closeEasterEgg()">&times;</span>
+            
+            <div id="initialEasterEgg">
+                <h2>🎉 You Found My Secret! 🎉</h2>
+                <div class="easter-egg-hearts">
+                    💖 💕 💗 💓 💝
+                </div>
+                <p>
+                    Congratulations my love! You discovered something special! 🎊
+                </p>
+                <p>
+                    But wait... this is just the beginning! To unlock my ULTIMATE surprise, you need to prove you know me well. Are you ready for the challenge? 😏
+                </p>
+                <button class="unlock-button" onclick="startChallenge()">Start The Challenge! 🚀</button>
+            </div>
+
+            <!-- Secret Code Challenge -->
+            <div id="secretCodeChallenge" style="display: none;">
+                <h2>🔐 Secret Code Challenge 🔐</h2>
+                <div class="secret-code-section">
+                    <p>Enter the secret code to unlock the treasure!</p>
+                    <p class="hint-text">Hint: The day we're getting married (format: MMDD) 💍</p>
+                    <input type="text" class="secret-code-input" id="secretCodeInput" placeholder="Enter code..." maxlength="4">
+                    <button class="unlock-button" onclick="checkSecretCode()">Unlock 🔓</button>
+                    <p id="codeError" style="color: #ff6b9d; margin-top: 10px; display: none;">Try again! Think about our special day 💕</p>
+                </div>
+            </div>
+
+            <!-- Memory Game -->
+            <div id="memoryGameSection" style="display: none;">
+                <h2>💝 Memory Game: Match The Hearts 💝</h2>
+                <p>Match all the pairs to unlock the next challenge!</p>
+                <div class="game-stats">
+                    <div class="stat-item">Moves: <span id="moves">0</span></div>
+                    <div class="stat-item">Matches: <span id="matches">0</span>/8</div>
+                    <div class="stat-item">Time: <span id="timer">0</span>s</div>
+                </div>
+                <div class="memory-game" id="memoryGame"></div>
+                <button class="unlock-button" onclick="resetMemoryGame()" style="margin-top: 20px;">Reset Game 🔄</button>
+            </div>
+
+            <!-- Love Quiz -->
+            <div id="loveQuizSection" style="display: none;">
+                <h2>❤️ Love Quiz: How Well Do You Know Us? ❤️</h2>
+                <div class="progress-bar-quiz">
+                    <div class="progress-fill" id="quizProgress"></div>
+                </div>
+                <p>Score: <span id="quizScore">0</span>/5</p>
+                <div id="quizContainer"></div>
+            </div>
+
+            <!-- Final Secret Revealed -->
+            <div id="secretRevealed" class="secret-revealed">
+                <h2>🏆 YOU DID IT! 🏆</h2>
+                <div class="easter-egg-hearts">
+                    ✨ 💖 🎉 💕 ✨
+                </div>
+                <div class="treasure-box">
+                    <h3 style="font-size: 2.5em; margin-bottom: 20px;">💎 The Ultimate Secret 💎</h3>
+                    <p style="font-size: 1.8em; line-height: 2;">
+                        My love, you are not just beautiful, smart, and amazing...
+                    </p>
+                    <p style="font-size: 1.8em; line-height: 2; margin-top: 20px;">
+                        You are the ABSOLUTE BEST THING that has ever happened to me! 🌟
+                    </p>
+                    <p style="font-size: 1.6em; margin-top: 30px;">
+                        Every challenge you just completed represents a reason I love you:
+                    </p>
+                    <div style="text-align: left; margin: 30px auto; max-width: 600px;">
+                        <p style="margin: 15px 0;">🔐 <strong>The Code:</strong> Because you remember our special moments</p>
+                        <p style="margin: 15px 0;">🧩 <strong>The Memory Game:</strong> Because you never forget the important things</p>
+                        <p style="margin: 15px 0;">❤️ <strong>The Quiz:</strong> Because you truly know and understand me</p>
+                    </div>
+                    <p style="font-size: 2em; margin-top: 40px;">
+                        You're my puzzle solver, my memory keeper, my quiz master, and most importantly...
+                    </p>
+                    <p style="font-size: 2.5em; margin-top: 20px; color: #ffd700;">
+                        MY EVERYTHING! 💖💖💖
+                    </p>
+                    <div style="margin-top: 40px; font-size: 1.5em;">
+                        I love you more than all the stars in the sky,<br>
+                        more than all the grains of sand,<br>
+                        more than words could ever express! 🌌
+                    </div>
+                    <div class="easter-egg-hearts" style="margin-top: 30px;">
+                        🎁 💝 🎊 🎉 🎈 🎀 💐 🌹
+                    </div>
+                    <p style="font-size: 1.3em; margin-top: 30px; font-style: italic;">
+                        P.S. You're the only person in the world who could find this and unlock it. That's how special you are to me! 😘
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="main-content" id="mainContent">
@@ -1526,6 +1943,226 @@
         createParticles();
         createFloatingHearts();
         calculateDistance();
+
+        // Easter Egg Functions
+        let memoryGameStartTime = 0;
+        let memoryGameTimer = null;
+        let memoryGameMoves = 0;
+        let memoryGameMatches = 0;
+        let flippedCards = [];
+        let matchedPairs = [];
+
+        function openEasterEgg() {
+            const modal = document.getElementById('easterEggModal');
+            modal.style.display = 'flex';
+            createConfetti();
+        }
+
+        function closeEasterEgg() {
+            const modal = document.getElementById('easterEggModal');
+            modal.style.display = 'none';
+        }
+
+        function startChallenge() {
+            document.getElementById('initialEasterEgg').style.display = 'none';
+            document.getElementById('secretCodeChallenge').style.display = 'block';
+        }
+
+        function checkSecretCode() {
+            const input = document.getElementById('secretCodeInput').value;
+            const correctCode = '0410'; // April 10
+            
+            if (input === correctCode) {
+                document.getElementById('secretCodeChallenge').style.display = 'none';
+                document.getElementById('memoryGameSection').style.display = 'block';
+                initMemoryGame();
+            } else {
+                document.getElementById('codeError').style.display = 'block';
+                document.getElementById('secretCodeInput').value = '';
+                setTimeout(() => {
+                    document.getElementById('codeError').style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        function initMemoryGame() {
+            const emojis = ['❤️', '💕', '💖', '💗', '💓', '💝', '💞', '💘'];
+            const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+            const gameContainer = document.getElementById('memoryGame');
+            gameContainer.innerHTML = '';
+            gameContainer.style.display = 'grid';
+            
+            cards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.innerHTML = '?';
+                card.onclick = () => flipCard(card);
+                gameContainer.appendChild(card);
+            });
+
+            memoryGameStartTime = Date.now();
+            memoryGameMoves = 0;
+            memoryGameMatches = 0;
+            flippedCards = [];
+            matchedPairs = [];
+            
+            if (memoryGameTimer) clearInterval(memoryGameTimer);
+            memoryGameTimer = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - memoryGameStartTime) / 1000);
+            document.getElementById('timer').textContent = elapsed;
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            card.innerHTML = card.dataset.emoji;
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                memoryGameMoves++;
+                document.getElementById('moves').textContent = memoryGameMoves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            
+            setTimeout(() => {
+                if (card1.dataset.emoji === card2.dataset.emoji) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    memoryGameMatches++;
+                    document.getElementById('matches').textContent = memoryGameMatches;
+                    
+                    if (memoryGameMatches === 8) {
+                        clearInterval(memoryGameTimer);
+                        setTimeout(() => {
+                            document.getElementById('memoryGameSection').style.display = 'none';
+                            document.getElementById('loveQuizSection').style.display = 'block';
+                            initLoveQuiz();
+                        }, 1000);
+                    }
+                } else {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    card1.innerHTML = '?';
+                    card2.innerHTML = '?';
+                }
+                flippedCards = [];
+            }, 800);
+        }
+
+        function resetMemoryGame() {
+            initMemoryGame();
+        }
+
+        function initLoveQuiz() {
+            const questions = [
+                {
+                    question: "What's the most important thing in our relationship?",
+                    options: ["Trust and Love", "Money", "Looks", "Location"],
+                    correct: 0
+                },
+                {
+                    question: "When is our wedding day?",
+                    options: ["January 10, 2026", "April 10, 2026", "December 25, 2025", "February 14, 2026"],
+                    correct: 1
+                },
+                {
+                    question: "What makes our long-distance relationship work?",
+                    options: ["Communication and commitment", "Just luck", "We don't know", "It's easy"],
+                    correct: 0
+                },
+                {
+                    question: "What do I love most about you?",
+                    options: ["Just your looks", "Everything about you", "Your cooking", "Your money"],
+                    correct: 1
+                },
+                {
+                    question: "How long will I love you?",
+                    options: ["A few years", "Until we meet", "Forever and always", "I'm not sure"],
+                    correct: 2
+                }
+            ];
+
+            let currentQuestion = 0;
+            let score = 0;
+
+            function showQuestion() {
+                const container = document.getElementById('quizContainer');
+                const q = questions[currentQuestion];
+                
+                container.innerHTML = `
+                    <div class="quiz-question">
+                        <h3 style="font-size: 1.5em; margin-bottom: 20px;">Question ${currentQuestion + 1}/5</h3>
+                        <p style="font-size: 1.3em;">${q.question}</p>
+                        <div class="quiz-options">
+                            ${q.options.map((option, index) => `
+                                <div class="quiz-option" onclick="selectAnswer(${index})">${option}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('quizProgress').style.width = ((currentQuestion / questions.length) * 100) + '%';
+            }
+
+            window.selectAnswer = function(selectedIndex) {
+                const q = questions[currentQuestion];
+                const options = document.querySelectorAll('.quiz-option');
+                
+                options.forEach((opt, idx) => {
+                    opt.style.pointerEvents = 'none';
+                    if (idx === q.correct) {
+                        opt.classList.add('correct');
+                    } else if (idx === selectedIndex && idx !== q.correct) {
+                        opt.classList.add('wrong');
+                    }
+                });
+
+                if (selectedIndex === q.correct) {
+                    score++;
+                    document.getElementById('quizScore').textContent = score;
+                }
+
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        showQuestion();
+                    } else {
+                        document.getElementById('quizProgress').style.width = '100%';
+                        document.getElementById('loveQuizSection').style.display = 'none';
+                        document.getElementById('secretRevealed').style.display = 'block';
+                        createConfetti();
+                    }
+                }, 1500);
+            };
+
+            showQuestion();
+        }
+
+        function closeEasterEgg() {
+            const modal = document.getElementById('easterEggModal');
+            modal.style.display = 'none';
+            // Reset everything
+            document.getElementById('initialEasterEgg').style.display = 'block';
+            document.getElementById('secretCodeChallenge').style.display = 'none';
+            document.getElementById('memoryGameSection').style.display = 'none';
+            document.getElementById('loveQuizSection').style.display = 'none';
+            document.getElementById('secretRevealed').style.display = 'none';
+            document.getElementById('secretCodeInput').value = '';
+            document.getElementById('quizScore').textContent = '0';
+            if (memoryGameTimer) clearInterval(memoryGameTimer);
+        }
 
         // Love Messages that change every hour from 6 AM to 10 PM - 150 unique messages (25 sets of 6)
         const loveMessagesCollection = [
