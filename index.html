@@ -1888,6 +1888,25 @@
         </div>
     </div>
 
+    <!-- New Easter Egg -->
+    <div id="easter-egg" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 1000; text-align: center; max-width: 500px;">
+        <h2>🎉 Secret Easter Egg Unlocked! 🎉</h2>
+        <p>You found the hidden Konami Code! You're amazing! 😘</p>
+        <p>Now, scroll down for your special Flash game...</p>
+        <button onclick="document.getElementById('easter-egg').style.display='none';" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer;">Close</button>
+    </div>
+
+    <!-- Flash Game Section -->
+    <div id="flash-game" style="margin-top: 100px; text-align: center; padding: 50px; background: rgba(255, 255, 255, 0.1); border-radius: 20px;">
+        <h2>🎮 Vladislava's Adventure! 🎮</h2>
+        <p>Help Vladislava jump over obstacles to reach Youssef! Use SPACE or click to jump.</p>
+        <canvas id="game-canvas" width="800" height="400" style="border: 2px solid white; border-radius: 10px; background: linear-gradient(to bottom, #87CEEB, #98FB98);"></canvas>
+        <div id="game-info" style="margin-top: 20px;">
+            <p>Score: <span id="score">0</span> | Distance to Youssef: <span id="distance">1000</span>m</p>
+        </div>
+        <button id="restart-button" style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; display: none;">Restart Game</button>
+    </div>
+
     <script>
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
@@ -2605,6 +2624,206 @@
 
         // Update messages every minute to check if we need new ones
         setInterval(updateLoveMessages, 60000); // Check every minute
+
+        // Easter Egg: Konami Code
+        let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        let konamiIndex = 0;
+        document.addEventListener('keydown', function(event) {
+            if (event.code === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    showEasterEgg();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        function showEasterEgg() {
+            const egg = document.getElementById('easter-egg');
+            if (egg) {
+                egg.style.display = 'block';
+                egg.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Flash Game - Vladislava's Adventure
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const distanceEl = document.getElementById('distance');
+        const restartBtn = document.getElementById('restart-button');
+
+        // Game variables
+        let player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true };
+        let obstacles = [];
+        let score = 0;
+        let distance = 1000;
+        let gameRunning = true;
+        let gameSpeed = 2;
+        let gravity = 0.5;
+        let jumpPower = -12;
+        let scrollX = 0;
+
+        // Goal
+        let goal = { x: 950, y: 300, width: 30, height: 30 };
+
+        function initGame() {
+            player = { x: 50, y: 300, width: 30, height: 30, velocityY: 0, onGround: true };
+            obstacles = [];
+            score = 0;
+            distance = 1000;
+            gameRunning = true;
+            gameSpeed = 2;
+            scrollX = 0;
+            updateDisplay();
+            gameLoop();
+        }
+
+        function updateDisplay() {
+            scoreEl.textContent = score;
+            distanceEl.textContent = distance;
+        }
+
+        function createObstacle() {
+            if (Math.random() < 0.015) {
+                obstacles.push({
+                    x: canvas.width + scrollX,
+                    y: 330,
+                    width: 30,
+                    height: 30
+                });
+            }
+        }
+
+        function updateObstacles() {
+            obstacles.forEach((obs, index) => {
+                obs.x -= gameSpeed;
+                if (obs.x + obs.width < scrollX) {
+                    obstacles.splice(index, 1);
+                    score += 10;
+                }
+            });
+        }
+
+        function checkCollisions() {
+            // Ground collision
+            if (player.y + player.height >= 360) {
+                player.y = 360 - player.height;
+                player.velocityY = 0;
+                player.onGround = true;
+            }
+
+            // Obstacle collision
+            obstacles.forEach(obs => {
+                if (player.x < obs.x + obs.width &&
+                    player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height &&
+                    player.y + player.height > obs.y) {
+                    gameRunning = false;
+                    restartBtn.style.display = 'inline-block';
+                }
+            });
+
+            // Goal collision
+            if (player.x < goal.x + goal.width &&
+                player.x + player.width > goal.x &&
+                player.y < goal.y + goal.height &&
+                player.y + player.height > goal.y) {
+                gameRunning = false;
+                alert('Congratulations! Vladislava reached Youssef! ❤️');
+                restartBtn.style.display = 'inline-block';
+            }
+        }
+
+        function updatePlayer() {
+            // Move player right slowly
+            player.x += 1;
+
+            // Update distance
+            distance = Math.max(0, Math.floor((goal.x - player.x) / 10));
+            updateDisplay();
+
+            // Scroll camera
+            if (player.x - scrollX > canvas.width / 2) {
+                scrollX = player.x - canvas.width / 2;
+            }
+
+            if (!player.onGround) {
+                player.velocityY += gravity;
+            }
+            player.y += player.velocityY;
+
+            if (player.y + player.height >= 360) {
+                player.onGround = true;
+                player.velocityY = 0;
+            }
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ground
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, 360, canvas.width, 40);
+
+            // Draw player (Vladislava)
+            ctx.fillStyle = '#FF69B4';
+            ctx.fillRect(player.x - scrollX, player.y, player.width, player.height);
+            ctx.fillStyle = '#000';
+            ctx.font = '12px Arial';
+            ctx.fillText('V', player.x - scrollX + 12, player.y + 20);
+
+            // Draw obstacles
+            ctx.fillStyle = '#654321';
+            obstacles.forEach(obs => {
+                ctx.fillRect(obs.x - scrollX, obs.y, obs.width, obs.height);
+            });
+
+            // Draw goal (Youssef)
+            ctx.fillStyle = '#4169E1';
+            ctx.fillRect(goal.x - scrollX, goal.y, goal.width, goal.height);
+            ctx.fillStyle = '#000';
+            ctx.fillText('Y', goal.x - scrollX + 12, goal.y + 20);
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            updatePlayer();
+            createObstacle();
+            updateObstacles();
+            checkCollisions();
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && player.onGround) {
+                player.velocityY = jumpPower;
+                player.onGround = false;
+                e.preventDefault();
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (player.onGround) {
+                player.velocityY = jumpPower;
+                player.onGround = false;
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            restartBtn.style.display = 'none';
+            initGame();
+        });
+
+        // Start game
+        initGame();
     </script>
 </body>
 
