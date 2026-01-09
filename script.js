@@ -618,6 +618,105 @@ function drawPyramidInterior() {
             ctx.fillText("✓", q.x - 15, 280);
         }
     });
+
+    // Draw romantic bed after all quests are complete
+    if (romanticBed.active) {
+        let shake = 0;
+        if (romanticBed.reached && romanticBed.shakeTimer > 0) {
+            shake = Math.sin(gameFrame * 0.5) * romanticBed.shakeIntensity;
+        }
+
+        // Bed frame
+        ctx.fillStyle = "#8B4513";
+        ctx.fillRect(romanticBed.x - 60 + shake, romanticBed.y + 40, 120, 15);
+
+        // Bed posts
+        ctx.fillRect(romanticBed.x - 60 + shake, romanticBed.y, 10, 55);
+        ctx.fillRect(romanticBed.x + 50 + shake, romanticBed.y, 10, 55);
+
+        // Mattress/blanket
+        const bedGrad = ctx.createLinearGradient(0, romanticBed.y + 20, 0, romanticBed.y + 40);
+        bedGrad.addColorStop(0, "#FF69B4");
+        bedGrad.addColorStop(1, "#FF1493");
+        ctx.fillStyle = bedGrad;
+        ctx.fillRect(romanticBed.x - 55 + shake, romanticBed.y + 25, 110, 15);
+
+        // Pillows
+        ctx.fillStyle = "#FFE4E1";
+        ctx.beginPath();
+        ctx.ellipse(romanticBed.x - 30 + shake, romanticBed.y + 22, 15, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(romanticBed.x + 30 + shake, romanticBed.y + 22, 15, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Curtains
+        if (!romanticBed.reached || romanticBed.shakeTimer > 0) {
+            // Curtain rod
+            ctx.fillStyle = "#8B4513";
+            ctx.fillRect(romanticBed.x - 65, romanticBed.y - 30, 130, 5);
+
+            // Curtain fabric (left and right)
+            const curtainGrad = ctx.createLinearGradient(0, romanticBed.y - 30, 0, romanticBed.y + 60);
+            curtainGrad.addColorStop(0, "#E6E6FA");
+            curtainGrad.addColorStop(1, "#D8BFD8");
+
+            // Left curtain
+            ctx.fillStyle = curtainGrad;
+            ctx.beginPath();
+            ctx.moveTo(romanticBed.x - 65, romanticBed.y - 25);
+            ctx.quadraticCurveTo(romanticBed.x - 70, romanticBed.y + 20, romanticBed.x - 75, romanticBed.y + 60);
+            ctx.lineTo(romanticBed.x - 50, romanticBed.y + 60);
+            ctx.quadraticCurveTo(romanticBed.x - 45, romanticBed.y + 20, romanticBed.x - 40, romanticBed.y - 25);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right curtain
+            ctx.beginPath();
+            ctx.moveTo(romanticBed.x + 65, romanticBed.y - 25);
+            ctx.quadraticCurveTo(romanticBed.x + 70, romanticBed.y + 20, romanticBed.x + 75, romanticBed.y + 60);
+            ctx.lineTo(romanticBed.x + 50, romanticBed.y + 60);
+            ctx.quadraticCurveTo(romanticBed.x + 45, romanticBed.y + 20, romanticBed.x + 40, romanticBed.y - 25);
+            ctx.closePath();
+            ctx.fill();
+
+            // Curtain details
+            ctx.strokeStyle = "#C8A2C8";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(romanticBed.x - 65, romanticBed.y - 20);
+            ctx.quadraticCurveTo(romanticBed.x - 55, romanticBed.y + 10, romanticBed.x - 65, romanticBed.y + 40);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(romanticBed.x + 65, romanticBed.y - 20);
+            ctx.quadraticCurveTo(romanticBed.x + 55, romanticBed.y + 10, romanticBed.x + 65, romanticBed.y + 40);
+            ctx.stroke();
+        }
+
+        // Floating hearts when shaking
+        if (romanticBed.reached && romanticBed.shakeTimer > 0) {
+            if (gameFrame % 10 === 0) {
+                particlesArr.push({
+                    x: romanticBed.x + (Math.random() - 0.5) * 40,
+                    y: romanticBed.y + 20,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -2 - Math.random() * 2,
+                    life: 60,
+                    color: '#FF1493',
+                    isHeart: true
+                });
+            }
+        }
+
+        // Label when not reached
+        if (!romanticBed.reached) {
+            ctx.fillStyle = "#FFD700";
+            ctx.font = "bold 18px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("💕 Bed 💕", romanticBed.x, romanticBed.y - 40);
+            ctx.textAlign = "left";
+        }
+    }
 }
 
 const pyramidPlayer = {
@@ -826,6 +925,16 @@ const quests = [
     { text: "Coffee", done: false, x: 400 },
     { text: "Camel", done: false, x: 600 }
 ];
+
+// Romantic bed for final scene
+let romanticBed = {
+    x: 700,
+    y: 280,
+    active: false,
+    reached: false,
+    shakeTimer: 0,
+    shakeIntensity: 0
+};
 function checkQuests() {
     quests.forEach(q => {
         if (!q.done && Math.abs(pyramidPlayer.x - q.x) < 40) {
@@ -834,12 +943,32 @@ function checkQuests() {
         }
     });
 
-    if (quests.every(q => q.done)) {
-        setTimeout(() => {
-            isPyramidMode = false;
-            if (animFrame) cancelAnimationFrame(animFrame);
-            showVictoryMessage();
-        }, 1000);
+    // Activate bed after all quests complete
+    if (quests.every(q => q.done) && !romanticBed.active) {
+        romanticBed.active = true;
+        showPyramidDialogue("💕 All tasks done! Now go to the bed! 💕");
+    }
+
+    // Check if player reached the bed
+    if (romanticBed.active && !romanticBed.reached && Math.abs(pyramidPlayer.x - romanticBed.x) < 60) {
+        romanticBed.reached = true;
+        romanticBed.shakeTimer = 180; // 3 seconds of shaking at 60fps
+        romanticBed.shakeIntensity = 4;
+        showPyramidDialogue("💕💕💕");
+    }
+
+    // Update bed shake timer
+    if (romanticBed.shakeTimer > 0) {
+        romanticBed.shakeTimer--;
+
+        // End scene after shaking finishes
+        if (romanticBed.shakeTimer === 0) {
+            setTimeout(() => {
+                isPyramidMode = false;
+                if (animFrame) cancelAnimationFrame(animFrame);
+                showVictoryMessage();
+            }, 1000);
+        }
     }
 }
 
@@ -1002,20 +1131,23 @@ function initQuiz() {
 const gameCanvas = document.getElementById('game-canvas');
 const ctx = gameCanvas ? gameCanvas.getContext('2d') : null;
 let gameFrame = 0, gameRun = false, animFrame;
-let score = 0, distance = 1000, level = 1;
+let score = 0, distance = 2387, level = 1;
 let player = { x: 100, y: 300, w: 40, h: 60, vy: 0, g: 0.5, jp: -10, gr: true, hearts: 3, inv: 0 };
 let obstacles = [], clouds = [], particlesArr = [], mountains = [];
 let isCutscene = false, youssef = { x: 800, y: 300, w: 40, h: 60 }, cutsceneTimer = 0;
 let isPyramidMode = false;
+let dialogueShown1 = false, dialogueShown2 = false, dialogueShown3 = false, dialogueShown4 = false, dialogueShown5 = false;
 // Mobile detection and canvas scaling
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 let canvasScale = 1;
 
 const dialogues = [
-    { dist: 1000, text: "It's my birthday! Running to Youssef! 🏃‍♀️💨" },
-    { dist: 700, text: "The distance is far, but love is stronger! 💪❤️" },
-    { dist: 300, text: "It's getting dark... I see a light! 🌟" },
-    { dist: 50, text: "I'M ALMOST THERE! 💍" }
+    { dist: 2387, text: "Starting from snowy Kyiv! Running to my love in Egypt! 🏃‍♀️💨❄️" },
+    { dist: 1900, text: "Leaving Ukraine... every step brings me closer to you! 💪❤️" },
+    { dist: 1200, text: "Flying through the sky, my heart soars to you! ✈️💕" },
+    { dist: 700, text: "The pyramids are calling! Almost to Egypt! 🏜️" },
+    { dist: 300, text: "I can feel the warmth of Egypt... and your love! 🌟" },
+    { dist: 50, text: "I'M ALMOST THERE! Cairo awaits! 💍🇪🇬" }
 ];
 
 function setupCanvas() {
@@ -1042,9 +1174,10 @@ function closeFlashGame() {
 
 function initGame() {
     player.y = 300; player.vy = 0; player.hearts = 4; player.inv = 0; player.x = 100;
-    score = 0; distance = 1000; level = 1;
+    score = 0; distance = 2387; level = 1;
     obstacles = []; clouds = []; particlesArr = []; mountains = [];
     isCutscene = false; youssef.x = 800; cutsceneTimer = 0;
+    dialogueShown1 = false; dialogueShown2 = false; dialogueShown3 = false; dialogueShown4 = false; dialogueShown5 = false;
 
     for (let i = 0; i < 5; i++) clouds.push({ x: Math.random() * 800, y: Math.random() * 150 + 20, speed: Math.random() * 0.5 + 0.1 });
     for (let i = 0; i < 4; i++) mountains.push({ x: i * 250, h: 100 + Math.random() * 150 });
@@ -1058,74 +1191,212 @@ function gameLoop() {
     if (!gameRun || !ctx) return;
     ctx.clearRect(0, 0, 800, 400);
 
-    // Sky gradient based on level
+    // Determine current zone based on distance
+    // Ukraine: 2387-1887 km (first 500km)
+    // Travel: 1887-500 km (middle 1387km)
+    // Egypt: 500-0 km (last 500km)
+    let currentZone = distance > 1887 ? 'ukraine' : distance > 500 ? 'travel' : 'egypt';
+
+    // Sky gradient based on zone
     let skyGrad = ctx.createLinearGradient(0, 0, 0, 400);
-    if (level === 1) {
-        skyGrad.addColorStop(0, '#87CEEB');
-        skyGrad.addColorStop(1, '#E0F6FF');
-    } else if (level === 2) {
+    if (currentZone === 'ukraine') {
+        // Snowy winter sky
+        skyGrad.addColorStop(0, '#B0C4DE');
+        skyGrad.addColorStop(1, '#E6F0FA');
+    } else if (currentZone === 'travel') {
+        // High altitude sky
+        skyGrad.addColorStop(0, '#4A90E2');
+        skyGrad.addColorStop(1, '#87CEEB');
+    } else {
+        // Egyptian desert sky
         skyGrad.addColorStop(0, '#FFDAB9');
         skyGrad.addColorStop(1, '#FFE4B5');
-    } else {
-        skyGrad.addColorStop(0, '#191970');
-        skyGrad.addColorStop(1, '#4B0082');
     }
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, 800, 400);
 
-    // Sun/Moon
+    // Sun/Moon based on zone
     ctx.beginPath();
     ctx.arc(700, 50, 30, 0, Math.PI * 2);
-    ctx.fillStyle = level === 3 ? '#FFFACD' : '#FFD700';
+    if (currentZone === 'ukraine') {
+        ctx.fillStyle = '#F0F0F0'; // Pale winter sun
+    } else if (currentZone === 'travel') {
+        ctx.fillStyle = '#FFD700'; // Bright sun in sky
+    } else {
+        ctx.fillStyle = '#FFA500'; // Hot Egyptian sun
+    }
     ctx.fill();
-    ctx.strokeStyle = level === 3 ? '#FFF' : '#FFA500';
+    ctx.strokeStyle = currentZone === 'ukraine' ? '#DDD' : '#FFA500';
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Mountains
-    // Pyramids 🌄
-    mountains.forEach(p => {
-        if (!isCutscene) p.x -= 0.4;
-        if (p.x < -300) p.x = 900;
+    // Background elements based on zone
+    if (currentZone === 'ukraine') {
+        // Northern Lights effect (Easter egg!)
+        if (gameFrame % 3 === 0) {
+            const northernLights = ctx.createLinearGradient(0, 0, 800, 100);
+            northernLights.addColorStop(0, 'rgba(0, 255, 100, 0.1)');
+            northernLights.addColorStop(0.5, 'rgba(0, 100, 255, 0.15)');
+            northernLights.addColorStop(1, 'rgba(100, 0, 255, 0.1)');
+            ctx.fillStyle = northernLights;
+            ctx.fillRect(0, 0, 800, 120);
+        }
 
-        // Main pyramid
-        ctx.fillStyle = level === 3 ? '#3E2723' : '#C2B280';
-        ctx.beginPath();
-        ctx.moveTo(p.x, 340);
-        ctx.lineTo(p.x + 150, 340 - p.h);
-        ctx.lineTo(p.x + 300, 340);
-        ctx.closePath();
-        ctx.fill();
+        // Winter trees (pine trees)
+        mountains.forEach(p => {
+            if (!isCutscene) p.x -= 0.4;
+            if (p.x < -300) p.x = 900;
 
-        // Shadow side
-        ctx.fillStyle = level === 3 ? '#2B1B17' : '#A68B5B';
-        ctx.beginPath();
-        ctx.moveTo(p.x + 150, 340 - p.h);
-        ctx.lineTo(p.x + 300, 340);
-        ctx.lineTo(p.x + 190, 340);
-        ctx.closePath();
-        ctx.fill();
-    });
+            // Draw winter pine tree
+            // Tree trunk
+            ctx.fillStyle = '#654321';
+            ctx.fillRect(p.x + 140, 340 - p.h * 0.4, 20, p.h * 0.4);
 
+            // Snow-covered pine layers
+            ctx.fillStyle = '#2F5233';
+            for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                let yPos = 340 - p.h * 0.4 - i * 25;
+                ctx.moveTo(p.x + 100 - i * 5, yPos);
+                ctx.lineTo(p.x + 150, yPos - 40);
+                ctx.lineTo(p.x + 200 + i * 5, yPos);
+                ctx.closePath();
+                ctx.fill();
 
-    // Clouds
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    clouds.forEach(c => {
-        if (!isCutscene) c.x -= c.speed;
-        if (c.x < -100) c.x = 900;
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, 20, 0, Math.PI * 2);
-        ctx.arc(c.x + 20, c.y - 10, 25, 0, Math.PI * 2);
-        ctx.arc(c.x + 40, c.y, 20, 0, Math.PI * 2);
-        ctx.fill();
-    });
+                // Snow on branches
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.moveTo(p.x + 100 - i * 5, yPos);
+                ctx.lineTo(p.x + 150, yPos - 40);
+                ctx.lineTo(p.x + 200 + i * 5, yPos);
+                ctx.lineTo(p.x + 200 + i * 5, yPos + 5);
+                ctx.lineTo(p.x + 100 - i * 5, yPos + 5);
+                ctx.closePath();
+                ctx.fill();
+                ctx.fillStyle = '#2F5233';
+            }
+        });
+
+        // Snowflakes falling (Easter egg!)
+        if (gameFrame % 20 === 0) {
+            particlesArr.push({
+                x: Math.random() * 800,
+                y: -10,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: 1 + Math.random(),
+                life: 200,
+                color: '#FFFFFF',
+                isSnow: true
+            });
+        }
+
+    } else if (currentZone === 'travel') {
+        // Planes flying by
+        if (gameFrame % 180 === 0) {
+            obstacles.push({
+                x: 850,
+                y: 80 + Math.random() * 100,
+                type: 'plane',
+                w: 60,
+                h: 30,
+                active: true
+            });
+        }
+
+        // Cloud layer (more clouds in sky)
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        clouds.forEach(c => {
+            if (!isCutscene) c.x -= c.speed * 1.5;
+            if (c.x < -100) c.x = 900;
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, 25, 0, Math.PI * 2);
+            ctx.arc(c.x + 25, c.y - 12, 30, 0, Math.PI * 2);
+            ctx.arc(c.x + 50, c.y, 25, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+    } else {
+        // Egypt - Special sunrise effect when entering zone (Easter egg!)
+        if (distance < 550 && distance > 450) {
+            const sunrise = ctx.createRadialGradient(700, 50, 30, 700, 50, 150);
+            sunrise.addColorStop(0, 'rgba(255, 200, 0, 0.3)');
+            sunrise.addColorStop(0.5, 'rgba(255, 150, 0, 0.2)');
+            sunrise.addColorStop(1, 'rgba(255, 100, 0, 0)');
+            ctx.fillStyle = sunrise;
+            ctx.fillRect(0, 0, 800, 200);
+        }
+
+        // Egypt - Pyramids
+        mountains.forEach(p => {
+            if (!isCutscene) p.x -= 0.4;
+            if (p.x < -300) p.x = 900;
+
+            // Main pyramid
+            ctx.fillStyle = '#C2B280';
+            ctx.beginPath();
+            ctx.moveTo(p.x, 340);
+            ctx.lineTo(p.x + 150, 340 - p.h);
+            ctx.lineTo(p.x + 300, 340);
+            ctx.closePath();
+            ctx.fill();
+
+            // Shadow side
+            ctx.fillStyle = '#A68B5B';
+            ctx.beginPath();
+            ctx.moveTo(p.x + 150, 340 - p.h);
+            ctx.lineTo(p.x + 300, 340);
+            ctx.lineTo(p.x + 190, 340);
+            ctx.closePath();
+            ctx.fill();
+
+            // Pyramid details (stone blocks)
+            ctx.strokeStyle = '#8B7355';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 8; i++) {
+                let y = 340 - i * 15;
+                ctx.beginPath();
+                ctx.moveTo(p.x + 25 + i * 12, y);
+                ctx.lineTo(p.x + 275 - i * 12, y);
+                ctx.stroke();
+            }
+        });
+
+        // Desert heat shimmer effect
+        if (gameFrame % 5 === 0) {
+            ctx.fillStyle = 'rgba(255, 200, 100, 0.05)';
+            ctx.fillRect(0, 300, 800, 40);
+        }
+
+        // Regular clouds for Egypt
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        clouds.forEach(c => {
+            if (!isCutscene) c.x -= c.speed;
+            if (c.x < -100) c.x = 900;
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, 20, 0, Math.PI * 2);
+            ctx.arc(c.x + 20, c.y - 10, 25, 0, Math.PI * 2);
+            ctx.arc(c.x + 40, c.y, 20, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
 
     if (isCutscene) updateCutscene(); else update();
     draw();
+
     // Romantic glow during cutscene
     if (isCutscene) {
         ctx.fillStyle = 'rgba(255,105,180,0.08)';
         ctx.fillRect(0, 0, 800, 400);
+    }
+
+    // Mobile tap hint (shows for first 5 seconds on mobile)
+    if (isMobile && gameFrame < 300 && !isCutscene) {
+        const alpha = gameFrame < 200 ? 0.8 : 0.8 - (gameFrame - 200) / 100;
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.font = "bold 24px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("👆 TAP TO JUMP! 👆", 400, 200);
+        ctx.textAlign = "left";
     }
 
     animFrame = requestAnimationFrame(gameLoop);
@@ -1137,19 +1408,56 @@ function update() {
     player.y += player.vy;
     if (player.y > 300) { player.y = 300; player.vy = 0; player.gr = true; }
 
-    distance -= 0.15;
-    if (distance < 700 && level === 1) { level = 2; showDialogue(dialogues[1].text); }
-    if (distance < 300 && level === 2) { level = 3; showDialogue(dialogues[2].text); }
-    if (distance < 50 && level === 3) { level = 4; showDialogue(dialogues[3].text); }
+    // Slower distance decrease for longer journey (2387km)
+    distance -= 0.35;
+
+    // Trigger dialogues at specific distances
+    if (distance < 1900 && distance > 1895 && !dialogueShown1) { showDialogue(dialogues[1].text); dialogueShown1 = true; }
+    if (distance < 1200 && distance > 1195 && !dialogueShown2) { showDialogue(dialogues[2].text); dialogueShown2 = true; }
+    if (distance < 700 && distance > 695 && !dialogueShown3) { showDialogue(dialogues[3].text); dialogueShown3 = true; }
+    if (distance < 300 && distance > 295 && !dialogueShown4) { showDialogue(dialogues[4].text); dialogueShown4 = true; }
+    if (distance < 50 && distance > 45 && !dialogueShown5) { showDialogue(dialogues[5].text); dialogueShown5 = true; }
+
     if (distance <= 0) { startEndingCutscene(); return; }
 
-    // Spawn obstacles (less frequent on mobile)
+    // Spawn obstacles based on zone (less frequent on mobile)
     const spawnRate = isMobile ? 150 : 120;
+    let currentZone = distance > 1887 ? 'ukraine' : distance > 500 ? 'travel' : 'egypt';
+
     if (gameFrame % spawnRate === 0 && distance > 50) {
-        let type = Math.random() > 0.4 ? (Math.random() > 0.5 ? 'rock' : 'bird') : 'heart';
-        let obsY = type === 'bird' ? 220 : 325;
-        if (type === 'heart') obsY = Math.random() * 50 + 230;
+        let type, obsY;
+
+        if (currentZone === 'ukraine') {
+            // Ukraine obstacles: snowballs, winter birds, hearts with Ukrainian colors
+            type = Math.random() > 0.5 ? (Math.random() > 0.5 ? 'snowball' : 'bird') : 'ukraineheart';
+            obsY = type === 'bird' ? 220 : 325;
+            if (type === 'ukraineheart') obsY = Math.random() * 50 + 230;
+        } else if (currentZone === 'travel') {
+            // Travel obstacles: clouds, balloons, flying hearts
+            type = Math.random() > 0.6 ? 'cloud' : 'flyingheart';
+            obsY = Math.random() * 100 + 150; // Higher in the sky
+        } else {
+            // Egypt obstacles: cacti, camels (Easter egg!), hearts
+            type = Math.random() > 0.4 ? (Math.random() > 0.7 ? 'cactus' : 'camel') : 'egyptheart';
+            obsY = type === 'camel' ? 295 : 325;  // Lowered camel to ground level - jumpable!
+            if (type === 'egyptheart') obsY = Math.random() * 50 + 230;
+        }
+
         obstacles.push({ x: 850, y: obsY, type: type, w: 30, h: 30, active: true });
+    }
+
+    // Add special Easter egg: Random love messages in the sky!
+    if (gameFrame % 500 === 0) {
+        const loveMessages = ["💕", "🇺🇦❤️🇪🇬", "Love knows no distance!", "2387km of love", "💍"];
+        obstacles.push({
+            x: 850,
+            y: 100,
+            type: 'message',
+            w: 100,
+            h: 30,
+            active: true,
+            message: loveMessages[Math.floor(Math.random() * loveMessages.length)]
+        });
     }
 
     for (let i = obstacles.length - 1; i >= 0; i--) {
@@ -1158,12 +1466,24 @@ function update() {
 
         if (obs.active && player.x < obs.x + obs.w - 5 && player.x + player.w > obs.x + 5 &&
             player.y < obs.y + obs.h - 5 && player.y + player.h > obs.y + 5) {
-            if (obs.type === 'heart') {
+
+            // Collectible hearts (all types)
+            if (obs.type === 'heart' || obs.type === 'ukraineheart' || obs.type === 'flyingheart' || obs.type === 'egyptheart') {
                 score += 100;
-                if (player.hearts < 3) player.hearts++;
+                if (player.hearts < 4) player.hearts++;
                 createGameParticles(obs.x, obs.y, 10, '#ff6b9d');
                 obs.active = false;
-            } else if (player.inv <= 0) {
+            }
+            // Messages are just visual - no collision
+            else if (obs.type === 'message') {
+                // Do nothing, just let it pass by
+            }
+            // Planes in travel zone - no collision (decorative)
+            else if (obs.type === 'plane') {
+                // Planes fly high, decorative only
+            }
+            // All other obstacles damage the player
+            else if (player.inv <= 0) {
                 player.hearts--;
                 player.inv = 60;
                 createGameParticles(player.x, player.y, 10, '#ff0000');
@@ -1233,28 +1553,87 @@ function transitionToPyramid() {
     isCutscene = false;
     gameRun = false;
     isPyramidMode = true;
-    
+
     // Reset quests for new attempt
     quests.forEach(q => q.done = false);
-    
+
+    // Reset romantic bed
+    romanticBed.active = false;
+    romanticBed.reached = false;
+    romanticBed.shakeTimer = 0;
+    romanticBed.shakeIntensity = 0;
+
     // Show instruction dialogue
     showPyramidDialogue("🏛️ We entered the Pyramid! Complete 3 quests together! Use Arrow Keys/Tap to move!");
-    
+
     // Reset player position for pyramid
     pyramidPlayer.x = 100;
     pyramidPlayer.y = 260;
-    
+
     startLevelTwo();
 }
 
 
 
 function draw() {
-    // Ground
-    ctx.fillStyle = '#7ec850';
-    ctx.fillRect(0, 340, 800, 60);
-    ctx.fillStyle = '#5d4037';
-    ctx.fillRect(0, 370, 800, 30);
+    // Ground - changes based on zone
+    let currentZone = distance > 1887 ? 'ukraine' : distance > 500 ? 'travel' : 'egypt';
+
+    if (currentZone === 'ukraine') {
+        // Snowy ground
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 340, 800, 60);
+        // Ice/snow texture
+        ctx.fillStyle = '#E6F0FA';
+        for (let i = 0; i < 800; i += 40) {
+            ctx.fillRect(i, 340, 30, 60);
+        }
+    } else if (currentZone === 'travel') {
+        // Sky - no ground visible during flight
+        ctx.fillStyle = 'rgba(135, 206, 250, 0.3)';
+        ctx.fillRect(0, 340, 800, 60);
+    } else {
+        // Sandy desert ground
+        ctx.fillStyle = '#EDC9AF';
+        ctx.fillRect(0, 340, 800, 60);
+        ctx.fillStyle = '#DEB887';
+        ctx.fillRect(0, 370, 800, 30);
+        // Sand dunes pattern
+        for (let i = 0; i < 5; i++) {
+            ctx.fillStyle = '#C19A6B';
+            ctx.beginPath();
+            ctx.arc(i * 200 - gameFrame % 200, 340, 30, 0, Math.PI, true);
+            ctx.fill();
+        }
+    }
+
+    // Love trail behind player (Easter egg!)
+    if (gameFrame % 5 === 0 && !isCutscene) {
+        particlesArr.push({
+            x: player.x + 20,
+            y: player.y + 30,
+            vx: -1.5 + Math.random() * 0.5,
+            vy: Math.random() * 2 - 1,
+            life: 30,
+            color: '#FF69B4',
+            isHeart: true
+        });
+    }
+
+    // Sparkle trail when jumping
+    if (!player.gr) {
+        if (gameFrame % 3 === 0) {
+            particlesArr.push({
+                x: player.x + 20 + Math.random() * 10 - 5,
+                y: player.y + 40 + Math.random() * 10,
+                vx: Math.random() * 2 - 1,
+                vy: Math.random() * 2 + 1,
+                life: 20,
+                color: '#FFD700',
+                isSparkle: true
+            });
+        }
+    }
 
     // Player (with invincibility flash)
     if (player.inv === 0 || player.inv % 4 === 0) drawChibiPlayer(player.x, player.y);
@@ -1271,99 +1650,515 @@ function draw() {
     // Obstacles
     obstacles.forEach(obs => {
         if (!obs.active) return;
+
+        // Old obstacles
         if (obs.type === 'rock') drawRock(obs.x, obs.y);
         else if (obs.type === 'bird') drawBird(obs.x, obs.y);
+        else if (obs.type === 'plane') drawPlane(obs.x, obs.y);
         else if (obs.type === 'heart') {
             ctx.fillStyle = '#ff0000';
             let pulse = Math.sin(gameFrame * 0.1) * 2;
             ctx.font = (24 + pulse) + "px Arial";
             ctx.fillText("❤️", obs.x, obs.y + 20);
         }
+
+        // Ukraine zone obstacles
+        else if (obs.type === 'snowball') {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.strokeStyle = '#E0E0E0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(obs.x + 15, obs.y + 15, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+        }
+        else if (obs.type === 'ukraineheart') {
+            // Ukrainian flag colors heart (Easter egg!)
+            let pulse = Math.sin(gameFrame * 0.1) * 2;
+            ctx.font = (24 + pulse) + "px Arial";
+            ctx.fillText("💙", obs.x, obs.y + 10);
+            ctx.fillText("💛", obs.x, obs.y + 30);
+        }
+
+        // Travel zone obstacles
+        else if (obs.type === 'cloud') {
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.beginPath();
+            ctx.arc(obs.x, obs.y, 15, 0, Math.PI * 2);
+            ctx.arc(obs.x + 15, obs.y - 8, 18, 0, Math.PI * 2);
+            ctx.arc(obs.x + 30, obs.y, 15, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        else if (obs.type === 'flyingheart') {
+            ctx.fillStyle = '#FF1493';
+            let pulse = Math.sin(gameFrame * 0.1) * 2;
+            let float = Math.sin(gameFrame * 0.05) * 5;
+            ctx.font = (24 + pulse) + "px Arial";
+            ctx.fillText("💕", obs.x, obs.y + float + 20);
+        }
+
+        // Egypt zone obstacles
+        else if (obs.type === 'cactus') {
+            // Cactus
+            ctx.fillStyle = '#2E7D32';
+            ctx.fillRect(obs.x + 10, obs.y, 10, 35);
+            // Arms
+            ctx.fillRect(obs.x, obs.y + 10, 10, 10);
+            ctx.fillRect(obs.x + 20, obs.y + 10, 10, 10);
+            // Needles
+            ctx.strokeStyle = '#1B5E20';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 6; i++) {
+                ctx.beginPath();
+                ctx.moveTo(obs.x + 12, obs.y + i * 6);
+                ctx.lineTo(obs.x + 8, obs.y + i * 6);
+                ctx.stroke();
+            }
+        }
+        else if (obs.type === 'camel') {
+            // Cute camel (Easter egg!)
+            ctx.fillStyle = '#DEB887';
+            // Body
+            ctx.fillRect(obs.x + 10, obs.y + 20, 25, 15);
+            // Humps
+            ctx.beginPath();
+            ctx.arc(obs.x + 18, obs.y + 15, 8, 0, Math.PI * 2);
+            ctx.fill();
+            // Head
+            ctx.fillRect(obs.x + 30, obs.y + 25, 12, 8);
+            // Legs
+            ctx.fillRect(obs.x + 12, obs.y + 35, 4, 10);
+            ctx.fillRect(obs.x + 28, obs.y + 35, 4, 10);
+            // Eye
+            ctx.fillStyle = '#000';
+            ctx.fillRect(obs.x + 38, obs.y + 27, 2, 2);
+        }
+        else if (obs.type === 'egyptheart') {
+            // Egyptian themed heart with hieroglyphics
+            ctx.fillStyle = '#FFD700';
+            let pulse = Math.sin(gameFrame * 0.1) * 2;
+            ctx.font = (24 + pulse) + "px Arial";
+            ctx.fillText("💛", obs.x, obs.y + 20);
+        }
+
+        // Special Easter egg messages
+        else if (obs.type === 'message') {
+            ctx.fillStyle = 'rgba(255, 105, 180, 0.9)';
+            ctx.font = "bold 20px Arial";
+            ctx.strokeStyle = '#FFF';
+            ctx.lineWidth = 3;
+            ctx.strokeText(obs.message, obs.x, obs.y + 20);
+            ctx.fillText(obs.message, obs.x, obs.y + 20);
+        }
     });
 
-    // Particles
+    // Particles - Enhanced rendering
     for (let i = particlesArr.length - 1; i >= 0; i--) {
         let p = particlesArr[i];
         p.x += p.vx;
         p.y += p.vy;
         p.life--;
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, 3, 3);
+
+        let alpha = p.life / (p.isHeart ? 30 : p.isSparkle ? 20 : p.isSnow ? 200 : 50);
+
+        if (p.isHeart) {
+            // Render mini hearts
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.font = '12px Arial';
+            ctx.fillText('💕', p.x - 6, p.y + 6);
+            ctx.restore();
+        } else if (p.isSparkle) {
+            // Render sparkles with glow
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = p.color;
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            // Star points
+            for (let j = 0; j < 4; j++) {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                let angle = (j / 4) * Math.PI * 2;
+                ctx.lineTo(p.x + Math.cos(angle) * 4, p.y + Math.sin(angle) * 4);
+                ctx.stroke();
+            }
+            ctx.restore();
+        } else if (p.isSnow) {
+            // Render snowflakes
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        } else {
+            // Regular particles
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = p.color;
+            ctx.shadowBlur = 3;
+            ctx.shadowColor = p.color;
+            ctx.fillRect(p.x, p.y, 3, 3);
+            ctx.restore();
+        }
+
         if (p.life <= 0) particlesArr.splice(i, 1);
     }
 }
 
 function drawChibiPlayer(x, y) {
     let bounce = player.gr ? Math.sin(gameFrame * 0.2) * 2 : 0;
+    let armSwing = player.gr ? Math.sin(gameFrame * 0.2) * 0.15 : 0;
 
-    // Body
-    ctx.fillStyle = '#FF69B4';
+    // Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.beginPath();
+    ctx.ellipse(x + 20, y + 58 + bounce, 15, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Legs with gradient
+    ctx.save();
+    const legGrad = ctx.createLinearGradient(x, y + 45, x, y + 60);
+    legGrad.addColorStop(0, '#FFE0BD');
+    legGrad.addColorStop(1, '#FFCBA4');
+    ctx.fillStyle = legGrad;
+
+    // Left leg
+    ctx.fillRect(x + 12, y + 45 + bounce, 7, 13);
+    // Right leg
+    ctx.fillRect(x + 23, y + 45 + bounce, 7, 13);
+
+    // Shoes
+    ctx.fillStyle = '#FF1493';
+    ctx.beginPath();
+    ctx.ellipse(x + 15, y + 57 + bounce, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x + 26, y + 57 + bounce, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Dress with gradient and details
+    const dressGrad = ctx.createLinearGradient(x, y + 20, x, y + 50);
+    dressGrad.addColorStop(0, '#FF69B4');
+    dressGrad.addColorStop(0.5, '#FF1493');
+    dressGrad.addColorStop(1, '#C71585');
+    ctx.fillStyle = dressGrad;
     ctx.beginPath();
     ctx.moveTo(x + 20, y + 25 + bounce);
-    ctx.lineTo(x + 5, y + 55 + bounce);
-    ctx.lineTo(x + 35, y + 55 + bounce);
+    ctx.quadraticCurveTo(x + 3, y + 35 + bounce, x + 3, y + 50 + bounce);
+    ctx.lineTo(x + 37, y + 50 + bounce);
+    ctx.quadraticCurveTo(x + 37, y + 35 + bounce, x + 20, y + 25 + bounce);
+    ctx.fill();
+
+    // Dress decoration
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 35 + bounce, 8, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 35 + bounce, 2, 0, Math.PI * 2);
     ctx.fill();
 
     // Torso
-    ctx.fillStyle = '#5D4037';
-    ctx.fillRect(x + 5, y + 15 + bounce, 30, 25);
-
-    // Head
     ctx.fillStyle = '#FFE0BD';
+    ctx.fillRect(x + 13, y + 20 + bounce, 14, 12);
+
+    // Arms with animation
+    ctx.fillStyle = '#FFE0BD';
+    // Left arm
+    ctx.save();
+    ctx.translate(x + 12, y + 24 + bounce);
+    ctx.rotate(-0.3 + armSwing);
+    ctx.fillRect(-3, 0, 5, 12);
+    ctx.restore();
+
+    // Right arm
+    ctx.save();
+    ctx.translate(x + 28, y + 24 + bounce);
+    ctx.rotate(0.3 - armSwing);
+    ctx.fillRect(-2, 0, 5, 12);
+    ctx.restore();
+
+    // Neck
+    ctx.fillStyle = '#FFE0BD';
+    ctx.fillRect(x + 17, y + 14 + bounce, 6, 6);
+
+    // Head with gradient
+    const headGrad = ctx.createRadialGradient(x + 18, y + 10 + bounce, 2, x + 20, y + 12 + bounce, 14);
+    headGrad.addColorStop(0, '#FFEBD6');
+    headGrad.addColorStop(1, '#FFE0BD');
+    ctx.fillStyle = headGrad;
     ctx.beginPath();
-    ctx.arc(x + 20, y + 15 + bounce, 14, 0, Math.PI * 2);
+    ctx.arc(x + 20, y + 12 + bounce, 13, 0, Math.PI * 2);
     ctx.fill();
 
-    // Hair
-    ctx.fillStyle = '#5D4037';
+    // Hair - long flowing
+    const hairGrad = ctx.createLinearGradient(x, y, x, y + 30);
+    hairGrad.addColorStop(0, '#8B4513');
+    hairGrad.addColorStop(1, '#5D4037');
+    ctx.fillStyle = hairGrad;
+
+    // Main hair
     ctx.beginPath();
-    ctx.arc(x + 20, y + 13 + bounce, 16, Math.PI, 0);
+    ctx.arc(x + 20, y + 10 + bounce, 15, Math.PI, 0);
     ctx.fill();
 
-    // Eyes
+    // Hair strands flowing
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y + 12 + bounce);
+    ctx.quadraticCurveTo(x + 2, y + 28 + bounce, x + 8, y + 38 + bounce);
+    ctx.quadraticCurveTo(x + 4, y + 32 + bounce, x + 7, y + 16 + bounce);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x + 34, y + 12 + bounce);
+    ctx.quadraticCurveTo(x + 38, y + 28 + bounce, x + 32, y + 38 + bounce);
+    ctx.quadraticCurveTo(x + 36, y + 32 + bounce, x + 33, y + 16 + bounce);
+    ctx.fill();
+
+    // Eyes with sparkle
     ctx.fillStyle = '#000';
-    if (gameFrame % 150 < 5) {
-        ctx.fillRect(x + 14, y + 14 + bounce, 4, 1);
-        ctx.fillRect(x + 24, y + 14 + bounce, 4, 1);
+    let blinkFrame = gameFrame % 180;
+    if (blinkFrame < 8) {
+        // Blinking
+        ctx.fillRect(x + 13, y + 12 + bounce, 5, 2);
+        ctx.fillRect(x + 23, y + 12 + bounce, 5, 2);
     } else {
+        // Open eyes
         ctx.beginPath();
-        ctx.arc(x + 16, y + 14 + bounce, 2, 0, Math.PI * 2);
+        ctx.arc(x + 15, y + 12 + bounce, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(x + 26, y + 14 + bounce, 2, 0, Math.PI * 2);
+        ctx.arc(x + 25, y + 12 + bounce, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eye shine/sparkle
+        ctx.fillStyle = '#FFF';
+        ctx.beginPath();
+        ctx.arc(x + 16, y + 11 + bounce, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 26, y + 11 + bounce, 1.5, 0, Math.PI * 2);
         ctx.fill();
     }
+
+    // Eyelashes
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x + 16 + i, y + 10 + bounce);
+        ctx.lineTo(x + 16 + i, y + 8 + bounce);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x + 24 + i, y + 10 + bounce);
+        ctx.lineTo(x + 24 + i, y + 8 + bounce);
+        ctx.stroke();
+    }
+
+    // Smile
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 14 + bounce, 6, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+
+    // Rosy cheeks
+    ctx.fillStyle = 'rgba(255, 182, 193, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(x + 10, y + 15 + bounce, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x + 30, y + 15 + bounce, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Crown/Tiara with sparkles
+    ctx.fillStyle = '#FFD700';
+    ctx.strokeStyle = '#FFA500';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y + 4 + bounce);
+    ctx.lineTo(x + 12, y - 2 + bounce);
+    ctx.lineTo(x + 16, y + 4 + bounce);
+    ctx.lineTo(x + 20, y - 4 + bounce);
+    ctx.lineTo(x + 24, y + 4 + bounce);
+    ctx.lineTo(x + 28, y - 2 + bounce);
+    ctx.lineTo(x + 32, y + 4 + bounce);
+    ctx.lineTo(x + 30, y + 6 + bounce);
+    ctx.lineTo(x + 10, y + 6 + bounce);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Crown jewels
+    ctx.fillStyle = '#FF1493';
+    ctx.beginPath();
+    ctx.arc(x + 20, y - 3 + bounce, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(x + 20, y - 3 + bounce, 1, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function drawYoussef(x, y) {
-    // Head
-    ctx.fillStyle = '#FFE0BD';
+    let heartbeat = Math.sin(gameFrame * 0.1) * 1.5;
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
     ctx.beginPath();
-    ctx.arc(x + 20, y + 15, 14, 0, Math.PI * 2);
+    ctx.ellipse(x + 20, y + 58, 15, 5, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Hair
+    // Legs with gradient
+    const legGrad = ctx.createLinearGradient(x, y + 45, x, y + 60);
+    legGrad.addColorStop(0, '#2F4F4F');
+    legGrad.addColorStop(1, '#1C1C1C');
+    ctx.fillStyle = legGrad;
+
+    // Left leg
+    ctx.fillRect(x + 12, y + 45, 7, 13);
+    // Right leg
+    ctx.fillRect(x + 22, y + 45, 7, 13);
+
+    // Shoes
     ctx.fillStyle = '#000';
+    ctx.fillRect(x + 11, y + 56, 9, 4);
+    ctx.fillRect(x + 21, y + 56, 9, 4);
+
+    // Torso - Egyptian themed shirt
+    const shirtGrad = ctx.createLinearGradient(x, y + 25, x, y + 45);
+    shirtGrad.addColorStop(0, '#FFD700');
+    shirtGrad.addColorStop(1, '#FFA500');
+    ctx.fillStyle = shirtGrad;
+    ctx.fillRect(x + 10, y + 25, 20, 20);
+
+    // Shirt pattern (Egyptian hieroglyphics style)
+    ctx.fillStyle = '#8B4513';
+    ctx.font = '8px Arial';
+    ctx.fillText('☥', x + 18, y + 35);
+
+    // Arms
+    const armGrad = ctx.createLinearGradient(x, y + 25, x, y + 40);
+    armGrad.addColorStop(0, '#FFCBA4');
+    armGrad.addColorStop(1, '#FFE0BD');
+    ctx.fillStyle = armGrad;
+
+    // Left arm
+    ctx.fillRect(x + 6, y + 28, 5, 14);
+    // Right arm
+    ctx.fillRect(x + 29, y + 28, 5, 14);
+
+    // Hands
+    ctx.fillStyle = '#FFE0BD';
     ctx.beginPath();
-    ctx.arc(x + 20, y + 12, 15, Math.PI, 0);
+    ctx.arc(x + 8, y + 41, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x + 31, y + 41, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Neck
+    ctx.fillStyle = '#FFE0BD';
+    ctx.fillRect(x + 17, y + 22, 6, 4);
+
+    // Head with gradient
+    const headGrad = ctx.createRadialGradient(x + 18, y + 12, 2, x + 20, y + 14, 14);
+    headGrad.addColorStop(0, '#FFEBD6');
+    headGrad.addColorStop(1, '#FFD7B5');
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 14, 13, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair - styled with gradient
+    const hairGrad = ctx.createLinearGradient(x, y, x, y + 20);
+    hairGrad.addColorStop(0, '#1C1C1C');
+    hairGrad.addColorStop(1, '#000');
+    ctx.fillStyle = hairGrad;
+
+    // Main hair
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 11, 15, Math.PI, 0);
+    ctx.fill();
+
+    // Hair side details
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y + 14);
+    ctx.quadraticCurveTo(x + 4, y + 18, x + 7, y + 20);
+    ctx.quadraticCurveTo(x + 5, y + 17, x + 7, y + 15);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x + 34, y + 14);
+    ctx.quadraticCurveTo(x + 36, y + 18, x + 33, y + 20);
+    ctx.quadraticCurveTo(x + 35, y + 17, x + 33, y + 15);
     ctx.fill();
 
     // Eyes
+    ctx.fillStyle = '#000';
     ctx.beginPath();
-    ctx.arc(x + 16, y + 14, 2, 0, Math.PI * 2);
+    ctx.arc(x + 15, y + 14, 2.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(x + 26, y + 14, 2, 0, Math.PI * 2);
+    ctx.arc(x + 25, y + 14, 2.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Body
-    ctx.fillStyle = '#4169E1';
-    ctx.fillRect(x + 10, y + 25, 20, 20);
+    // Eye shine
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.arc(x + 16, y + 13, 1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x + 26, y + 13, 1, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Legs
-    ctx.fillStyle = '#333';
-    ctx.fillRect(x + 10, y + 45, 9, 15);
-    ctx.fillRect(x + 21, y + 45, 9, 15);
+    // Eyebrows
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x + 12, y + 10);
+    ctx.quadraticCurveTo(x + 15, y + 9, x + 18, y + 10);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 22, y + 10);
+    ctx.quadraticCurveTo(x + 25, y + 9, x + 28, y + 10);
+    ctx.stroke();
+
+    // Smile
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 17, 5, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+
+    // Rosy cheeks
+    ctx.fillStyle = 'rgba(255, 182, 193, 0.4)';
+    ctx.beginPath();
+    ctx.ellipse(x + 11, y + 16, 2, 1.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x + 29, y + 16, 2, 1.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Heart floating above head during cutscene
+    if (isCutscene && cutsceneTimer > 60) {
+        ctx.save();
+        ctx.translate(x + 20, y - 10 + heartbeat);
+        ctx.scale(1 + heartbeat * 0.05, 1 + heartbeat * 0.05);
+        ctx.font = '20px Arial';
+        ctx.fillText('💕', -10, 0);
+        ctx.restore();
+    }
 }
 
 function drawRock(x, y) {
@@ -1402,6 +2197,64 @@ function drawBird(x, y) {
     ctx.beginPath();
     ctx.ellipse(x + 15, y + 15 + wingY, 8, 4, 0, 0, Math.PI * 2);
     ctx.fill();
+}
+
+function drawPlane(x, y) {
+    // Plane body (fuselage)
+    ctx.fillStyle = '#E0E0E0';
+    ctx.fillRect(x + 10, y + 12, 40, 8);
+
+    // Nose cone
+    ctx.fillStyle = '#FF6B9D';
+    ctx.beginPath();
+    ctx.moveTo(x + 50, y + 16);
+    ctx.lineTo(x + 60, y + 16);
+    ctx.lineTo(x + 55, y + 12);
+    ctx.lineTo(x + 55, y + 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Wings
+    ctx.fillStyle = '#4A90E2';
+    // Top wing
+    ctx.beginPath();
+    ctx.moveTo(x + 20, y + 12);
+    ctx.lineTo(x + 15, y - 5);
+    ctx.lineTo(x + 35, y - 5);
+    ctx.lineTo(x + 40, y + 12);
+    ctx.closePath();
+    ctx.fill();
+
+    // Bottom wing
+    ctx.beginPath();
+    ctx.moveTo(x + 20, y + 20);
+    ctx.lineTo(x + 15, y + 35);
+    ctx.lineTo(x + 35, y + 35);
+    ctx.lineTo(x + 40, y + 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Tail
+    ctx.fillStyle = '#FF6B9D';
+    ctx.beginPath();
+    ctx.moveTo(x + 10, y + 12);
+    ctx.lineTo(x + 5, y + 5);
+    ctx.lineTo(x + 15, y + 12);
+    ctx.closePath();
+    ctx.fill();
+
+    // Windows
+    ctx.fillStyle = '#87CEEB';
+    for (let i = 0; i < 4; i++) {
+        ctx.fillRect(x + 20 + i * 8, y + 14, 4, 4);
+    }
+
+    // Love heart trail (Easter egg!)
+    if (gameFrame % 30 === 0) {
+        ctx.fillStyle = '#FF1493';
+        ctx.font = "16px Arial";
+        ctx.fillText("💕", x - 10, y + 16);
+    }
 }
 
 function createGameParticles(x, y, count, color) {
