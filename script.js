@@ -390,7 +390,9 @@ function updatePageContent() {
     
     // Update Birthday Countdown
     if (document.getElementById('days')) {
-        const bDiff = nextBirthdayDate - now;
+        // Support both Date and ms timestamp for nextBirthdayDate
+        const bTargetMs = (nextBirthdayDate instanceof Date ? nextBirthdayDate.getTime() : nextBirthdayDate);
+        const bDiff = bTargetMs - now;
         document.getElementById('days').innerText = Math.floor(bDiff / (1000 * 60 * 60 * 24));
         document.getElementById('hours').innerText = Math.floor((bDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         document.getElementById('minutes').innerText = Math.floor((bDiff % (1000 * 60 * 60)) / (1000 * 60));
@@ -398,7 +400,7 @@ function updatePageContent() {
         
         // Update age info
         const currentAge = calculateAge(birthYear, now);
-        const nextBirthdayYear = nextBirthdayDate.getFullYear();
+        const nextBirthdayYear = (nextBirthdayDate instanceof Date ? nextBirthdayDate : new Date(bTargetMs)).getFullYear();
         const nextAge = calculateNextAge(birthYear, nextBirthdayYear);
         const ageInfoEl = document.getElementById('age-info');
         if (ageInfoEl) {
