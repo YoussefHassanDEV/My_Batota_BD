@@ -125,7 +125,7 @@
 
             <div class="section-box">
                 <div
-                    style="font-size: 2em; background: linear-gradient(45deg, #ffd700, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;">
+                    style="font-size: 2em; background: linear-gradient(45deg, #ffd700, #fff); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;">
                     💐 Countdown To Our Wedding 💍</div>
                 <div class="countdown">
                     <div class="countdown-item"><span class="countdown-number" id="wdays">0</span><span
@@ -223,8 +223,8 @@
             <div class="progress-bar" onclick="seekSong(event)">
                 <div class="progress" id="progress"></div>
             </div>
-            <div style="margin: 20px 0;"><label>Vol: </label><input type="range" min="0" max="100" value="50"
-                    onchange="changeVolume(this.value)" id="volumeSlider"><span id="volumePercent">50%</span></div>
+                <div style="margin: 20px 0;"><label>Vol: </label><input type="range" min="0" max="100" value="50"
+                    onchange="changeVolume(this.value)" oninput="changeVolume(this.value)" id="volumeSlider"><span id="volumePercent">50%</span></div>
             <div class="song-list">
                 <div class="song-item active" onclick="playSong(0)">🎵 Wine Me Dine Me</div>
                 <div class="song-item" onclick="playSong(1)">🎵 Forget You</div>
@@ -257,27 +257,27 @@
                     <span style="font-size: 1.2rem;">✅ Photos Unlocked! Enjoy our beautiful memories 💖</span>
                 </div>
                 <div class="gallery-grid">
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/1.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/1.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love u</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/2.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/2.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love ur eyes</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/3.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/3.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love ur Cheeks</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/4.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/4.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love ur lips</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/5.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/5.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love ur Hair</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/6.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/6.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="My love">
                         <p>I love ur Chin</p>
                     </div>
@@ -307,39 +307,39 @@
                     <span style="font-size: 1.2rem;">✅ Baby Photos Unlocked! So adorable 💖</span>
                 </div>
                 <div class="gallery-grid">
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/7.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/7.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>The cutest baby ever 💕</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/8.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/8.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>That sweet smile 😊</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/9.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/9.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>Little princess 👑</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/10.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/10.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>Adorable from day one 🌸</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/11.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/11.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>Beautiful at every age 💖</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/12.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/12.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>My love, then and now 🌹</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/13.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/13.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>My love, then and Forever 🌹</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/14.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/14.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>My love In Every universe 🌹</p>
                     </div>
-                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/15.jpeg"
+                        <div class="photo-frame" onclick="openModal(this)"><img src="Pics/15.jpeg" loading="lazy"
                             class="photo-img gallery-photo" alt="Baby">
                         <p>Love u 🌹</p>
                     </div>
@@ -358,7 +358,7 @@
 
     <!-- Photo Modal -->
     <div id="photoModal" class="modal" onclick="document.getElementById('photoModal').style.display='none'">
-        <span class="close-modal">&times;</span>
+        <span class="close-modal" onclick="closeModal()">&times;</span>
         <div class="modal-content">
             <img id="modalImg" alt="Photo">
         </div>
