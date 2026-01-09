@@ -32,7 +32,7 @@ function createFloatingHearts() {
 const birthdayDate = new Date('2026-01-10T00:00:00').getTime();
 const weddingDate = new Date('2026-04-10T00:00:00').getTime();
 const relationshipStart = new Date('2025-11-30T00:00:00').getTime();
-
+const GALLERY_PASSWORD = "btates"; // Change this to your desired password
 // 1000+ Love Messages Library (160 messages rotating every 9 minutes = 24 hours coverage)
 const loveLibrary = {
     messages: [
@@ -277,14 +277,28 @@ function updatePageContent() {
     }
 
     // D. Distance Calculator
-    const dList = ["7,846 miles of love connecting us 💕", "12,623 kilometers but hearts are touching 💗", "0 miles apart in my heart ❤️"];
-    const distEl = document.getElementById('distanceDisplay');
-    if (distEl) distEl.textContent = dList[Math.floor(Date.now() / 4000) % 3];
+    updateDistanceDisplay();
 }
 
 // Start main timer
 setInterval(updatePageContent, 1000);
-
+function updateDistanceDisplay() {
+    const distEl = document.getElementById('distanceDisplay');
+    if (!distEl) return;
+    
+    // Cairo to Kyiv distance
+    const distanceKm = 2387; // kilometers
+    const distanceMiles = 1483; // miles
+    
+    const messages = [
+        `${distanceKm.toLocaleString()} km separating us 🌍`,
+        `${distanceMiles.toLocaleString()} miles of love 💕`,
+        `But 0 distance in my heart ❤️`
+    ];
+    
+    const index = Math.floor(Date.now() / 4000) % messages.length;
+    distEl.textContent = messages[index];
+}
 // ========== 4. MUSIC PLAYER ==========
 const songs = ['Songs/WineMeDineMe..mp3', 'Songs/ForgetYou.mp3', 'Songs/MyuuElfenLiedLiliumPianoVersion.mp3', 'Songs/SuriyeMarşSuriyeMilliMarş.mp3', 'Songs/AFIAOIL.mp3'];
 const songTitles = ["Wine Me Dine Me", "Forget You", "Elfen Lied (Piano)", "Suriye Milli Marş", "AFIAOIL"];
@@ -356,7 +370,61 @@ audio.addEventListener('timeupdate', () => {
 });
 
 audio.addEventListener('ended', nextSong);
+function unlockGallery() {
+    const input = document.getElementById('gallery-password');
+    const password = input.value.toLowerCase().trim();
 
+    if (password === GALLERY_PASSWORD) {
+        document.getElementById('gallery-locked').style.display = 'none';
+        document.getElementById('gallery-unlocked').style.display = 'block';
+        input.value = '';
+
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 2 + 1) + 'em';
+                document.getElementById('floatingHearts').appendChild(heart);
+                setTimeout(() => heart.remove(), 8000);
+            }, i * 100);
+        }
+    } else {
+        const errorEl = document.getElementById('gallery-error');
+        errorEl.style.display = 'block';
+        input.value = '';
+        setTimeout(() => errorEl.style.display = 'none', 2500);
+    }
+}
+
+function unlockBabyGallery() {
+    const input = document.getElementById('baby-gallery-password');
+    const password = input.value.toLowerCase().trim();
+
+    if (password === GALLERY_PASSWORD) {
+        document.getElementById('baby-gallery-locked').style.display = 'none';
+        document.getElementById('baby-gallery-unlocked').style.display = 'block';
+        input.value = '';
+
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '👶';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 2 + 1) + 'em';
+                document.getElementById('floatingHearts').appendChild(heart);
+                setTimeout(() => heart.remove(), 8000);
+            }, i * 100);
+        }
+    } else {
+        const errorEl = document.getElementById('baby-gallery-error');
+        errorEl.style.display = 'block';
+        input.value = '';
+        setTimeout(() => errorEl.style.display = 'none', 2500);
+    }
+}
 // ========== 5. MODALS & EASTER EGGS ==========
 function openModal(el) {
     const modal = document.getElementById('photoModal');
@@ -557,12 +625,12 @@ const dialogues = [
 
 function setupCanvas() {
     if (!gameCanvas) return;
-    
+
     const container = document.getElementById('game-container');
     gameCanvas.width = 800;
     gameCanvas.height = 400;
-    
-    
+
+
 }
 
 function openFlashGame() {
@@ -594,7 +662,7 @@ function initGame() {
 function gameLoop() {
     if (!gameRun || !ctx) return;
     ctx.clearRect(0, 0, 800, 400);
-    
+
     // Sky gradient based on level
     let skyGrad = ctx.createLinearGradient(0, 0, 0, 400);
     if (level === 1) {
@@ -609,7 +677,7 @@ function gameLoop() {
     }
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, 800, 400);
-    
+
     // Sun/Moon
     ctx.beginPath();
     ctx.arc(700, 50, 30, 0, Math.PI * 2);
@@ -653,7 +721,7 @@ function update() {
     player.vy += player.g;
     player.y += player.vy;
     if (player.y > 300) { player.y = 300; player.vy = 0; player.gr = true; }
-    
+
     distance -= 0.15;
     if (distance < 700 && level === 1) { level = 2; showDialogue(dialogues[1].text); }
     if (distance < 300 && level === 2) { level = 3; showDialogue(dialogues[2].text); }
@@ -759,7 +827,7 @@ function draw() {
 
 function drawChibiPlayer(x, y) {
     let bounce = player.gr ? Math.sin(gameFrame * 0.2) * 2 : 0;
-    
+
     // Body
     ctx.fillStyle = '#FF69B4';
     ctx.beginPath();
@@ -767,23 +835,23 @@ function drawChibiPlayer(x, y) {
     ctx.lineTo(x + 5, y + 55 + bounce);
     ctx.lineTo(x + 35, y + 55 + bounce);
     ctx.fill();
-    
+
     // Torso
     ctx.fillStyle = '#5D4037';
     ctx.fillRect(x + 5, y + 15 + bounce, 30, 25);
-    
+
     // Head
     ctx.fillStyle = '#FFE0BD';
     ctx.beginPath();
     ctx.arc(x + 20, y + 15 + bounce, 14, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Hair
     ctx.fillStyle = '#5D4037';
     ctx.beginPath();
     ctx.arc(x + 20, y + 13 + bounce, 16, Math.PI, 0);
     ctx.fill();
-    
+
     // Eyes
     ctx.fillStyle = '#000';
     if (gameFrame % 150 < 5) {
@@ -805,13 +873,13 @@ function drawYoussef(x, y) {
     ctx.beginPath();
     ctx.arc(x + 20, y + 15, 14, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Hair
     ctx.fillStyle = '#000';
     ctx.beginPath();
     ctx.arc(x + 20, y + 12, 15, Math.PI, 0);
     ctx.fill();
-    
+
     // Eyes
     ctx.beginPath();
     ctx.arc(x + 16, y + 14, 2, 0, Math.PI * 2);
@@ -819,11 +887,11 @@ function drawYoussef(x, y) {
     ctx.beginPath();
     ctx.arc(x + 26, y + 14, 2, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Body
     ctx.fillStyle = '#4169E1';
     ctx.fillRect(x + 10, y + 25, 20, 20);
-    
+
     // Legs
     ctx.fillStyle = '#333';
     ctx.fillRect(x + 10, y + 45, 9, 15);
@@ -851,7 +919,7 @@ function drawBird(x, y) {
     ctx.beginPath();
     ctx.arc(x + 15, y + 15, 10, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Beak
     ctx.fillStyle = '#FFD700';
     ctx.beginPath();
@@ -859,7 +927,7 @@ function drawBird(x, y) {
     ctx.lineTo(x - 2, y + 18);
     ctx.lineTo(x + 5, y + 21);
     ctx.fill();
-    
+
     // Wings
     ctx.fillStyle = '#ccc';
     let wingY = Math.sin(gameFrame * 0.5) * 8;
@@ -897,7 +965,7 @@ function showDialogue(text) {
 
 function handleGameInput(e) {
     if (e) e.preventDefault();
-    
+
     const dialogBox = document.getElementById('dialogue-box');
     if (dialogBox && dialogBox.style.display === 'block') {
         dialogBox.style.display = 'none';
@@ -933,13 +1001,13 @@ document.addEventListener('keydown', (e) => {
 if (gameCanvas) {
     // Mouse controls
     gameCanvas.addEventListener('mousedown', handleGameInput);
-    
+
     // Touch controls (better for mobile)
     gameCanvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         handleGameInput(e);
     }, { passive: false });
-    
+
     // Prevent default touch behaviors
     gameCanvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
@@ -953,7 +1021,7 @@ if (restartBtn) {
         document.getElementById('game-overlay').style.display = 'none';
         initGame();
     });
-    
+
     restartBtn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         document.getElementById('game-overlay').style.display = 'none';
@@ -976,4 +1044,21 @@ window.addEventListener('load', function () {
     createParticles();
     createFloatingHearts();
     updatePageContent();
+});
+// Password input enter key listeners
+document.addEventListener('DOMContentLoaded', function () {
+    const galleryInput = document.getElementById('gallery-password');
+    const babyGalleryInput = document.getElementById('baby-gallery-password');
+
+    if (galleryInput) {
+        galleryInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') unlockGallery();
+        });
+    }
+
+    if (babyGalleryInput) {
+        babyGalleryInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') unlockBabyGallery();
+        });
+    }
 });

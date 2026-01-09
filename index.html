@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy 25th Birthday My Love! ❤️</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <div class="particles" id="particles"></div>
     <div class="floating-hearts" id="floatingHearts"></div>
@@ -28,9 +30,11 @@
             <div id="secretCodeChallenge" style="display: none;">
                 <h2>🔐 Secret Code Challenge 🔐</h2>
                 <p>Hint: The day we're getting married (format: MMDD) 💍</p>
-                <input type="text" class="secret-code-input" id="secretCodeInput" placeholder="Enter code..." maxlength="4">
+                <input type="text" class="secret-code-input" id="secretCodeInput" placeholder="Enter code..."
+                    maxlength="4">
                 <button class="unlock-button" onclick="checkSecretCode()">Unlock 🔓</button>
-                <p id="codeError" style="color: #ff6b9d; margin-top: 10px; display: none;">Try again! Think about our special day 💕</p>
+                <p id="codeError" style="color: #ff6b9d; margin-top: 10px; display: none;">Try again! Think about our
+                    special day 💕</p>
             </div>
 
             <div id="memoryGameSection" style="display: none;">
@@ -42,19 +46,26 @@
 
             <div id="loveQuizSection" style="display: none;">
                 <h2>❤️ Love Quiz ❤️</h2>
-                <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 20px 0;">
-                    <div id="quizProgress" style="height: 100%; background: #ffd700; width: 0%; transition: width 0.5s; border-radius: 10px;"></div>
+                <div
+                    style="width: 100%; height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 20px 0;">
+                    <div id="quizProgress"
+                        style="height: 100%; background: #ffd700; width: 0%; transition: width 0.5s; border-radius: 10px;">
+                    </div>
                 </div>
                 <div id="quizContainer"></div>
             </div>
 
             <div id="secretRevealed" style="display: none;">
                 <h2>🏆 YOU DID IT! 🏆</h2>
-                <div style="background: rgba(255, 215, 0, 0.2); border: 3px solid #ffd700; border-radius: 20px; padding: 30px; margin-top: 20px; animation: glow 2s ease-in-out infinite;">
+                <div
+                    style="background: rgba(255, 215, 0, 0.2); border: 3px solid #ffd700; border-radius: 20px; padding: 30px; margin-top: 20px; animation: glow 2s ease-in-out infinite;">
                     <h3 style="font-size: 2em; margin-bottom: 20px;">💎 The Ultimate Secret 💎</h3>
-                    <p style="font-size: 1.5em; margin: 20px 0;">You are the ABSOLUTE BEST THING that has ever happened to me! 🌟</p>
-                    <p style="font-size: 1.2em;">My puzzle solver, my memory keeper, my quiz master, and most importantly... MY EVERYTHING! 💖💖💖</p>
-                    <p style="font-size: 1.3em; margin-top: 30px; font-style: italic;">I love you more than all the stars in the sky! 🌌</p>
+                    <p style="font-size: 1.5em; margin: 20px 0;">You are the ABSOLUTE BEST THING that has ever happened
+                        to me! 🌟</p>
+                    <p style="font-size: 1.2em;">My puzzle solver, my memory keeper, my quiz master, and most
+                        importantly... MY EVERYTHING! 💖💖💖</p>
+                    <p style="font-size: 1.3em; margin-top: 30px; font-style: italic;">I love you more than all the
+                        stars in the sky! 🌌</p>
                 </div>
             </div>
         </div>
@@ -71,10 +82,14 @@
         <div class="section-box" style="margin-bottom: 40px; border: 2px solid #ff6b9d;">
             <h2>💑 We've been in love for... 💑</h2>
             <div class="countdown">
-                <div class="countdown-item"><span class="countdown-number" id="rdays">0</span><span class="countdown-label">Days</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="rhours">0</span><span class="countdown-label">Hours</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="rminutes">0</span><span class="countdown-label">Mins</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="rseconds">0</span><span class="countdown-label">Secs</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="rdays">0</span><span
+                        class="countdown-label">Days</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="rhours">0</span><span
+                        class="countdown-label">Hours</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="rminutes">0</span><span
+                        class="countdown-label">Mins</span></div>
+                <div class="countdown-item"><span class="countdown-number" id="rseconds">0</span><span
+                        class="countdown-label">Secs</span></div>
             </div>
             <p style="font-size: 1.1em; margin-top: 15px; opacity: 0.9;">Since November 30, 2025 ❤️</p>
         </div>
@@ -84,10 +99,14 @@
             <div class="section-box">
                 <h2>⏰ Birthday Countdown ⏰</h2>
                 <div class="countdown">
-                    <div class="countdown-item"><span class="countdown-number" id="days">0</span><span class="countdown-label">Days</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="hours">0</span><span class="countdown-label">Hours</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="minutes">0</span><span class="countdown-label">Mins</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="seconds">0</span><span class="countdown-label">Secs</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="days">0</span><span
+                            class="countdown-label">Days</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="hours">0</span><span
+                            class="countdown-label">Hours</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="minutes">0</span><span
+                            class="countdown-label">Mins</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="seconds">0</span><span
+                            class="countdown-label">Secs</span></div>
                 </div>
             </div>
         </div>
@@ -100,12 +119,18 @@
             </div>
 
             <div class="section-box">
-                <div style="font-size: 2em; background: linear-gradient(45deg, #ffd700, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;">💐 Countdown To Our Wedding 💍</div>
+                <div
+                    style="font-size: 2em; background: linear-gradient(45deg, #ffd700, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;">
+                    💐 Countdown To Our Wedding 💍</div>
                 <div class="countdown">
-                    <div class="countdown-item"><span class="countdown-number" id="wdays">0</span><span class="countdown-label">Days</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="whours">0</span><span class="countdown-label">Hours</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="wminutes">0</span><span class="countdown-label">Mins</span></div>
-                    <div class="countdown-item"><span class="countdown-number" id="wseconds">0</span><span class="countdown-label">Secs</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="wdays">0</span><span
+                            class="countdown-label">Days</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="whours">0</span><span
+                            class="countdown-label">Hours</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="wminutes">0</span><span
+                            class="countdown-label">Mins</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="wseconds">0</span><span
+                            class="countdown-label">Secs</span></div>
                 </div>
                 <p style="font-size: 1.2em; margin-top: 20px; opacity: 0.8;">April 10th, 2026 🌹</p>
             </div>
@@ -120,19 +145,56 @@
             <div class="message-box-dynamic">
                 <p id="hourlyLoveMessage" style="font-size: 1.2rem; font-weight: bold;">Loading message... ❤️</p>
             </div>
-            <p style="font-size: 0.9em; opacity: 0.7; margin-top: 10px;">Message <span id="msgIndex">1</span> of 160</p>
         </div>
 
-        <!-- Distance Calculator -->
-        <div class="distance-calculator">
-            <h2>🌍 Miles Apart, Hearts Together 💕</h2>
-            <div class="globe-anim">
-                <div class="pin start">📍</div>
-                <div class="pin end">📍</div>
-            </div>
-            <div style="font-size: 2em; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);" id="distanceDisplay">Calculating distance...</div>
+<!-- Distance Calculator -->
+<div class="distance-calculator">
+    <h2>🌍 Miles Apart, Hearts Together 💕</h2>
+    
+    <div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 20px;">
+        <div style="text-align: center;">
+            <div style="font-size: 3em;">🇪🇬</div>
+            <div style="font-size: 1.2em; margin-top: 10px;">Cairo, Egypt</div>
+            <div style="opacity: 0.8;">Youssef</div>
         </div>
-
+        <div style="text-align: center; display: flex; align-items: center;">
+            <div style="font-size: 2em;">✈️ ❤️ ✈️</div>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 3em;">🇺🇦</div>
+            <div style="font-size: 1.2em; margin-top: 10px;">Kyiv, Ukraine</div>
+            <div style="opacity: 0.8;">Vladislava</div>
+        </div>
+    </div>
+    
+    <div style="font-size: 2em; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin: 20px 0;" id="distanceDisplay">Calculating distance...</div>
+    
+    <!-- Embedded Google Map -->
+    <div style="margin: 20px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d5284799.180893744!2d31.235711999999998!3d42.882004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x14583fa60b21beeb%3A0x79dfb296e8423bba!2sCairo%2C%20Egypt!3m2!1d30.0444196!2d31.2357116!4m5!1s0x40d4cf4ee15a4505%3A0x764931d2170146fe!2sKyiv%2C%20Ukraine!3m2!1d50.4501!2d30.5234!5e0!3m2!1sen!2s!4v1234567890"
+            width="100%" 
+            height="400" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="https://www.google.com/maps/dir/Cairo,+Egypt/Kyiv,+Ukraine" target="_blank" class="unlock-button" style="text-decoration: none; display: inline-block;">
+            🗺️ Open Full Map in New Tab
+        </a>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9em;">
+        <p style="margin: 5px 0;">✈️ Flight Time: ~3.5 hours</p>
+        <p style="margin: 5px 0;">🌍 Distance: 2,387 km (1,483 miles)</p>
+        <p style="margin: 5px 0;">⏰ Time Difference: 1 hour (Ukraine is ahead)</p>
+        <p style="margin: 5px 0;">💕 Days until we're together: Soon!</p>
+    </div>
+</div>
         <!-- Music Player -->
         <div class="music-player">
             <h2>🎵 Our Soundtrack 🎵</h2>
@@ -156,7 +218,8 @@
             <div class="progress-bar" onclick="seekSong(event)">
                 <div class="progress" id="progress"></div>
             </div>
-            <div style="margin: 20px 0;"><label>Vol: </label><input type="range" min="0" max="100" value="50" onchange="changeVolume(this.value)" id="volumeSlider"><span id="volumePercent">50%</span></div>
+            <div style="margin: 20px 0;"><label>Vol: </label><input type="range" min="0" max="100" value="50"
+                    onchange="changeVolume(this.value)" id="volumeSlider"><span id="volumePercent">50%</span></div>
             <div class="song-list">
                 <div class="song-item active" onclick="playSong(0)">🎵 Wine Me Dine Me</div>
                 <div class="song-item" onclick="playSong(1)">🎵 Forget You</div>
@@ -168,30 +231,114 @@
         </div>
 
         <!-- Photo Galleries -->
-        <div class="photo-gallery">
+        <div class="photo-gallery" id="gallery-section">
             <h2>📸 My Beautiful Batota 📸</h2>
-            <div class="gallery-grid">
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/1.jpeg" class="photo-img" alt="My love"><p>I love u</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/2.jpeg" class="photo-img" alt="My love"><p>I love ur eyes</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/3.jpeg" class="photo-img" alt="My love"><p>I love ur Cheeks</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/4.jpeg" class="photo-img" alt="My love"><p>I love ur lips</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/5.jpeg" class="photo-img" alt="My love"><p>I love ur Hair</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/6.jpeg" class="photo-img" alt="My love"><p>I love ur Chin</p></div>
+            <div id="gallery-locked" style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Photos Are Locked</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Enter the password to view our precious memories</p>
+                <input type="password" id="gallery-password" class="secret-code-input" placeholder="Enter password..."
+                    style="max-width: 300px; margin: 0 auto;">
+                <br>
+                <button class="unlock-button" onclick="unlockGallery()" style="margin-top: 20px;">🔓 Unlock
+                    Photos</button>
+                <p id="gallery-error" style="color: #ff6b9d; margin-top: 15px; display: none;">Wrong password! Try again
+                    💕</p>
+            </div>
+
+            <div id="gallery-unlocked" style="display: none;">
+                <div
+                    style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255,215,0,0.2); border-radius: 10px; border: 2px solid #ffd700;">
+                    <span style="font-size: 1.2rem;">✅ Photos Unlocked! Enjoy our beautiful memories 💖</span>
+                </div>
+                <div class="gallery-grid">
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/1.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love u</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/2.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love ur eyes</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/3.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love ur Cheeks</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/4.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love ur lips</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/5.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love ur Hair</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/6.jpeg"
+                            class="photo-img gallery-photo" alt="My love">
+                        <p>I love ur Chin</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="photo-gallery" style="background: linear-gradient(135deg, rgba(255,192,203,0.3), rgba(255,182,193,0.3));">
+        <div class="photo-gallery" id="baby-gallery-section"
+            style="background: linear-gradient(135deg, rgba(255,192,203,0.3), rgba(255,182,193,0.3));">
             <h2>👶 My Beautiful Baby 👶</h2>
-            <div class="gallery-grid">
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/7.jpeg" class="photo-img" alt="Baby"><p>The cutest baby ever 💕</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/8.jpeg" class="photo-img" alt="Baby"><p>That sweet smile 😊</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/9.jpeg" class="photo-img" alt="Baby"><p>Little princess 👑</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/10.jpeg" class="photo-img" alt="Baby"><p>Adorable from day one 🌸</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/11.jpeg" class="photo-img" alt="Baby"><p>Beautiful at every age 💖</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/12.jpeg" class="photo-img" alt="Baby"><p>My love, then and now 🌹</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/13.jpeg" class="photo-img" alt="Baby"><p>My love, then and Forever 🌹</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/14.jpeg" class="photo-img" alt="Baby"><p>My love In Every universe 🌹</p></div>
-                <div class="photo-frame" onclick="openModal(this)"><img src="Pics/15.jpeg" class="photo-img" alt="Baby"><p>Love u 🌹</p></div>
+            <div id="baby-gallery-locked" style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Baby Photos Are Locked</h3>
+                <p style="margin-bottom: 20px; opacity: 0.9;">Enter the password to view precious baby memories</p>
+                <input type="password" id="baby-gallery-password" class="secret-code-input"
+                    placeholder="Enter password..." style="max-width: 300px; margin: 0 auto;">
+                <br>
+                <button class="unlock-button" onclick="unlockBabyGallery()" style="margin-top: 20px;">🔓 Unlock
+                    Photos</button>
+                <p id="baby-gallery-error" style="color: #ff6b9d; margin-top: 15px; display: none;">Wrong password! Try
+                    again 💕</p>
+            </div>
+
+            <div id="baby-gallery-unlocked" style="display: none;">
+                <div
+                    style="text-align: center; margin-bottom: 20px; padding: 15px; background: rgba(255,215,0,0.2); border-radius: 10px; border: 2px solid #ffd700;">
+                    <span style="font-size: 1.2rem;">✅ Baby Photos Unlocked! So adorable 💖</span>
+                </div>
+                <div class="gallery-grid">
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/7.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>The cutest baby ever 💕</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/8.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>That sweet smile 😊</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/9.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>Little princess 👑</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/10.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>Adorable from day one 🌸</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/11.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>Beautiful at every age 💖</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/12.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>My love, then and now 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/13.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>My love, then and Forever 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/14.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>My love In Every universe 🌹</p>
+                    </div>
+                    <div class="photo-frame" onclick="openModal(this)"><img src="Pics/15.jpeg"
+                            class="photo-img gallery-photo" alt="Baby">
+                        <p>Love u 🌹</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -215,39 +362,52 @@
     <!-- Flash Game Modal -->
     <div id="flash-game-modal">
         <span class="close-game" onclick="closeFlashGame()">&times;</span>
-        <h2 style="color:white; margin-bottom:10px; font-family:'Comic Sans MS'; text-shadow: 2px 2px #ff6b9d;">🎮 Batota's Journey to Youssef 🎮</h2>
+        <h2 style="color:white; margin-bottom:10px; font-family:'Comic Sans MS'; text-shadow: 2px 2px #ff6b9d;">🎮
+            Batota's Journey to Youssef 🎮</h2>
         <p style="color:white; margin-bottom:10px;">Jump with SPACE or CLICK to avoid obstacles!</p>
         <div id="game-container">
             <canvas id="game-canvas" width="800" height="400"></canvas>
-            
-            <div style="position: absolute; top: 10px; left: 10px; width: 100%; text-align: left; pointer-events: none;">
-                <div style="font-size: 20px; color: white; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
+
+            <div
+                style="position: absolute; top: 10px; left: 10px; width: 100%; text-align: left; pointer-events: none;">
+                <div
+                    style="font-size: 20px; color: white; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
                     ❤️ <span id="ui-hearts">❤️❤️❤️</span> | 🏆 Score: <span id="ui-score">0</span>
                 </div>
-                <div style="position: absolute; top: 0; right: 20px; font-size: 20px; color: #fff; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
+                <div
+                    style="position: absolute; top: 0; right: 20px; font-size: 20px; color: #fff; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
                     Distance: <span id="ui-distance">1000</span>m
                 </div>
             </div>
 
-            <div id="dialogue-box" style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; background: rgba(255, 255, 255, 0.95); border-radius: 15px; border: 4px solid #ff6b9d; padding: 15px; text-align: left; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <div id="dialogue-box"
+                style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; background: rgba(255, 255, 255, 0.95); border-radius: 15px; border: 4px solid #ff6b9d; padding: 15px; text-align: left; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
                 <div style="display: flex; align-items: center;">
                     <div style="font-size: 40px; margin-right: 15px;">👸</div>
                     <div>
                         <h4 style="margin: 0; color: #ff6b9d; font-family: sans-serif;">Vladislava</h4>
-                        <p id="dialogue-text" style="margin: 5px 0 0 0; color: #333; font-size: 16px; font-family: sans-serif;">I must find Youssef!</p>
+                        <p id="dialogue-text"
+                            style="margin: 5px 0 0 0; color: #333; font-size: 16px; font-family: sans-serif;">I must
+                            find Youssef!</p>
                         <small style="color: #888; font-family: sans-serif;">(Press Space or Click to Continue)</small>
                     </div>
                 </div>
             </div>
 
-            <div id="game-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); flex-direction: column; justify-content: center; align-items: center; color: white;">
-                <h2 id="overlay-title" style="font-size: 40px; margin-bottom: 20px; font-family: sans-serif;">Game Over</h2>
-                <p id="overlay-msg" style="font-size: 20px; margin-bottom: 30px; font-family: sans-serif;">Don't give up on love!</p>
-                <button id="restart-btn" style="padding: 15px 40px; font-size: 20px; background: #ff6b9d; color: white; border: none; border-radius: 50px; cursor: pointer;">Try Again 💖</button>
+            <div id="game-overlay"
+                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); flex-direction: column; justify-content: center; align-items: center; color: white;">
+                <h2 id="overlay-title" style="font-size: 40px; margin-bottom: 20px; font-family: sans-serif;">Game Over
+                </h2>
+                <p id="overlay-msg" style="font-size: 20px; margin-bottom: 30px; font-family: sans-serif;">Don't give up
+                    on love!</p>
+                <button id="restart-btn"
+                    style="padding: 15px 40px; font-size: 20px; background: #ff6b9d; color: white; border: none; border-radius: 50px; cursor: pointer;">Try
+                    Again 💖</button>
             </div>
         </div>
     </div>
 
     <script src="./script.js"></script>
 </body>
+
 </html>
