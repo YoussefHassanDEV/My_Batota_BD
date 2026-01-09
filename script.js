@@ -559,16 +559,10 @@ function setupCanvas() {
     if (!gameCanvas) return;
     
     const container = document.getElementById('game-container');
-    const rect = container.getBoundingClientRect();
-    
-    // Set canvas internal resolution
     gameCanvas.width = 800;
     gameCanvas.height = 400;
     
-    // Scale for mobile
-    if (isMobile) {
-        canvasScale = rect.width / 800;
-    }
+    
 }
 
 function openFlashGame() {
