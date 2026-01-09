@@ -2730,10 +2730,18 @@ function drawWeddingScene(progress) {
     ctx.arc(groomX, groomY - 10, 18, 0, Math.PI * 2);
     ctx.fill();
     
-    // Dark hair - styled
+    // Dark hair - styled crown (covering scalp)
     ctx.fillStyle = '#3E2723';
     ctx.beginPath();
-    ctx.arc(groomX, groomY - 22, 19, 0, Math.PI);
+    ctx.ellipse(groomX, groomY - 22, 19, 16, 0, Math.PI, 0, false);
+    ctx.fill();
+    // Hair fringe to avoid mask look
+    ctx.beginPath();
+    ctx.moveTo(groomX - 18, groomY - 10);
+    ctx.quadraticCurveTo(groomX - 6, groomY - 16, groomX + 2, groomY - 12);
+    ctx.quadraticCurveTo(groomX + 14, groomY - 10, groomX + 18, groomY - 4);
+    ctx.quadraticCurveTo(groomX + 4, groomY - 8, groomX - 10, groomY - 6);
+    ctx.closePath();
     ctx.fill();
     
     // Eyes looking at bride
@@ -2783,7 +2791,7 @@ function drawWeddingScene(progress) {
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(groomX - 26, groomY + 12, 8, 32);
     ctx.fillRect(groomX + 18, groomY + 12, 8, 32);
-    
+
     ctx.fillStyle = '#FFCBA4';
     ctx.beginPath();
     ctx.arc(groomX - 22, groomY + 45, 6, 0, Math.PI * 2);
@@ -2791,6 +2799,15 @@ function drawWeddingScene(progress) {
     ctx.beginPath();
     ctx.arc(groomX + 22, groomY + 45, 6, 0, Math.PI * 2);
     ctx.fill();
+
+    // Trousers and shoes to anchor him on ground
+    ctx.fillStyle = '#111';
+    ctx.fillRect(groomX - 18, groomY + 52, 12, 38);
+    ctx.fillRect(groomX + 6, groomY + 52, 12, 38);
+    // Shoe highlights
+    ctx.fillStyle = '#222';
+    ctx.fillRect(groomX - 18, groomY + 86, 12, 4);
+    ctx.fillRect(groomX + 6, groomY + 86, 12, 4);
     
     // BRIDE - Vladislava in stunning white dress (right side)
     const brideX = 480 - Math.max(0, progress - 0.3) * 25;
@@ -2846,6 +2863,27 @@ function drawWeddingScene(progress) {
     ctx.beginPath();
     ctx.arc(brideX, brideY - 23, 18, 0, Math.PI);
     ctx.fill();
+
+    // Arms and hands holding bouquet
+    ctx.fillStyle = '#FFE0BD';
+    // Left arm
+    ctx.save();
+    ctx.translate(brideX - 16, brideY + 6);
+    ctx.rotate(-0.2);
+    ctx.fillRect(-4, 0, 8, 24);
+    ctx.beginPath();
+    ctx.arc(0, 24, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    // Right arm toward bouquet
+    ctx.save();
+    ctx.translate(brideX + 12, brideY + 10);
+    ctx.rotate(0.25);
+    ctx.fillRect(-3, 0, 7, 20);
+    ctx.beginPath();
+    ctx.arc(1, 20, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
     
     // Hair curls on sides
     ctx.beginPath();
@@ -3215,14 +3253,18 @@ let romanticBed = {
 function checkQuests() {
     // Reset hint each frame; set only when actually near
     questHintVisible = false;
-    activeQuest = null;
-    quests.forEach(q => {
-        // Show interact hint when near quest pedestal
-        if (!q.done && !q.inProgress && Math.abs(pyramidPlayer.x - q.x) < 45 && pyramidPlayer.onGround) {
-            activeQuest = q;
-            questHintVisible = true;
-        }
-    });
+
+    // Keep current active quest alive even if player walks away so progress isn’t lost
+    if (!activeQuest || !activeQuest.inProgress) {
+        activeQuest = null;
+        quests.forEach(q => {
+            // Show interact hint when near quest pedestal
+            if (!q.done && !q.inProgress && Math.abs(pyramidPlayer.x - q.x) < 45 && pyramidPlayer.onGround) {
+                activeQuest = q;
+                questHintVisible = true;
+            }
+        });
+    }
 
     // Activate bed after all quests complete
     if (quests.every(q => q.done) && !romanticBed.active) {
