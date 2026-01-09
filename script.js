@@ -23,9 +23,9 @@
 
 // Date Configuration
 const DATES = {
-    birthday: new Date('2026-01-10T00:00:00').getTime(),
-    wedding: new Date('2026-04-10T00:00:00').getTime(),
-    relationshipStart: new Date('2025-11-30T00:00:00').getTime()
+    birthday: new Date('2026-01-10T00:00:00Z').getTime(),
+    wedding: new Date('2026-04-10T00:00:00Z').getTime(),
+    relationshipStart: new Date('2025-11-30T00:00:00Z').getTime()
 };
 
 // Game Constants
@@ -91,6 +91,67 @@ function createFloatingHearts() {
 const birthdayDate = DATES.birthday;
 const weddingDate = DATES.wedding;
 const relationshipStart = DATES.relationshipStart;
+const birthYear = 2001; // Born Jan 10, 2001, turns 25 on Jan 10, 2026
+
+/**
+ * Calculate years, months, and days between two dates
+ */
+function calculateTimeBetween(startDate, endDate) {
+    const totalDiff = endDate - startDate;
+    
+    // Calculate total days, hours, minutes, seconds
+    const totalSeconds = Math.floor(totalDiff / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    const totalDays = Math.floor(totalHours / 24);
+    
+    // Calculate years, months, days
+    let years = 0, months = 0, days = totalDays;
+    let current = new Date(startDate);
+    
+    while (current < endDate) {
+        let nextYear = new Date(current.getFullYear() + 1, current.getMonth(), current.getDate());
+        if (nextYear <= endDate) {
+            years++;
+            current = nextYear;
+            days -= 365;
+        } else {
+            let nextMonth = new Date(current.getFullYear(), current.getMonth() + 1, current.getDate());
+            if (nextMonth <= endDate) {
+                months++;
+                const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
+                days -= daysInMonth;
+                current = nextMonth;
+            } else {
+                break;
+            }
+        }
+    }
+    
+    // Get remaining time
+    const remaining = totalDiff - (years * 365 * 24 * 60 * 60 * 1000) - (months * 30 * 24 * 60 * 60 * 1000) - (days * 24 * 60 * 60 * 1000);
+    const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+    const seconds = Math.floor((remaining / 1000) % 60);
+    
+    return { years, months, days, hours, minutes, seconds };
+}
+/**
+ * Calculate current age
+ */
+function calculateAge(birthYear, currentDate) {
+    const year = new Date(currentDate).getFullYear();
+    const age = year - birthYear;
+    return age;
+}
+
+/**
+ * Calculate age at next birthday
+ */
+function calculateNextAge(birthYear, nextBirthdayYear) {
+    return nextBirthdayYear - birthYear;
+}
+
 // 1000+ Love Messages Library (160 messages rotating every 9 minutes = 24 hours coverage)
 const loveLibrary = {
     messages: [
@@ -277,7 +338,13 @@ const loveLibrary = {
 
 // ========== 3. MASTER UPDATE FUNCTION ==========
 function updatePageContent() {
+    // Use UTC to match the dates with 'Z' suffix
     const now = new Date().getTime();
+    
+    // Debug: Log the current time and wedding date
+    console.log('Current time (ms):', now, new Date(now).toISOString());
+    console.log('Wedding date (ms):', weddingDate, new Date(weddingDate).toISOString());
+    console.log('Days until wedding:', (weddingDate - now) / (1000 * 60 * 60 * 24));
 
     // A. Relationship Counter
     const rDiff = now - relationshipStart;
@@ -303,34 +370,82 @@ function updatePageContent() {
         if (indexEl) indexEl.innerText = index + 1;
     }
 
-    // C. Birthday Logic
-    const isBirthday = now >= birthdayDate;
+    // C. Event Display Logic - Show both countdowns, highlight main event based on proximity
+    // Ensure nextBirthdayDate is a Date object to safely call getFullYear()
+    const nextBirthdayDate = now >= birthdayDate ? new Date('2027-01-10T00:00:00Z') : new Date(birthdayDate);
     const preView = document.getElementById('preBirthdayView');
     const postView = document.getElementById('birthdayView');
-
-    if (isBirthday) {
-        if (preView) preView.style.display = 'none';
-        if (postView) postView.style.display = 'block';
-
-        // Wedding Countdown
-        const wDiff = weddingDate - now;
-        if (wDiff > 0 && document.getElementById('wdays')) {
-            document.getElementById('wdays').innerText = Math.floor(wDiff / (1000 * 60 * 60 * 24));
-            document.getElementById('whours').innerText = Math.floor((wDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('wminutes').innerText = Math.floor((wDiff % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('wseconds').innerText = Math.floor((wDiff % (1000 * 60)) / 1000);
+    
+    // Calculate time until events
+    const daysUntilBirthday = (nextBirthdayDate - now) / (1000 * 60 * 60 * 24);
+    const daysUntilWedding = (weddingDate - now) / (1000 * 60 * 60 * 24);
+    
+    // Determine which event is "main" (within 15 days or active)
+    const isBirthdayMain = daysUntilBirthday <= 15 && daysUntilBirthday > 0;
+    const isWeddingMain = daysUntilWedding <= 15 && daysUntilWedding > 0;
+    
+    // Always show content
+    if (preView) preView.style.display = 'block';
+    if (postView) postView.style.display = 'block';
+    
+    // Update Birthday Countdown
+    if (document.getElementById('days')) {
+        const bDiff = nextBirthdayDate - now;
+        document.getElementById('days').innerText = Math.floor(bDiff / (1000 * 60 * 60 * 24));
+        document.getElementById('hours').innerText = Math.floor((bDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('minutes').innerText = Math.floor((bDiff % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById('seconds').innerText = Math.floor((bDiff % (1000 * 60)) / 1000);
+        
+        // Update age info
+        const currentAge = calculateAge(birthYear, now);
+        const nextBirthdayYear = nextBirthdayDate.getFullYear();
+        const nextAge = calculateNextAge(birthYear, nextBirthdayYear);
+        const ageInfoEl = document.getElementById('age-info');
+        if (ageInfoEl) {
+            if (daysUntilBirthday > 0) {
+                ageInfoEl.innerHTML = `<p style="font-size: 1.1em; margin-top: 15px; opacity: 0.9;">🎂 Currently ${currentAge} years old | 🌟 Will be ${nextAge} on birthday!</p>`;
+            } else {
+                ageInfoEl.innerHTML = `<p style="font-size: 1.1em; margin-top: 15px; opacity: 0.9;">🎂 Age: ${nextAge} years old</p>`;
+            }
         }
-    } else {
-        if (preView) preView.style.display = 'block';
-        if (postView) postView.style.display = 'none';
-
-        // Birthday Countdown
-        const bDiff = birthdayDate - now;
-        if (bDiff > 0 && document.getElementById('days')) {
-            document.getElementById('days').innerText = Math.floor(bDiff / (1000 * 60 * 60 * 24));
-            document.getElementById('hours').innerText = Math.floor((bDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('minutes').innerText = Math.floor((bDiff % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('seconds').innerText = Math.floor((bDiff % (1000 * 60)) / 1000);
+        
+        // Highlight if main event
+        const bdayBox = document.querySelector('.section-box');
+        if (bdayBox && isBirthdayMain) {
+            bdayBox.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(255, 192, 203, 0.25))';
+            bdayBox.style.borderColor = '#ffd700';
+        }
+    }
+    
+    // Update Wedding Countdown or Marriage Anniversary
+    if (document.getElementById('wdays')) {
+        const wDiff = weddingDate - now;
+        // Always show countdown if days remain
+        document.getElementById('wdays').innerText = Math.floor(wDiff / (1000 * 60 * 60 * 24));
+        document.getElementById('whours').innerText = Math.floor((wDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('wminutes').innerText = Math.floor((wDiff % (1000 * 60 * 60)) / (1000 * 60));
+        document.getElementById('wseconds').innerText = Math.floor((wDiff % (1000 * 60)) / 1000);
+        
+        // If wedding passed, update label
+        if (wDiff <= 0) {
+            const marriageTime = calculateTimeBetween(weddingDate, now);
+            document.getElementById('wdays').innerText = marriageTime.days;
+            document.getElementById('whours').innerText = '—';
+            document.getElementById('wminutes').innerText = '—';
+            document.getElementById('wseconds').innerText = '—';
+            
+            // Update wedding box label
+            const weddingLabel = document.getElementById('wedding-label');
+            if (weddingLabel) {
+                weddingLabel.innerHTML = `💕 Married For: <span style="color: #ffd700;">${marriageTime.years} years, ${marriageTime.months} months, ${marriageTime.days} days</span> 💕`;
+            }
+        }
+        
+        // Highlight if main event
+        const weddingBox = document.querySelector('#birthdayView');
+        if (weddingBox && isWeddingMain) {
+            weddingBox.style.background = 'linear-gradient(135deg, rgba(255, 215, 0, 0.35), rgba(255, 192, 203, 0.25))';
+            weddingBox.style.borderColor = '#ffd700';
         }
     }
 
@@ -2272,136 +2387,161 @@ function drawHorseRideScene(progress) {
     // Horse with refined details
     const horseX = 100 + progress * 550;
     const horseY = 240;
-    
-    // Horse body with gradient
-    const bodyGrad = ctx.createLinearGradient(horseX, horseY, horseX, horseY + 60);
+
+    // Horse body with gradient and stronger volume
+    const bodyGrad = ctx.createLinearGradient(horseX, horseY, horseX, horseY + 70);
     bodyGrad.addColorStop(0, '#8B6F47');
-    bodyGrad.addColorStop(0.5, '#A0826D');
+    bodyGrad.addColorStop(0.4, '#A0826D');
     bodyGrad.addColorStop(1, '#6B5344');
     ctx.fillStyle = bodyGrad;
     ctx.beginPath();
-    ctx.ellipse(horseX + 25, horseY + 25, 45, 30, 0, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 28, horseY + 28, 48, 32, -0.1, 0, Math.PI * 2);
     ctx.fill();
-    
-    // Horse belly shading
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    // Chest / shoulder mass
     ctx.beginPath();
-    ctx.ellipse(horseX + 25, horseY + 35, 35, 18, 0, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 60, horseY + 26, 28, 24, -0.2, 0, Math.PI * 2);
     ctx.fill();
-    
+
+    // Belly highlight
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+    ctx.beginPath();
+    ctx.ellipse(horseX + 30, horseY + 38, 36, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tail flowing back
+    ctx.strokeStyle = '#5B4335';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(horseX - 12, horseY + 32);
+    ctx.bezierCurveTo(horseX - 40, horseY + 20, horseX - 55, horseY + 60, horseX - 42, horseY + 80);
+    ctx.stroke();
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(horseX - 12, horseY + 32);
+    ctx.bezierCurveTo(horseX - 35, horseY + 18, horseX - 60, horseY + 40, horseX - 52, horseY + 66);
+    ctx.stroke();
+
     // Horse neck with proper shading
     ctx.fillStyle = '#A0826D';
     ctx.beginPath();
-    ctx.moveTo(horseX + 60, horseY + 15);
-    ctx.quadraticCurveTo(horseX + 75, horseY - 20, horseX + 85, horseY - 45);
-    ctx.quadraticCurveTo(horseX + 88, horseY - 20, horseX + 95, horseY + 5);
-    ctx.quadraticCurveTo(horseX + 75, horseY + 10, horseX + 60, horseY + 20);
+    ctx.moveTo(horseX + 62, horseY + 14);
+    ctx.quadraticCurveTo(horseX + 78, horseY - 18, horseX + 88, horseY - 46);
+    ctx.quadraticCurveTo(horseX + 94, horseY - 18, horseX + 98, horseY + 10);
+    ctx.quadraticCurveTo(horseX + 76, horseY + 16, horseX + 62, horseY + 24);
     ctx.closePath();
     ctx.fill();
-    
+
     // Neck shading
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
     ctx.beginPath();
-    ctx.moveTo(horseX + 75, horseY - 20);
-    ctx.quadraticCurveTo(horseX + 82, horseY, horseX + 85, horseY + 15);
-    ctx.lineTo(horseX + 78, horseY + 10);
-    ctx.quadraticCurveTo(horseX + 72, horseY - 10, horseX + 75, horseY - 20);
+    ctx.moveTo(horseX + 78, horseY - 16);
+    ctx.quadraticCurveTo(horseX + 88, horseY + 2, horseX + 90, horseY + 16);
+    ctx.lineTo(horseX + 80, horseY + 10);
+    ctx.quadraticCurveTo(horseX + 73, horseY - 6, horseX + 78, horseY - 16);
     ctx.closePath();
     ctx.fill();
-    
+
     // Horse head with detail
-    const headGrad = ctx.createRadialGradient(horseX + 85, horseY - 45, 5, horseX + 88, horseY - 42, 25);
+    const headGrad = ctx.createRadialGradient(horseX + 88, horseY - 44, 6, horseX + 92, horseY - 40, 26);
     headGrad.addColorStop(0, '#B8956A');
-    headGrad.addColorStop(1, '#8B6F47');
+    headGrad.addColorStop(1, '#7B5F3E');
     ctx.fillStyle = headGrad;
     ctx.beginPath();
-    ctx.ellipse(horseX + 85, horseY - 45, 18, 22, 0.1, 0, Math.PI * 2);
+    ctx.moveTo(horseX + 86, horseY - 58);
+    ctx.quadraticCurveTo(horseX + 108, horseY - 66, horseX + 108, horseY - 44);
+    ctx.quadraticCurveTo(horseX + 106, horseY - 30, horseX + 98, horseY - 22);
+    ctx.quadraticCurveTo(horseX + 85, horseY - 18, horseX + 78, horseY - 30);
+    ctx.quadraticCurveTo(horseX + 76, horseY - 46, horseX + 86, horseY - 58);
+    ctx.closePath();
     ctx.fill();
-    
-    // Snout
+
+    // Snout highlight
     ctx.fillStyle = '#9D7E5D';
     ctx.beginPath();
-    ctx.ellipse(horseX + 100, horseY - 42, 10, 8, 0, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 102, horseY - 38, 11, 9, 0.08, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Nostrils
-    ctx.fillStyle = '#5D3A1A';
+    ctx.fillStyle = '#2C1810';
     ctx.beginPath();
-    ctx.arc(horseX + 97, horseY - 44, 2, 0, Math.PI * 2);
+    ctx.arc(horseX + 100, horseY - 40, 2.2, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(horseX + 97, horseY - 40, 2, 0, Math.PI * 2);
+    ctx.arc(horseX + 104, horseY - 34, 2, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Eye with shine
     ctx.fillStyle = '#000';
     ctx.beginPath();
-    ctx.arc(horseX + 80, horseY - 50, 4, 0, Math.PI * 2);
+    ctx.arc(horseX + 82, horseY - 46, 4, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#FFF';
     ctx.beginPath();
-    ctx.arc(horseX + 81, horseY - 51, 1.5, 0, Math.PI * 2);
+    ctx.arc(horseX + 83, horseY - 47.5, 1.5, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Ears with detail
     ctx.fillStyle = '#8B6F47';
     ctx.beginPath();
-    ctx.ellipse(horseX + 75, horseY - 63, 8, 16, -0.3, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 78, horseY - 66, 7, 15, -0.35, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(horseX + 95, horseY - 63, 8, 16, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 96, horseY - 66, 7, 15, 0.3, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Ear inner
     ctx.fillStyle = '#FFE4D6';
     ctx.beginPath();
-    ctx.ellipse(horseX + 75, horseY - 63, 4, 10, -0.3, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 78, horseY - 66, 3.5, 9, -0.35, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(horseX + 95, horseY - 63, 4, 10, 0.3, 0, Math.PI * 2);
+    ctx.ellipse(horseX + 96, horseY - 66, 3.5, 9, 0.3, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Flowing mane
-    ctx.strokeStyle = '#6B5344';
+    ctx.strokeStyle = '#5B4335';
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         ctx.beginPath();
         ctx.moveTo(horseX + 70 + i * 5, horseY - 50);
         ctx.bezierCurveTo(
-            horseX + 68 + i * 5, horseY - 75 + Math.sin(progress * Math.PI + i) * 10,
-            horseX + 65 + i * 5, horseY - 90,
-            horseX + 62 + i * 5, horseY - 100 + Math.sin(progress * Math.PI * 2 + i) * 8
+            horseX + 68 + i * 5, horseY - 78 + Math.sin(progress * Math.PI + i) * 10,
+            horseX + 64 + i * 5, horseY - 96,
+            horseX + 60 + i * 5, horseY - 104 + Math.sin(progress * Math.PI * 2 + i) * 8
         );
         ctx.stroke();
     }
-    
-    // Horse legs with animation
-    ctx.fillStyle = '#7A5230';
-    const legWave = Math.sin(progress * Math.PI * 6) * 12;
-    
-    // Front left leg
-    ctx.fillRect(horseX + 10, horseY + 50, 10, 35);
-    // Front right leg
-    ctx.fillRect(horseX + 25, horseY + 50 + legWave, 10, 35);
-    // Back left leg
-    ctx.fillRect(horseX + 40, horseY + 50, 10, 35);
-    // Back right leg
-    ctx.fillRect(horseX + 55, horseY + 50 + legWave, 10, 35);
-    
-    // Hooves
-    ctx.fillStyle = '#2C1810';
-    ctx.fillRect(horseX + 10, horseY + 85, 10, 5);
-    ctx.fillRect(horseX + 25, horseY + 85 + legWave, 10, 5);
-    ctx.fillRect(horseX + 40, horseY + 85, 10, 5);
-    ctx.fillRect(horseX + 55, horseY + 85 + legWave, 10, 5);
-    
+
+    // Horse legs with simple joints
+    const legWave = Math.sin(progress * Math.PI * 6) * 10;
+    const drawLeg = (baseX, front) => {
+        const kneeOffset = front ? 6 : -4;
+        const anim = front ? legWave : -legWave * 0.8;
+        ctx.fillStyle = '#7A5230';
+        ctx.beginPath();
+        ctx.moveTo(baseX, horseY + 46 + anim * 0.3);
+        ctx.quadraticCurveTo(baseX + kneeOffset, horseY + 70 + anim * 0.6, baseX + 2, horseY + 92 + anim);
+        ctx.lineTo(baseX + 12, horseY + 92 + anim);
+        ctx.quadraticCurveTo(baseX + kneeOffset + 10, horseY + 70 + anim * 0.6, baseX + 10, horseY + 46 + anim * 0.3);
+        ctx.closePath();
+        ctx.fill();
+        // Hoof
+        ctx.fillStyle = '#2C1810';
+        ctx.fillRect(baseX + 2, horseY + 92 + anim, 10, 6);
+    };
+    drawLeg(horseX + 6, true);
+    drawLeg(horseX + 26, false);
+    drawLeg(horseX + 46, true);
+    drawLeg(horseX + 66, false);
+
     // Saddle with detail
     ctx.fillStyle = '#8B4513';
     ctx.beginPath();
     ctx.ellipse(horseX + 30, horseY + 20, 35, 25, 0, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // Saddle blanket
     ctx.fillStyle = '#FFD700';
     ctx.beginPath();
@@ -2416,7 +2556,7 @@ function drawHorseRideScene(progress) {
     // Body
     ctx.fillStyle = '#FFE0BD';
     ctx.fillRect(youssefX - 12, youssefY + 5, 24, 28);
-    
+
     // Head
     const youssefHeadGrad = ctx.createRadialGradient(youssefX - 2, youssefY - 8, 2, youssefX, youssefY - 6, 14);
     youssefHeadGrad.addColorStop(0, '#FFEBD6');
@@ -2425,26 +2565,64 @@ function drawHorseRideScene(progress) {
     ctx.beginPath();
     ctx.arc(youssefX, youssefY - 10, 14, 0, Math.PI * 2);
     ctx.fill();
-    
-    // Hair
+
+    // Hair and eyebrows
     ctx.fillStyle = '#3E2723';
     ctx.beginPath();
     ctx.arc(youssefX, youssefY - 18, 15, 0, Math.PI);
     ctx.fill();
-    
+    ctx.fillRect(youssefX - 10, youssefY - 16, 8, 2);
+    ctx.fillRect(youssefX + 2, youssefY - 16, 8, 2);
+
     // Eyes looking ahead
-    ctx.fillStyle = '#8B6F47';
+    ctx.fillStyle = '#FFF';
     ctx.beginPath();
-    ctx.ellipse(youssefX - 5, youssefY - 12, 2.5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(youssefX - 5, youssefY - 12, 3.8, 4, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(youssefX + 5, youssefY - 12, 2.5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(youssefX + 5, youssefY - 12, 3.8, 4, 0, 0, Math.PI * 2);
     ctx.fill();
-    
+    ctx.fillStyle = '#3B3B3B';
+    ctx.beginPath();
+    ctx.arc(youssefX - 5, youssefY - 12, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(youssefX + 5, youssefY - 12, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.arc(youssefX - 4, youssefY - 13.5, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(youssefX + 6, youssefY - 13.5, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nose and smile
+    ctx.strokeStyle = '#C68642';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(youssefX + 2, youssefY - 10);
+    ctx.quadraticCurveTo(youssefX + 1, youssefY - 6, youssefX + 3, youssefY - 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(youssefX, youssefY - 2, 5, 0, Math.PI);
+    ctx.stroke();
+
     // Arms holding reins
     ctx.fillStyle = '#FFE0BD';
     ctx.fillRect(youssefX - 14, youssefY + 8, 6, 16);
     ctx.fillRect(youssefX + 8, youssefY + 8, 6, 16);
+    // Reins to horse head
+    ctx.strokeStyle = '#3E2723';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(horseX + 98, horseY - 34);
+    ctx.quadraticCurveTo(horseX + 70, horseY - 10, youssefX + 12, youssefY + 14);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(horseX + 96, horseY - 30);
+    ctx.quadraticCurveTo(horseX + 68, horseY - 4, youssefX - 10, youssefY + 14);
+    ctx.stroke();
     
     // Vladislava (back) - holding him
     const vladX = horseX + 10;
@@ -2501,22 +2679,44 @@ function drawHorseRideScene(progress) {
     ctx.strokeStyle = '#D4A574';
     ctx.stroke();
     
-    // Eyes excited/happy
+    // Eyes excited/happy with whites
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.ellipse(vladX - 5, vladY - 12, 3.5, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(vladX + 5, vladY - 12, 3.5, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.fillStyle = '#4A90E2';
     ctx.beginPath();
-    ctx.ellipse(vladX - 5, vladY - 12, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.arc(vladX - 5, vladY - 12, 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(vladX + 5, vladY - 12, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.arc(vladX + 5, vladY - 12, 2, 0, Math.PI * 2);
     ctx.fill();
-    
-    // Big smile
-    ctx.strokeStyle = '#D4A574';
-    ctx.lineWidth = 2;
+    ctx.fillStyle = '#FFF';
     ctx.beginPath();
-    ctx.arc(vladX, vladY - 4, 5, 0, Math.PI);
+    ctx.arc(vladX - 4, vladY - 13, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(vladX + 6, vladY - 13, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    // Brows
+    ctx.fillStyle = '#C68642';
+    ctx.fillRect(vladX - 9, vladY - 17, 7, 1.5);
+    ctx.fillRect(vladX + 2, vladY - 17, 7, 1.5);
+
+    // Nose and smile
+    ctx.strokeStyle = '#C68642';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(vladX + 1, vladY - 10);
+    ctx.quadraticCurveTo(vladX, vladY - 6, vladX + 2, vladY - 3);
     ctx.stroke();
-    
+    ctx.beginPath();
+    ctx.arc(vladX, vladY - 2, 5.5, 0, Math.PI);
+    ctx.stroke();
+
     // Arms around Youssef
     ctx.fillStyle = '#FFE0BD';
     ctx.fillRect(vladX - 14, vladY + 8, 6, 18);
@@ -2744,36 +2944,42 @@ function drawWeddingScene(progress) {
     ctx.closePath();
     ctx.fill();
     
-    // Eyes looking at bride
-    ctx.fillStyle = '#8B6F47';
-    ctx.beginPath();
-    ctx.ellipse(groomX - 6, groomY - 12, 4.5, 5.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(groomX + 6, groomY - 12, 4.5, 5.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Pupils
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(groomX - 5, groomY - 12, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(groomX + 7, groomY - 12, 2, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Eye shine
+    // Eyes looking at bride with sclera/pupils
     ctx.fillStyle = '#FFF';
     ctx.beginPath();
-    ctx.arc(groomX - 4, groomY - 13.5, 1.5, 0, Math.PI * 2);
+    ctx.ellipse(groomX - 6, groomY - 12, 4.6, 5.2, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(groomX + 8, groomY - 13.5, 1.5, 0, Math.PI * 2);
+    ctx.ellipse(groomX + 6, groomY - 12, 4.6, 5.2, 0, 0, Math.PI * 2);
     ctx.fill();
-    
-    // Smile
-    ctx.strokeStyle = '#D4A574';
-    ctx.lineWidth = 2.5;
+    ctx.fillStyle = '#2B2B2B';
+    ctx.beginPath();
+    ctx.arc(groomX - 6, groomY - 12, 2.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(groomX + 6, groomY - 12, 2.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.arc(groomX - 5, groomY - 13.3, 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(groomX + 7, groomY - 13.3, 1.1, 0, Math.PI * 2);
+    ctx.fill();
+    // Brows
+    ctx.fillStyle = '#2B1B10';
+    ctx.fillRect(groomX - 11, groomY - 18, 8, 2);
+    ctx.fillRect(groomX + 3, groomY - 18, 8, 2);
+
+    // Nose and smile
+    ctx.strokeStyle = '#C68642';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(groomX + 2, groomY - 9);
+    ctx.quadraticCurveTo(groomX + 1, groomY - 5, groomX + 3, groomY - 3);
+    ctx.stroke();
+    ctx.strokeStyle = '#B85C5C';
+    ctx.lineWidth = 2.2;
     ctx.beginPath();
     ctx.arc(groomX, groomY + 1, 7, 0, Math.PI);
     ctx.stroke();
@@ -2862,6 +3068,61 @@ function drawWeddingScene(progress) {
     ctx.fillStyle = '#D4A574';
     ctx.beginPath();
     ctx.arc(brideX, brideY - 23, 18, 0, Math.PI);
+    ctx.fill();
+
+    // Soft face details
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.ellipse(brideX - 5, brideY - 12, 3.8, 4.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(brideX + 5, brideY - 12, 3.8, 4.3, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#3B3B3B';
+    ctx.beginPath();
+    ctx.arc(brideX - 5, brideY - 12, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(brideX + 5, brideY - 12, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#FFF';
+    ctx.beginPath();
+    ctx.arc(brideX - 4, brideY - 13, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(brideX + 6, brideY - 13, 0.9, 0, Math.PI * 2);
+    ctx.fill();
+    // Brows and lashes
+    ctx.fillStyle = '#C68642';
+    ctx.fillRect(brideX - 9, brideY - 17, 7, 1.4);
+    ctx.fillRect(brideX + 2, brideY - 17, 7, 1.4);
+    ctx.strokeStyle = '#C68642';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(brideX - 9, brideY - 11);
+    ctx.lineTo(brideX - 13, brideY - 10);
+    ctx.moveTo(brideX + 9, brideY - 11);
+    ctx.lineTo(brideX + 13, brideY - 10);
+    ctx.stroke();
+    // Nose and lips
+    ctx.strokeStyle = '#C68642';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(brideX + 1, brideY - 10);
+    ctx.quadraticCurveTo(brideX, brideY - 6, brideX + 2, brideY - 4);
+    ctx.stroke();
+    ctx.strokeStyle = '#C45A63';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(brideX, brideY - 2, 6, 0, Math.PI);
+    ctx.stroke();
+    // Blush
+    ctx.fillStyle = 'rgba(255, 120, 140, 0.35)';
+    ctx.beginPath();
+    ctx.ellipse(brideX - 12, brideY - 7, 4.5, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(brideX + 12, brideY - 7, 4.5, 4, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Arms and hands holding bouquet
@@ -3636,6 +3897,7 @@ const ctx = gameCanvas ? gameCanvas.getContext('2d') : null;
 // Device Detection
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 let canvasScale = 1;
+const mobileControlsEl = document.getElementById('mobile-controls');
 
 // Game State
 let gameFrame = 0;
@@ -3771,6 +4033,7 @@ function setupCanvas() {
 function openFlashGame() {
     document.getElementById('flash-game-modal').style.display = 'flex';
     setupCanvas();
+    toggleMobileControls();
     initGame();
 }
 
@@ -3780,6 +4043,9 @@ function openFlashGame() {
 function closeFlashGame() {
     document.getElementById('flash-game-modal').style.display = 'none';
     gameRun = false;
+    // Release virtual buttons when closing
+    keys["ArrowLeft"] = false;
+    keys["ArrowRight"] = false;
     if (animFrame) cancelAnimationFrame(animFrame);
 }
 
@@ -5167,6 +5433,44 @@ document.addEventListener('keydown', (e) => {
         handleGameInput(e);
     }
 });
+
+// Mobile on-screen controls
+function bindMobileControls() {
+    if (!mobileControlsEl) return;
+    const leftBtn = document.getElementById('btn-left');
+    const rightBtn = document.getElementById('btn-right');
+    const jumpBtn = document.getElementById('btn-jump');
+
+    const setKey = (code, state) => { keys[code] = state; };
+    const attachHoldButton = (btn, code) => {
+        if (!btn) return;
+        const down = (e) => { if (e) e.preventDefault(); setKey(code, true); };
+        const up = (e) => { if (e) e.preventDefault(); setKey(code, false); };
+        btn.addEventListener('touchstart', down, { passive: false });
+        btn.addEventListener('touchend', up, { passive: false });
+        btn.addEventListener('touchcancel', up, { passive: false });
+        btn.addEventListener('mousedown', down);
+        btn.addEventListener('mouseup', up);
+        btn.addEventListener('mouseleave', up);
+    };
+
+    attachHoldButton(leftBtn, 'ArrowLeft');
+    attachHoldButton(rightBtn, 'ArrowRight');
+
+    if (jumpBtn) {
+        const triggerJump = (e) => { if (e) e.preventDefault(); handleGameInput(e); };
+        jumpBtn.addEventListener('touchstart', triggerJump, { passive: false });
+        jumpBtn.addEventListener('mousedown', triggerJump);
+    }
+}
+
+function toggleMobileControls() {
+    if (!mobileControlsEl) return;
+    mobileControlsEl.style.display = isMobile ? 'flex' : 'none';
+}
+
+bindMobileControls();
+toggleMobileControls();
 
 // Touch controls for mobile
 if (gameCanvas) {

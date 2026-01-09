@@ -113,18 +113,11 @@
                     <div class="countdown-item"><span class="countdown-number" id="seconds">0</span><span
                             class="countdown-label">Secs</span></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Post-Birthday View -->
-        <div id="birthdayView" style="display: none;">
-            <div class="section-box" style="background: rgba(255,215,0,0.2); border: 2px solid #ffd700;">
-                <h2 style="font-size: 2.5em; color: #ffd700;">🎉🎈 HAPPY BIRTHDAY! 🎈🎉</h2>
-                <p style="font-size: 1.5em; margin-top: 15px;">You are finally 25! I love you endlessly! ❤️</p>
+                <div id="age-info"></div>
             </div>
 
             <div class="section-box">
-                <div
+                <div id="wedding-label"
                     style="font-size: 2em; background: linear-gradient(45deg, #ffd700, #fff); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;">
                     💐 Countdown To Our Wedding 💍</div>
                 <div class="countdown">
@@ -138,6 +131,14 @@
                             class="countdown-label">Secs</span></div>
                 </div>
                 <p style="font-size: 1.2em; margin-top: 20px; opacity: 0.8;">April 10th, 2026 🌹</p>
+            </div>
+        </div>
+
+        <!-- Post-Birthday View -->
+        <div id="birthdayView" style="display: none;">
+            <div class="section-box" style="background: rgba(255,215,0,0.2); border: 2px solid #ffd700;">
+                <h2 style="font-size: 2.5em; color: #ffd700;">🎉🎈 HAPPY BIRTHDAY! 🎈🎉</h2>
+                <p style="font-size: 1.5em; margin-top: 15px;">You are finally 25! I love you endlessly! ❤️</p>
             </div>
         </div>
 
@@ -373,16 +374,9 @@
         <div id="game-container">
             <canvas id="game-canvas" width="800" height="400"></canvas>
 
-            <div
-                style="position: absolute; top: 10px; left: 10px; width: 100%; text-align: left; pointer-events: none;">
-                <div
-                    style="font-size: 20px; color: white; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
-                    ❤️ <span id="ui-hearts">❤️❤️❤️</span> | 🏆 Score: <span id="ui-score">0</span>
-                </div>
-                <div
-                    style="position: absolute; top: 0; right: 20px; font-size: 20px; color: #fff; text-shadow: 2px 2px 0 #000; font-family: sans-serif; font-weight: bold;">
-                    Distance: <span id="ui-distance">2387</span> km
-                </div>
+            <div id="game-hud" class="game-hud">
+                <div class="hud-left">❤️ <span id="ui-hearts">❤️❤️❤️</span> | 🏆 Score: <span id="ui-score">0</span></div>
+                <div class="hud-right">Distance: <span id="ui-distance">2387</span> km</div>
             </div>
 
             <div id="dialogue-box"
@@ -408,6 +402,13 @@
                 <button id="restart-btn"
                     style="padding: 15px 40px; font-size: 20px; background: #ff6b9d; color: white; border: none; border-radius: 50px; cursor: pointer;">Try
                     Again 💖</button>
+            </div>
+
+            <!-- On-screen controls for mobile -->
+            <div id="mobile-controls" class="mobile-controls" aria-label="Mobile controls">
+                <button id="btn-left" class="control-btn" aria-label="Move left">◀</button>
+                <button id="btn-jump" class="control-btn" aria-label="Jump or interact">⏫</button>
+                <button id="btn-right" class="control-btn" aria-label="Move right">▶</button>
             </div>
         </div>
     </div>
