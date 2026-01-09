@@ -659,9 +659,9 @@ canvas {
     width: 100%;
     height: 100%;
     display: block;
-    touch-action: none; /* Prevent scroll/zoom on touch */
-    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
 }
+
 
 /* Game Title - Responsive sizing */
 #flash-game-modal h2 {
@@ -689,24 +689,20 @@ canvas {
 
 /* Close Button - Touch Friendly */
 .close-game {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 36px;
-    line-height: 36px;
-    cursor: pointer;
-    z-index: 20001;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
+    position: fixed;
+    top: 12px;
+    right: 12px;
     width: 44px;
     height: 44px;
+    font-size: 28px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s;
-    padding: 0;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    z-index: 30000;
+    cursor: pointer;
 }
 
 .close-game:hover,
@@ -900,12 +896,14 @@ canvas {
         justify-content: center;
     }
     
-    #game-container {
-        width: auto;
-        height: 85vh;
-        max-width: calc(85vh * 2); /* Maintain 2:1 ratio */
-        max-height: 85vh;
-    }
+#game-container {
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    aspect-ratio: 2 / 1;
+    background: #87CEEB;
+    overflow: hidden;
+}
     
     #flash-game-modal h2 {
         font-size: clamp(0.8rem, 2.5vh, 1.2rem);
@@ -1080,6 +1078,11 @@ canvas {
 }
 
 /* --- MOBILE SPECIFIC TWEAKS --- */
+@media (max-width: 400px) {
+    #game-container {
+        aspect-ratio: 16 / 9;
+    }
+}
 @media (max-width: 600px) {
     #game-container {
         width: 100%; /* Full width on phones */
