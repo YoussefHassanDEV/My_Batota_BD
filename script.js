@@ -534,7 +534,8 @@ function initQuiz() {
     showQuestion();
 }
 
-// ========== 6. GAME ENGINE ==========
+// ========== MOBILE-OPTIMIZED GAME ENGINE ==========
+
 const gameCanvas = document.getElementById('game-canvas');
 const ctx = gameCanvas ? gameCanvas.getContext('2d') : null;
 let gameFrame = 0, gameRun = false, animFrame;
@@ -543,6 +544,10 @@ let player = { x: 100, y: 300, w: 40, h: 60, vy: 0, g: 0.5, jp: -10, gr: true, h
 let obstacles = [], clouds = [], particlesArr = [], mountains = [];
 let isCutscene = false, youssef = { x: 800, y: 300, w: 40, h: 60 }, cutsceneTimer = 0;
 
+// Mobile detection and canvas scaling
+let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+let canvasScale = 1;
+
 const dialogues = [
     { dist: 1000, text: "It's my birthday! Running to Youssef! 🏃‍♀️💨" },
     { dist: 700, text: "The distance is far, but love is stronger! 💪❤️" },
@@ -550,8 +555,25 @@ const dialogues = [
     { dist: 50, text: "I'M ALMOST THERE! 💍" }
 ];
 
+function setupCanvas() {
+    if (!gameCanvas) return;
+    
+    const container = document.getElementById('game-container');
+    const rect = container.getBoundingClientRect();
+    
+    // Set canvas internal resolution
+    gameCanvas.width = 800;
+    gameCanvas.height = 400;
+    
+    // Scale for mobile
+    if (isMobile) {
+        canvasScale = rect.width / 800;
+    }
+}
+
 function openFlashGame() {
     document.getElementById('flash-game-modal').style.display = 'flex';
+    setupCanvas();
     initGame();
 }
 
@@ -578,14 +600,30 @@ function initGame() {
 function gameLoop() {
     if (!gameRun || !ctx) return;
     ctx.clearRect(0, 0, 800, 400);
-    let skyCol = level === 1 ? '#87CEEB' : (level === 2 ? '#FFDAB9' : '#191970');
-    ctx.fillStyle = skyCol;
+    
+    // Sky gradient based on level
+    let skyGrad = ctx.createLinearGradient(0, 0, 0, 400);
+    if (level === 1) {
+        skyGrad.addColorStop(0, '#87CEEB');
+        skyGrad.addColorStop(1, '#E0F6FF');
+    } else if (level === 2) {
+        skyGrad.addColorStop(0, '#FFDAB9');
+        skyGrad.addColorStop(1, '#FFE4B5');
+    } else {
+        skyGrad.addColorStop(0, '#191970');
+        skyGrad.addColorStop(1, '#4B0082');
+    }
+    ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, 800, 400);
+    
     // Sun/Moon
     ctx.beginPath();
     ctx.arc(700, 50, 30, 0, Math.PI * 2);
     ctx.fillStyle = level === 3 ? '#FFFACD' : '#FFD700';
     ctx.fill();
+    ctx.strokeStyle = level === 3 ? '#FFF' : '#FFA500';
+    ctx.lineWidth = 3;
+    ctx.stroke();
 
     // Mountains
     mountains.forEach(m => {
@@ -599,22 +637,38 @@ function gameLoop() {
         ctx.fill();
     });
 
+    // Clouds
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    clouds.forEach(c => {
+        if (!isCutscene) c.x -= c.speed;
+        if (c.x < -100) c.x = 900;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 20, 0, Math.PI * 2);
+        ctx.arc(c.x + 20, c.y - 10, 25, 0, Math.PI * 2);
+        ctx.arc(c.x + 40, c.y, 20, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
     if (isCutscene) updateCutscene(); else update();
     draw();
     animFrame = requestAnimationFrame(gameLoop);
 }
+
 function update() {
     gameFrame++;
     player.vy += player.g;
     player.y += player.vy;
     if (player.y > 300) { player.y = 300; player.vy = 0; player.gr = true; }
+    
     distance -= 0.15;
     if (distance < 700 && level === 1) { level = 2; showDialogue(dialogues[1].text); }
     if (distance < 300 && level === 2) { level = 3; showDialogue(dialogues[2].text); }
     if (distance < 50 && level === 3) { level = 4; showDialogue(dialogues[3].text); }
     if (distance <= 0) { startEndingCutscene(); return; }
 
-    if (gameFrame % 120 === 0 && distance > 50) {
+    // Spawn obstacles (less frequent on mobile)
+    const spawnRate = isMobile ? 150 : 120;
+    if (gameFrame % spawnRate === 0 && distance > 50) {
         let type = Math.random() > 0.4 ? (Math.random() > 0.5 ? 'rock' : 'bird') : 'heart';
         let obsY = type === 'bird' ? 220 : 325;
         if (type === 'heart') obsY = Math.random() * 50 + 230;
@@ -643,15 +697,16 @@ function update() {
     }
 
     if (player.inv > 0) player.inv--;
-    clouds.forEach(c => { c.x -= c.speed; if (c.x < -100) c.x = 900; });
     updateGameUI();
 }
+
 function startEndingCutscene() {
     isCutscene = true;
     obstacles = [];
     youssef.x = 700;
     player.y = 300;
 }
+
 function updateCutscene() {
     cutsceneTimer++;
     if (player.x < youssef.x - 40) {
@@ -663,24 +718,16 @@ function updateCutscene() {
         if (cutsceneTimer > 250) endGame(true);
     }
 }
+
 function draw() {
-    // Clouds
-    ctx.fillStyle = 'rgba(255,255,255,0.8)';
-    clouds.forEach(c => {
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, 20, 0, Math.PI * 2);
-        ctx.arc(c.x + 20, c.y - 10, 25, 0, Math.PI * 2);
-        ctx.arc(c.x + 40, c.y, 20, 0, Math.PI * 2);
-        ctx.fill();
-    });
     // Ground
     ctx.fillStyle = '#7ec850';
     ctx.fillRect(0, 340, 800, 60);
     ctx.fillStyle = '#5d4037';
     ctx.fillRect(0, 370, 800, 30);
 
-    // Player
-    if (player.inv % 4 === 0) drawChibiPlayer(player.x, player.y);
+    // Player (with invincibility flash)
+    if (player.inv === 0 || player.inv % 4 === 0) drawChibiPlayer(player.x, player.y);
 
     if (isCutscene) {
         drawYoussef(youssef.x, youssef.y);
@@ -715,18 +762,35 @@ function draw() {
         if (p.life <= 0) particlesArr.splice(i, 1);
     }
 }
+
 function drawChibiPlayer(x, y) {
     let bounce = player.gr ? Math.sin(gameFrame * 0.2) * 2 : 0;
+    
+    // Body
+    ctx.fillStyle = '#FF69B4';
+    ctx.beginPath();
+    ctx.moveTo(x + 20, y + 25 + bounce);
+    ctx.lineTo(x + 5, y + 55 + bounce);
+    ctx.lineTo(x + 35, y + 55 + bounce);
+    ctx.fill();
+    
+    // Torso
     ctx.fillStyle = '#5D4037';
     ctx.fillRect(x + 5, y + 15 + bounce, 30, 25);
+    
+    // Head
     ctx.fillStyle = '#FFE0BD';
     ctx.beginPath();
     ctx.arc(x + 20, y + 15 + bounce, 14, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Hair
     ctx.fillStyle = '#5D4037';
     ctx.beginPath();
     ctx.arc(x + 20, y + 13 + bounce, 16, Math.PI, 0);
     ctx.fill();
+    
+    // Eyes
     ctx.fillStyle = '#000';
     if (gameFrame % 150 < 5) {
         ctx.fillRect(x + 14, y + 14 + bounce, 4, 1);
@@ -739,62 +803,77 @@ function drawChibiPlayer(x, y) {
         ctx.arc(x + 26, y + 14 + bounce, 2, 0, Math.PI * 2);
         ctx.fill();
     }
-    ctx.fillStyle = '#FF69B4';
-    ctx.beginPath();
-    ctx.moveTo(x + 20, y + 25 + bounce);
-    ctx.lineTo(x + 5, y + 55 + bounce);
-    ctx.lineTo(x + 35, y + 55 + bounce);
-    ctx.fill();
 }
+
 function drawYoussef(x, y) {
+    // Head
     ctx.fillStyle = '#FFE0BD';
     ctx.beginPath();
     ctx.arc(x + 20, y + 15, 14, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Hair
     ctx.fillStyle = '#000';
     ctx.beginPath();
     ctx.arc(x + 20, y + 12, 15, Math.PI, 0);
     ctx.fill();
-    ctx.fillStyle = '#000';
+    
+    // Eyes
     ctx.beginPath();
     ctx.arc(x + 16, y + 14, 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
     ctx.arc(x + 26, y + 14, 2, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Body
     ctx.fillStyle = '#4169E1';
     ctx.fillRect(x + 10, y + 25, 20, 20);
+    
+    // Legs
     ctx.fillStyle = '#333';
     ctx.fillRect(x + 10, y + 45, 9, 15);
     ctx.fillRect(x + 21, y + 45, 9, 15);
 }
+
 function drawRock(x, y) {
     ctx.fillStyle = '#808080';
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x, y + 30);
     ctx.lineTo(x + 5, y + 10);
     ctx.lineTo(x + 15, y);
     ctx.lineTo(x + 25, y + 10);
     ctx.lineTo(x + 30, y + 30);
+    ctx.closePath();
     ctx.fill();
+    ctx.stroke();
 }
+
 function drawBird(x, y) {
+    // Body
     ctx.fillStyle = '#fff';
     ctx.beginPath();
     ctx.arc(x + 15, y + 15, 10, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Beak
     ctx.fillStyle = '#FFD700';
     ctx.beginPath();
     ctx.moveTo(x + 5, y + 15);
     ctx.lineTo(x - 2, y + 18);
     ctx.lineTo(x + 5, y + 21);
     ctx.fill();
+    
+    // Wings
     ctx.fillStyle = '#ccc';
     let wingY = Math.sin(gameFrame * 0.5) * 8;
     ctx.beginPath();
-    ctx.ellipse(x + 15, y + 15, 8, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(x + 15, y + 15 + wingY, 8, 4, 0, 0, Math.PI * 2);
     ctx.fill();
 }
+
 function createGameParticles(x, y, count, color) {
     for (let i = 0; i < count; i++) {
         particlesArr.push({
@@ -806,6 +885,7 @@ function createGameParticles(x, y, count, color) {
         });
     }
 }
+
 function updateGameUI() {
     const heartsEl = document.getElementById('ui-hearts');
     const scoreEl = document.getElementById('ui-score');
@@ -814,12 +894,16 @@ function updateGameUI() {
     if (scoreEl) scoreEl.innerText = score;
     if (distEl) distEl.innerText = Math.floor(Math.max(0, distance));
 }
+
 function showDialogue(text) {
     gameRun = false;
     document.getElementById('dialogue-text').innerText = text;
     document.getElementById('dialogue-box').style.display = 'block';
 }
-function handleGameInput() {
+
+function handleGameInput(e) {
+    if (e) e.preventDefault();
+    
     const dialogBox = document.getElementById('dialogue-box');
     if (dialogBox && dialogBox.style.display === 'block') {
         dialogBox.style.display = 'none';
@@ -831,39 +915,66 @@ function handleGameInput() {
         createGameParticles(player.x + 20, player.y + 60, 5, '#fff');
     }
 }
+
 function endGame(win) {
     gameRun = false;
     const overlay = document.getElementById('game-overlay');
     const title = document.getElementById('overlay-title');
     const msg = document.getElementById('overlay-msg');
     if (overlay) overlay.style.display = 'flex';
-    if (title) title.innerText = win ? "HAPPY BIRTHDAY!" : "GAME OVER";
-    if (msg) msg.innerText = win ? "I LOVE YOU FOREVER! ❤️" : "Don't give up! Try again.";
+    if (title) title.innerText = win ? "HAPPY BIRTHDAY! 🎉" : "GAME OVER 💔";
+    if (msg) msg.innerText = win ? "I LOVE YOU FOREVER! ❤️💍" : "Don't give up! Try again my love! 💪";
 }
-// Event Listeners for Game
+
+// ========== EVENT LISTENERS ==========
+
+// Keyboard controls
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && document.getElementById('flash-game-modal').style.display === 'flex') {
-        e.preventDefault();
-        handleGameInput();
+        handleGameInput(e);
     }
 });
+
+// Touch controls for mobile
 if (gameCanvas) {
-    gameCanvas.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        handleGameInput();
-    });
+    // Mouse controls
+    gameCanvas.addEventListener('mousedown', handleGameInput);
+    
+    // Touch controls (better for mobile)
     gameCanvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        handleGameInput();
-    });
+        handleGameInput(e);
+    }, { passive: false });
+    
+    // Prevent default touch behaviors
+    gameCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+    }, { passive: false });
 }
+
+// Restart button
 const restartBtn = document.getElementById('restart-btn');
 if (restartBtn) {
     restartBtn.addEventListener('click', () => {
         document.getElementById('game-overlay').style.display = 'none';
         initGame();
     });
+    
+    restartBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        document.getElementById('game-overlay').style.display = 'none';
+        initGame();
+    }, { passive: false });
 }
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (gameRun) setupCanvas();
+});
+
+// Export functions for HTML onclick handlers
+window.openFlashGame = openFlashGame;
+window.closeFlashGame = closeFlashGame;
 // ========== 7. INITIALIZATION ==========
 window.addEventListener('load', function () {
     const gameModal = document.getElementById('flash-game-modal');
