@@ -285,17 +285,17 @@ setInterval(updatePageContent, 1000);
 function updateDistanceDisplay() {
     const distEl = document.getElementById('distanceDisplay');
     if (!distEl) return;
-    
+
     // Cairo to Kyiv distance
     const distanceKm = 2387; // kilometers
     const distanceMiles = 1483; // miles
-    
+
     const messages = [
         `${distanceKm.toLocaleString()} km separating us 🌍`,
         `${distanceMiles.toLocaleString()} miles of love 💕`,
         `But 0 distance in my heart ❤️`
     ];
-    
+
     const index = Math.floor(Date.now() / 4000) % messages.length;
     distEl.textContent = messages[index];
 }
@@ -497,6 +497,401 @@ function checkSecretCode() {
 // Memory Game
 let flippedCards = [];
 let matchedPairs = 0;
+let currentLevel = 1;
+
+
+
+function drawPyramidInterior() {
+    // Gradient background - ancient stone
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, 400);
+    bgGrad.addColorStop(0, "#2c1810");
+    bgGrad.addColorStop(0.5, "#8b6f47");
+    bgGrad.addColorStop(1, "#d4af37");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Torch lighting effect (glowing circles)
+    const torches = [
+        { x: 100, y: 100 },
+        { x: 400, y: 80 },
+        { x: 700, y: 100 }
+    ];
+    
+    torches.forEach(torch => {
+        const glow = ctx.createRadialGradient(torch.x, torch.y, 0, torch.x, torch.y, 80);
+        glow.addColorStop(0, "rgba(255, 200, 100, 0.4)");
+        glow.addColorStop(0.5, "rgba(255, 150, 50, 0.2)");
+        glow.addColorStop(1, "rgba(255, 100, 0, 0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
+        
+        // Torch flame
+        ctx.fillStyle = "#ff6600";
+        ctx.beginPath();
+        ctx.arc(torch.x, torch.y, 8 + Math.sin(gameFrame * 0.2) * 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = "#ffcc00";
+        ctx.beginPath();
+        ctx.arc(torch.x, torch.y, 5 + Math.sin(gameFrame * 0.2) * 1, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // Ancient pillars with hieroglyphics
+    ctx.fillStyle = "#7a5c3d";
+    for (let i = 0; i < 5; i++) {
+        const x = 50 + i * 180;
+        // Pillar body
+        ctx.fillRect(x, 0, 40, gameCanvas.height);
+        
+        // Pillar capital (top decoration)
+        ctx.fillStyle = "#a67c52";
+        ctx.fillRect(x - 10, 0, 60, 30);
+        
+        // Hieroglyphics on pillars
+        ctx.fillStyle = "#4a3728";
+        ctx.font = "20px Arial";
+        const symbols = ["𓀀", "𓁿", "☥", "𓂀"];
+        for (let j = 0; j < 4; j++) {
+            ctx.fillText(symbols[j % symbols.length], x + 10, 80 + j * 60);
+        }
+        
+        ctx.fillStyle = "#7a5c3d";
+    }
+
+    // Floor - decorated tiles
+    ctx.fillStyle = "#6b5b3d";
+    ctx.fillRect(0, 320, gameCanvas.width, 80);
+    
+    // Floor pattern
+    ctx.strokeStyle = "#4a3728";
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 16; i++) {
+        ctx.strokeRect(i * 50, 320, 50, 80);
+    }
+
+    // Draw Quests with glow and pedestal
+    quests.forEach(q => {
+        if (!q.done) {
+            // Pedestal
+            ctx.fillStyle = "#8b7355";
+            ctx.fillRect(q.x - 20, 270, 40, 50);
+            ctx.fillStyle = "#a67c52";
+            ctx.fillRect(q.x - 25, 265, 50, 10);
+            ctx.fillRect(q.x - 25, 315, 50, 10);
+            
+            // Glowing quest marker
+            const questGlow = ctx.createRadialGradient(q.x, 250, 0, q.x, 250, 30);
+            questGlow.addColorStop(0, "rgba(255, 215, 0, 0.8)");
+            questGlow.addColorStop(0.5, "rgba(255, 215, 0, 0.4)");
+            questGlow.addColorStop(1, "rgba(255, 215, 0, 0)");
+            ctx.fillStyle = questGlow;
+            ctx.fillRect(q.x - 40, 220, 80, 80);
+            
+            // Quest item
+            ctx.fillStyle = "#FFD700";
+            ctx.font = "40px Arial";
+            const pulse = Math.sin(gameFrame * 0.1) * 3;
+            ctx.save();
+            ctx.translate(q.x, 250 + pulse);
+            ctx.rotate(Math.sin(gameFrame * 0.05) * 0.2);
+            
+            // Quest icons
+            let icon = "✨";
+            if (q.text === "Clean") icon = "🧹";
+            if (q.text === "Coffee") icon = "☕";
+            if (q.text === "Camel") icon = "🐪";
+            
+            ctx.fillText(icon, -15, 0);
+            ctx.restore();
+            
+            // Quest label
+            ctx.fillStyle = "#FFD700";
+            ctx.font = "bold 18px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(q.text, q.x, 210);
+            ctx.textAlign = "left";
+        } else {
+            // Completed quest - show checkmark
+            ctx.fillStyle = "#4CAF50";
+            ctx.font = "50px Arial";
+            ctx.fillText("✓", q.x - 15, 280);
+        }
+    });
+}
+
+const pyramidPlayer = {
+    x: 100, y: 260, width: 40, height: 60,
+    vx: 0, vy: 0, speed: 4, jumpPower: 12, onGround: false
+};
+const keys = {};
+
+document.addEventListener("keydown", e => keys[e.code] = true);
+document.addEventListener("keyup", e => keys[e.code] = false);
+function updatePyramidPlayer() {
+    pyramidPlayer.vx = 0;
+    if (keys["ArrowLeft"]) pyramidPlayer.vx = -pyramidPlayer.speed;
+    if (keys["ArrowRight"]) pyramidPlayer.vx = pyramidPlayer.speed;
+
+    // Gravity
+    pyramidPlayer.vy += 0.6;
+    pyramidPlayer.x += pyramidPlayer.vx;
+    pyramidPlayer.y += pyramidPlayer.vy;
+
+    // Floor Collision
+    if (pyramidPlayer.y + pyramidPlayer.height >= 320) {
+        pyramidPlayer.y = 320 - pyramidPlayer.height;
+        pyramidPlayer.vy = 0;
+        pyramidPlayer.onGround = true;
+    }
+
+    // Screen Bounds
+    if (pyramidPlayer.x < 0) pyramidPlayer.x = 0;
+    if (pyramidPlayer.x > 750) pyramidPlayer.x = 750;
+}
+function drawPyramidPlayer() {
+    const x = pyramidPlayer.x;
+    const y = pyramidPlayer.y;
+    const bounce = pyramidPlayer.onGround ? Math.sin(gameFrame * 0.15) * 1 : 0;
+
+    // Shadow
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
+    ctx.beginPath();
+    ctx.ellipse(x + 20, y + 60, 18, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Legs with movement
+    const legSwing = pyramidPlayer.onGround ? Math.sin(gameFrame * 0.2) * 5 : 0;
+    
+    // Left leg
+    ctx.fillStyle = "#FFE0BD";
+    ctx.beginPath();
+    ctx.ellipse(x + 12, y + 48 + bounce, 6, 12, legSwing * 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Right leg
+    ctx.beginPath();
+    ctx.ellipse(x + 28, y + 48 + bounce, 6, 12, -legSwing * 0.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dress/Body with gradient
+    const dressGrad = ctx.createLinearGradient(x, y + 20, x, y + 50);
+    dressGrad.addColorStop(0, "#FF69B4");
+    dressGrad.addColorStop(1, "#FF1493");
+    ctx.fillStyle = dressGrad;
+    
+    ctx.beginPath();
+    ctx.moveTo(x + 20, y + 25 + bounce);
+    ctx.quadraticCurveTo(x + 5, y + 35 + bounce, x + 5, y + 50 + bounce);
+    ctx.lineTo(x + 35, y + 50 + bounce);
+    ctx.quadraticCurveTo(x + 35, y + 35 + bounce, x + 20, y + 25 + bounce);
+    ctx.fill();
+
+    // Belt/Waist accent
+    ctx.fillStyle = "#FFD700";
+    ctx.fillRect(x + 8, y + 35 + bounce, 24, 3);
+
+    // Torso/Upper body
+    ctx.fillStyle = "#FFE0BD";
+    ctx.fillRect(x + 12, y + 18 + bounce, 16, 15);
+    
+    // Arms with movement
+    const armSwing = pyramidPlayer.onGround ? Math.sin(gameFrame * 0.2) * 3 : 0;
+    
+    // Left arm
+    ctx.fillStyle = "#FFE0BD";
+    ctx.save();
+    ctx.translate(x + 10, y + 22 + bounce);
+    ctx.rotate(-armSwing * 0.05);
+    ctx.fillRect(-3, 0, 6, 12);
+    ctx.restore();
+    
+    // Right arm
+    ctx.save();
+    ctx.translate(x + 30, y + 22 + bounce);
+    ctx.rotate(armSwing * 0.05);
+    ctx.fillRect(-3, 0, 6, 12);
+    ctx.restore();
+
+    // Neck
+    ctx.fillStyle = "#FFE0BD";
+    ctx.fillRect(x + 16, y + 12 + bounce, 8, 6);
+
+    // Head (circular with better shading)
+    const headGrad = ctx.createRadialGradient(x + 18, y + 8 + bounce, 2, x + 20, y + 10 + bounce, 14);
+    headGrad.addColorStop(0, "#FFEBD6");
+    headGrad.addColorStop(1, "#FFE0BD");
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 10 + bounce, 14, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair - long flowing
+    ctx.fillStyle = "#5D4037";
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 8 + bounce, 16, Math.PI, 0);
+    ctx.fill();
+    
+    // Hair strands
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y + 10 + bounce);
+    ctx.quadraticCurveTo(x + 3, y + 25 + bounce, x + 8, y + 35 + bounce);
+    ctx.quadraticCurveTo(x + 5, y + 30 + bounce, x + 7, y + 15 + bounce);
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.moveTo(x + 34, y + 10 + bounce);
+    ctx.quadraticCurveTo(x + 37, y + 25 + bounce, x + 32, y + 35 + bounce);
+    ctx.quadraticCurveTo(x + 35, y + 30 + bounce, x + 33, y + 15 + bounce);
+    ctx.fill();
+
+    // Eyes with shine
+    ctx.fillStyle = "#000";
+    const blinkFrame = gameFrame % 180;
+    if (blinkFrame < 8) {
+        // Blinking
+        ctx.fillRect(x + 13, y + 10 + bounce, 5, 2);
+        ctx.fillRect(x + 23, y + 10 + bounce, 5, 2);
+    } else {
+        // Open eyes
+        ctx.beginPath();
+        ctx.arc(x + 15, y + 10 + bounce, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 25, y + 10 + bounce, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Eye shine
+        ctx.fillStyle = "#FFF";
+        ctx.beginPath();
+        ctx.arc(x + 16, y + 9 + bounce, 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 26, y + 9 + bounce, 1, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Eyelashes
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 17, y + 8 + bounce);
+    ctx.lineTo(x + 18, y + 6 + bounce);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 27, y + 8 + bounce);
+    ctx.lineTo(x + 28, y + 6 + bounce);
+    ctx.stroke();
+
+    // Smile
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x + 20, y + 12 + bounce, 6, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+
+    // Rosy cheeks
+    ctx.fillStyle = "rgba(255, 182, 193, 0.5)";
+    ctx.beginPath();
+    ctx.ellipse(x + 10, y + 13 + bounce, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(x + 30, y + 13 + bounce, 3, 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Crown/Tiara
+    ctx.fillStyle = "#FFD700";
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y + 2 + bounce);
+    ctx.lineTo(x + 12, y - 4 + bounce);
+    ctx.lineTo(x + 16, y + 2 + bounce);
+    ctx.lineTo(x + 20, y - 6 + bounce);
+    ctx.lineTo(x + 24, y + 2 + bounce);
+    ctx.lineTo(x + 28, y - 4 + bounce);
+    ctx.lineTo(x + 32, y + 2 + bounce);
+    ctx.lineTo(x + 30, y + 4 + bounce);
+    ctx.lineTo(x + 10, y + 4 + bounce);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Crown jewels
+    ctx.fillStyle = "#FF1493";
+    ctx.beginPath();
+    ctx.arc(x + 20, y - 5 + bounce, 2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+const quests = [
+    { text: "Clean", done: false, x: 200 },
+    { text: "Coffee", done: false, x: 400 },
+    { text: "Camel", done: false, x: 600 }
+];
+function checkQuests() {
+    quests.forEach(q => {
+        if (!q.done && Math.abs(pyramidPlayer.x - q.x) < 40) {
+            q.done = true;
+            showPyramidDialogue("✅ " + q.text + " Done!");
+        }
+    });
+
+    if (quests.every(q => q.done)) {
+        setTimeout(() => {
+            isPyramidMode = false;
+            if (animFrame) cancelAnimationFrame(animFrame);
+            showVictoryMessage();
+        }, 1000);
+    }
+}
+
+function showVictoryMessage() {
+    gameRun = false;
+    const overlay = document.getElementById('game-overlay');
+    const title = document.getElementById('overlay-title');
+    const msg = document.getElementById('overlay-msg');
+    if (overlay) overlay.style.display = 'flex';
+    if (title) title.innerText = "🎉 HAPPY BIRTHDAY! 💍";
+    if (msg) msg.innerHTML = "We completed all quests together! ❤️<br>Now we can rest in our pyramid forever! 🏛️💕<br><br>Every adventure led me to you 💖";
+}
+
+function showPyramidDialogue(text) {
+    // Use the existing dialogue box
+    const box = document.getElementById("dialogue-box");
+    document.getElementById("dialogue-text").innerText = text;
+    box.style.display = "block";
+
+    // Auto hide after 2 seconds so game doesn't stop too long
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 2000);
+}
+
+function checkLevelComplete() {
+    if (quests.every(q => q.done)) {
+        showDialogue("💖 Let's sleep together in our pyramid 💖");
+        setTimeout(() => {
+            showVictory();
+        }, 3000);
+    }
+}
+function startLevelTwo() {
+    // Reset player position for level 2
+    pyramidPlayer.x = 50;
+    pyramidPlayer.y = 260;
+
+    function loop() {
+        if (!isPyramidMode) return;
+
+        ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+        drawPyramidInterior();
+        updatePyramidPlayer();
+        drawPyramidPlayer();
+        checkQuests();
+
+        animFrame = requestAnimationFrame(loop);
+    }
+    loop();
+}
 
 function initMemoryGame() {
     const gameEl = document.getElementById('memoryGame');
@@ -611,7 +1006,7 @@ let score = 0, distance = 1000, level = 1;
 let player = { x: 100, y: 300, w: 40, h: 60, vy: 0, g: 0.5, jp: -10, gr: true, hearts: 3, inv: 0 };
 let obstacles = [], clouds = [], particlesArr = [], mountains = [];
 let isCutscene = false, youssef = { x: 800, y: 300, w: 40, h: 60 }, cutsceneTimer = 0;
-
+let isPyramidMode = false;
 // Mobile detection and canvas scaling
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 let canvasScale = 1;
@@ -646,7 +1041,7 @@ function closeFlashGame() {
 }
 
 function initGame() {
-    player.y = 300; player.vy = 0; player.hearts = 3; player.inv = 0; player.x = 100;
+    player.y = 300; player.vy = 0; player.hearts = 4; player.inv = 0; player.x = 100;
     score = 0; distance = 1000; level = 1;
     obstacles = []; clouds = []; particlesArr = []; mountains = [];
     isCutscene = false; youssef.x = 800; cutsceneTimer = 0;
@@ -688,16 +1083,30 @@ function gameLoop() {
     ctx.stroke();
 
     // Mountains
-    mountains.forEach(m => {
-        if (!isCutscene) m.x -= 0.5;
-        if (m.x < -300) m.x = 800;
-        ctx.fillStyle = level === 3 ? '#2F4F4F' : '#8B7355';
+    // Pyramids 🌄
+    mountains.forEach(p => {
+        if (!isCutscene) p.x -= 0.4;
+        if (p.x < -300) p.x = 900;
+
+        // Main pyramid
+        ctx.fillStyle = level === 3 ? '#3E2723' : '#C2B280';
         ctx.beginPath();
-        ctx.moveTo(m.x, 340);
-        ctx.lineTo(m.x + 150, 340 - m.h);
-        ctx.lineTo(m.x + 300, 340);
+        ctx.moveTo(p.x, 340);
+        ctx.lineTo(p.x + 150, 340 - p.h);
+        ctx.lineTo(p.x + 300, 340);
+        ctx.closePath();
+        ctx.fill();
+
+        // Shadow side
+        ctx.fillStyle = level === 3 ? '#2B1B17' : '#A68B5B';
+        ctx.beginPath();
+        ctx.moveTo(p.x + 150, 340 - p.h);
+        ctx.lineTo(p.x + 300, 340);
+        ctx.lineTo(p.x + 190, 340);
+        ctx.closePath();
         ctx.fill();
     });
+
 
     // Clouds
     ctx.fillStyle = 'rgba(255,255,255,0.8)';
@@ -713,6 +1122,12 @@ function gameLoop() {
 
     if (isCutscene) updateCutscene(); else update();
     draw();
+    // Romantic glow during cutscene
+    if (isCutscene) {
+        ctx.fillStyle = 'rgba(255,105,180,0.08)';
+        ctx.fillRect(0, 0, 800, 400);
+    }
+
     animFrame = requestAnimationFrame(gameLoop);
 }
 
@@ -767,19 +1182,72 @@ function startEndingCutscene() {
     obstacles = [];
     youssef.x = 700;
     player.y = 300;
+    cutsceneTimer = 0;
 }
+
+
+
 
 function updateCutscene() {
     cutsceneTimer++;
-    if (player.x < youssef.x - 40) {
-        player.x += 2;
-        player.y = 300 + Math.sin(cutsceneTimer * 0.5) * 2;
+
+    // Walk slowly toward Youssef
+    if (player.x < youssef.x - 45) {
+        player.x += 1.2;
+        player.y = 300 + Math.sin(cutsceneTimer * 0.15) * 3;
+
+        // Floating hearts while walking
+        if (cutsceneTimer % 15 === 0) {
+            createGameParticles(
+                player.x + 20,
+                player.y - 10,
+                2,
+                '#ff6b9d'
+            );
+        }
     } else {
         player.y = 300;
-        if (cutsceneTimer % 20 === 0) createGameParticles(player.x + 30, player.y - 10, 2, '#ff6b9d');
-        if (cutsceneTimer > 250) endGame(true);
+
+        // Romantic heart rain when close
+        if (cutsceneTimer % 10 === 0) {
+            createGameParticles(
+                player.x + 25,
+                player.y - 15,
+                4,
+                '#ff1493'
+            );
+        }
+
+        // After romantic pause, transition to pyramid
+        if (cutsceneTimer > 240) {
+            transitionToPyramid();
+        }
     }
+
+    // Soft fade overlay
+    ctx.fillStyle = `rgba(255,182,193, ${Math.min(cutsceneTimer / 500, 0.25)})`;
+    ctx.fillRect(0, 0, 800, 400);
 }
+
+function transitionToPyramid() {
+    isCutscene = false;
+    gameRun = false;
+    isPyramidMode = true;
+    
+    // Reset quests for new attempt
+    quests.forEach(q => q.done = false);
+    
+    // Show instruction dialogue
+    showPyramidDialogue("🏛️ We entered the Pyramid! Complete 3 quests together! Use Arrow Keys/Tap to move!");
+    
+    // Reset player position for pyramid
+    pyramidPlayer.x = 100;
+    pyramidPlayer.y = 260;
+    
+    startLevelTwo();
+}
+
+
 
 function draw() {
     // Ground
@@ -967,14 +1435,31 @@ function handleGameInput(e) {
     if (e) e.preventDefault();
 
     const dialogBox = document.getElementById('dialogue-box');
+
+    // 1. If Dialogue is Open
     if (dialogBox && dialogBox.style.display === 'block') {
         dialogBox.style.display = 'none';
+
+        // If we're transitioning to pyramid mode, start it
+        if (isPyramidMode) {
+            // Pyramid game loop will start automatically
+            return;
+        }
+
+        // Otherwise, resume normal runner game
         gameRun = true;
         gameLoop();
-    } else if (gameRun && player.gr && !isCutscene) {
+    }
+    // 2. If Playing Runner Game (Jump)
+    else if (gameRun && player.gr && !isCutscene && !isPyramidMode) {
         player.vy = player.jp;
         player.gr = false;
         createGameParticles(player.x + 20, player.y + 60, 5, '#fff');
+    }
+    // 3. If Playing Pyramid Game (Jump with tap/click)
+    else if (isPyramidMode && pyramidPlayer.onGround) {
+        pyramidPlayer.vy = -pyramidPlayer.jumpPower;
+        pyramidPlayer.onGround = false;
     }
 }
 
@@ -985,7 +1470,7 @@ function endGame(win) {
     const msg = document.getElementById('overlay-msg');
     if (overlay) overlay.style.display = 'flex';
     if (title) title.innerText = win ? "HAPPY BIRTHDAY! 🎉" : "GAME OVER 💔";
-    if (msg) msg.innerText = win ? "I LOVE YOU FOREVER! ❤️💍" : "Don't give up! Try again my love! 💪";
+    if (msg) msg.innerText = win ? "Every step led me to you ❤️💍\nForever starts now." : "Don't give up! Try again my love! 💪";
 }
 
 // ========== EVENT LISTENERS ==========
