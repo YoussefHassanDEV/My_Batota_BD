@@ -24,7 +24,7 @@
 // Date Configuration
 const DATES = {
     birthday: new Date('2026-01-10T00:00:00Z').getTime(),
-    wedding: new Date('2026-04-10T00:00:00Z').getTime(),
+    wedding: new Date(202-03-10T00:00:00Z').getTime(),
     relationshipStart: new Date('2025-11-30T00:00:00Z').getTime()
 };
 
